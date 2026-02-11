@@ -99,7 +99,9 @@ export function lotteryFaqs(lottery: LotteryConfig) {
     },
     {
       question: `How much does a ${lottery.name} ticket cost?`,
-      answer: `A ${lottery.name} ticket costs $${lottery.ticketPrice}. Additional options like Power Play or Megaplier are available for an extra $1.`,
+      answer: lottery.slug === 'powerball'
+        ? `A ${lottery.name} ticket costs $${lottery.ticketPrice}. For an additional $1, you can add the Power Play option to multiply non-jackpot prizes by 2x to 10x.`
+        : `A ${lottery.name} ticket costs $${lottery.ticketPrice}. Every ticket includes an automatic 2x-10x multiplier for non-jackpot prizes at no extra cost.`,
     },
     {
       question: `When are ${lottery.name} drawings?`,
