@@ -9,6 +9,7 @@ on:
 permissions:
   contents: write
   issues: write
+  actions: read
 
 jobs:
   check-new-datasets:
@@ -59,6 +60,131 @@ jobs:
                 ...context.repo,
                 title,
                 body: `The \`check-new-datasets\` job failed.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                labels: [label],
+              });
+            }
+
+  cleanup-issues:
+    name: Cleanup Stale Automation Issues
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Auto-close resolved issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: npx tsx scripts/cleanup-stale-issues.ts
+
+  security-audit:
+    name: Dependency Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit
+        run: npm audit --audit-level=high
+
+      - name: Notify on vulnerabilities
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '[Auto] npm security vulnerabilities detected';
+            const label = 'automation-failure';
+            const { data: issues } = await github.rest.issues.listForRepo({
+              ...context.repo,
+              state: 'open',
+              labels: label,
+            });
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: existing.number,
+                body: `High-severity vulnerabilities still present as of ${new Date().toISOString()}.\n\nRun \`npm audit\` locally for details.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                ...context.repo,
+                title,
+                body: `\`npm audit --audit-level=high\` found vulnerabilities.\n\nRun \`npm audit\` locally for details.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                labels: [label],
+              });
+            }
+
+  seo-health-check:
+    name: SEO Health Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: npm run build
+
+      - name: Run SEO health check
+        run: npx tsx scripts/seo-health-check.ts
+
+      - name: Notify on SEO issues
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '[Auto] SEO health check failed';
+            const label = 'seo-health';
+            const { data: issues } = await github.rest.issues.listForRepo({
+              ...context.repo,
+              state: 'open',
+              labels: label,
+            });
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: existing.number,
+                body: `SEO health check failed again on ${new Date().toISOString()}.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                ...context.repo,
+                title,
+                body: `The weekly SEO health check found issues.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 labels: [label],
               });
             }
@@ -144,6 +270,91 @@ jobs:
                 ...context.repo,
                 title,
                 body: `The \`quarterly-tax-update\` job failed.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                labels: [label],
+              });
+            }
+
+  quarterly-state-refresh:
+    name: Quarterly State Config Refresh
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check if first week of quarter month
+        id: check_quarter
+        run: |
+          DAY=$(date -u +%d)
+          MONTH=$(date -u +%m)
+          if [[ "$MONTH" =~ ^(01|04|07|10)$ ]] && [ "$DAY" -le 7 ]; then
+            echo "run=true" >> $GITHUB_OUTPUT
+          else
+            echo "run=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Checkout repository
+        if: steps.check_quarter.outputs.run == 'true' || github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        if: steps.check_quarter.outputs.run == 'true' || github.event_name == 'workflow_dispatch'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: steps.check_quarter.outputs.run == 'true' || github.event_name == 'workflow_dispatch'
+        run: npm ci
+
+      - name: Generate state configs
+        if: (steps.check_quarter.outputs.run == 'true' || github.event_name == 'workflow_dispatch') && env.ANTHROPIC_API_KEY != ''
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: npx tsx scripts/generate-state-configs.ts
+
+      - name: Check for changes
+        if: steps.check_quarter.outputs.run == 'true' || github.event_name == 'workflow_dispatch'
+        id: check_changes
+        run: |
+          git diff --quiet src/lib/states/config.ts || echo "changes=true" >> $GITHUB_OUTPUT
+
+      - name: Verify build succeeds
+        if: steps.check_changes.outputs.changes == 'true'
+        run: npm run build
+
+      - name: Commit and push state config updates
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add src/lib/states/config.ts
+          git commit -m "chore: quarterly state config refresh $(date -u +%Y-%m-%d)"
+          git push
+
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '[Auto] quarterly-state-refresh failed';
+            const label = 'automation-failure';
+            const { data: issues } = await github.rest.issues.listForRepo({
+              ...context.repo,
+              state: 'open',
+              labels: label,
+            });
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: existing.number,
+                body: `Failed again on ${new Date().toISOString()}.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                ...context.repo,
+                title,
+                body: `The \`quarterly-state-refresh\` job failed.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 labels: [label],
               });
             }

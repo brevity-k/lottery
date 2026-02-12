@@ -13,7 +13,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import fs from 'fs';
 import path from 'path';
 import { withRetry } from './lib/retry';
-import { CLAUDE_MODEL } from './lib/constants';
+import { CLAUDE_MODEL, SEASONAL_OVERRIDES, SPECIAL_TOPICS, TARGET_KEYWORDS } from './lib/constants';
 
 // ---------------------------------------------------------------------------
 // Types (self-contained – no @/ imports so tsx can run standalone)
@@ -182,10 +182,32 @@ const TOPICS = [
 ] as const;
 
 function getTopicForToday(): string {
+  const now = new Date();
+  const month = now.getMonth() + 1; // 1-12
+  const yearMonth = now.toISOString().slice(0, 7); // YYYY-MM
+
+  // Check for one-time special topics first
+  if (SPECIAL_TOPICS[yearMonth]) {
+    return SPECIAL_TOPICS[yearMonth];
+  }
+
+  // Check for seasonal overrides
+  if (SEASONAL_OVERRIDES[month]) {
+    return SEASONAL_OVERRIDES[month];
+  }
+
+  // Fall back to standard rotation
+  const dayOfYear = Math.floor(
+    (Date.now() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000
+  );
+  return TOPICS[dayOfYear % TOPICS.length];
+}
+
+function getTargetKeywordForToday(): string {
   const dayOfYear = Math.floor(
     (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
   );
-  return TOPICS[dayOfYear % TOPICS.length];
+  return TARGET_KEYWORDS[dayOfYear % TARGET_KEYWORDS.length];
 }
 
 // ---------------------------------------------------------------------------
@@ -252,6 +274,7 @@ async function main() {
   }
 
   const topic = getTopicForToday();
+  const targetKeyword = getTargetKeywordForToday();
   const existingTitles = getExistingTitles().slice(-30);
 
   // Build prompt
@@ -269,6 +292,13 @@ RULES:
 - Use proper HTML tags: h2, h3, p, ul, li, ol, strong, em
 - Make it informative and interesting for lottery enthusiasts
 - Cover multiple games when relevant, not just Powerball and Mega Millions
+- Naturally incorporate this SEO target keyword at least once: "${targetKeyword}"
+- Include 2-3 internal links where relevant using these paths:
+  - /powerball/statistics, /mega-millions/statistics (for statistics references)
+  - /tools/tax-calculator (for tax-related content)
+  - /states (for state-specific content)
+  - /powerball/numbers, /mega-millions/numbers (for number analysis references)
+  Format: <a href="/path">descriptive anchor text</a>
 
 TODAY'S DATE: ${today}
 TOPIC FOCUS: ${topic}

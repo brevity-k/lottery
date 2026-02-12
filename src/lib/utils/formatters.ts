@@ -60,6 +60,25 @@ export function formatOdds(odds: string): string {
 }
 
 /**
+ * Formats an ISO date string to a short "Updated" format.
+ * Example: "2026-02-11T06:00:00Z" -> "Updated Feb 11, 2026"
+ */
+export function formatLastUpdated(isoString: string): string {
+  const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const dateStr = isoString.split('T')[0];
+  const [yearStr, monthStr, dayStr] = dateStr.split('-');
+  const year = parseInt(yearStr, 10);
+  const monthIndex = parseInt(monthStr, 10) - 1;
+  const day = parseInt(dayStr, 10);
+
+  if (isNaN(year) || isNaN(monthIndex) || isNaN(day) || !SHORT_MONTHS[monthIndex]) {
+    return `Updated ${dateStr}`;
+  }
+
+  return `Updated ${SHORT_MONTHS[monthIndex]} ${day}, ${year}`;
+}
+
+/**
  * Extracts an array of unique years from draw results, sorted descending.
  * Example: draws from 2020-2024 -> [2024, 2023, 2022, 2021, 2020]
  */

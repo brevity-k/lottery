@@ -5,7 +5,7 @@ import { loadLotteryData } from '@/lib/data/fetcher';
 import { generateLotteryMetadata } from '@/lib/seo/metadata';
 import { breadcrumbSchema } from '@/lib/seo/structuredData';
 import { SITE_URL } from '@/lib/utils/constants';
-import { getYearsRange } from '@/lib/utils/formatters';
+import { getYearsRange, formatLastUpdated } from '@/lib/utils/formatters';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import ResultsTable from '@/components/lottery/ResultsTable';
 import JsonLd from '@/components/seo/JsonLd';
@@ -29,10 +29,12 @@ export default async function ResultsPage({ params }: { params: Promise<{ lotter
 
   let draws: import('@/lib/lotteries/types').DrawResult[] = [];
   let years: number[] = [];
+  let lastUpdated = '';
   try {
     const data = loadLotteryData(slug);
     draws = data.draws;
     years = getYearsRange(draws);
+    lastUpdated = data.lastUpdated;
   } catch {
     // Data not available
   }
@@ -51,9 +53,14 @@ export default async function ResultsPage({ params }: { params: Promise<{ lotter
           { label: 'Results' },
         ]} />
 
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
           {lottery.name} Past Results
         </h1>
+        {lastUpdated && (
+          <p className="text-sm text-gray-500 mb-2">
+            {formatLastUpdated(lastUpdated)} · <a href={lottery.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Verify with {lottery.name} ↗</a>
+          </p>
+        )}
         <p className="text-lg text-gray-600 mb-8">
           Complete history of {lottery.name} winning numbers and draw results.
         </p>

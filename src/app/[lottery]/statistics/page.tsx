@@ -11,8 +11,10 @@ import { generateLotteryMetadata } from '@/lib/seo/metadata';
 import { breadcrumbSchema, faqSchema } from '@/lib/seo/structuredData';
 import { getStatisticsFaqs } from '@/lib/seo/faqContent';
 import { SITE_URL, DISCLAIMER_TEXT } from '@/lib/utils/constants';
-import { formatPercentage } from '@/lib/utils/formatters';
+import { formatPercentage, formatLastUpdated } from '@/lib/utils/formatters';
+import { getRelatedPosts } from '@/lib/blog-links';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
+import Link from 'next/link';
 import HotColdChart from '@/components/numbers/HotColdChart';
 import LotteryBall from '@/components/lottery/LotteryBall';
 import JsonLd from '@/components/seo/JsonLd';
@@ -42,10 +44,12 @@ export default async function StatisticsPage({ params }: { params: Promise<{ lot
   let triplets: import('@/lib/lotteries/types').TripletFrequency[] = [];
   let quadruplets: import('@/lib/lotteries/types').QuadrupletFrequency[] = [];
   let totalDraws = 0;
+  let lastUpdated = '';
 
   try {
     const data = loadLotteryData(slug);
     totalDraws = data.draws.length;
+    lastUpdated = data.lastUpdated;
     frequency = calculateFrequency(data.draws, lottery.mainNumbers.max, 'main');
     hotCold = calculateHotCold(data.draws, lottery.mainNumbers.max, 'main');
     overdue = calculateOverdue(data.draws, lottery.mainNumbers.max, 'main');
@@ -61,6 +65,7 @@ export default async function StatisticsPage({ params }: { params: Promise<{ lot
   const mostOverdue = getMostOverdue(overdue, 10);
 
   const faqs = getStatisticsFaqs(lottery);
+  const relatedPosts = getRelatedPosts(slug, lottery.name, 3);
 
   return (
     <>
@@ -80,6 +85,11 @@ export default async function StatisticsPage({ params }: { params: Promise<{ lot
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
           {lottery.name} Statistics
         </h1>
+        {lastUpdated && (
+          <p className="text-sm text-gray-500 mb-2">
+            {formatLastUpdated(lastUpdated)} · <a href={lottery.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Verify with {lottery.name} ↗</a>
+          </p>
+        )}
         <p className="text-lg text-gray-600 mb-8">
           Statistical analysis of {totalDraws.toLocaleString()} historical draws.
         </p>
@@ -210,6 +220,21 @@ export default async function StatisticsPage({ params }: { params: Promise<{ lot
         {hotCold.length === 0 && (
           <Card>
             <p className="text-center text-gray-500 py-8">No statistical data available yet. Run the data update script to fetch historical data.</p>
+          </Card>
+        )}
+
+        {/* Related Articles */}
+        {relatedPosts.length > 0 && (
+          <Card className="mb-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Related Articles</h2>
+            <div className="space-y-3">
+              {relatedPosts.map(post => (
+                <Link key={post.slug} href={`/blog/${post.slug}`} className="block p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                  <p className="font-semibold text-gray-900 text-sm">{post.title}</p>
+                  <p className="text-xs text-gray-500 mt-1">{post.category} · {post.date}</p>
+                </Link>
+              ))}
+            </div>
           </Card>
         )}
 

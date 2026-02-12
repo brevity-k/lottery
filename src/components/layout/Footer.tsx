@@ -50,6 +50,7 @@ export default function Footer() {
             <h4 className="text-white font-semibold mb-4">Resources</h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+              <li><Link href="/methodology" className="hover:text-white transition-colors">Methodology</Link></li>
               <li><a href="https://www.ncpgambling.org" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Problem Gambling Help</a></li>
               <li><span className="text-xs">Helpline: 1-800-522-4700</span></li>
             </ul>
