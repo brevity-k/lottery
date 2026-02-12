@@ -6,6 +6,7 @@ import { generateLotteryMetadata } from '@/lib/seo/metadata';
 import { breadcrumbSchema, faqSchema } from '@/lib/seo/structuredData';
 import { getNumbersPageFaqs } from '@/lib/seo/faqContent';
 import { SITE_URL, DISCLAIMER_TEXT } from '@/lib/utils/constants';
+import { formatLastUpdated } from '@/lib/utils/formatters';
 import { StrategyType } from '@/lib/lotteries/types';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import NumberGenerator from '@/components/numbers/NumberGenerator';
@@ -32,8 +33,10 @@ export default async function NumbersPage({ params }: { params: Promise<{ lotter
   if (!lottery) notFound();
 
   const recommendationSets: Record<string, import('@/lib/lotteries/types').RecommendedSet[]> = {};
+  let lastUpdated = '';
   try {
     const data = loadLotteryData(slug);
+    lastUpdated = data.lastUpdated;
     for (const key of Object.keys(strategies)) {
       recommendationSets[key] = generateRecommendations(data.draws, lottery, key as StrategyType, 3);
     }
@@ -59,6 +62,11 @@ export default async function NumbersPage({ params }: { params: Promise<{ lotter
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
           {lottery.name} Number Insights
         </h1>
+        {lastUpdated && (
+          <p className="text-sm text-gray-500 mb-2">
+            {formatLastUpdated(lastUpdated)} · <a href={lottery.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Verify with {lottery.name} ↗</a>
+          </p>
+        )}
         <p className="text-lg text-gray-600 mb-8">
           AI-powered statistical analysis and number recommendations based on historical draw data.
         </p>

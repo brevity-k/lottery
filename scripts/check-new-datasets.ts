@@ -156,6 +156,22 @@ ${relevantNew.map(e => `### ${e.resource.name}
     `[Auto] ${relevantNew.length} new lottery dataset(s) detected`,
     issueBody
   );
+
+  // Optionally trigger auto-onboarding for the first new dataset
+  if (process.env.ANTHROPIC_API_KEY && relevantNew.length > 0) {
+    const firstNew = relevantNew[0];
+    console.log(`\nAttempting auto-onboarding for: ${firstNew.resource.name} (${firstNew.resource.id})`);
+    try {
+      const { execSync } = await import('child_process');
+      execSync(`npx tsx scripts/onboard-new-game.ts ${firstNew.resource.id}`, {
+        cwd: process.cwd(),
+        stdio: 'inherit',
+        env: { ...process.env },
+      });
+    } catch (e) {
+      console.log('Auto-onboarding failed (non-fatal):', e);
+    }
+  }
 }
 
 main().catch(console.error);

@@ -5,6 +5,8 @@ import { loadLotteryData } from '@/lib/data/fetcher';
 import { generateLotteryMetadata } from '@/lib/seo/metadata';
 import { breadcrumbSchema, faqSchema, lotteryFaqs } from '@/lib/seo/structuredData';
 import { SITE_URL } from '@/lib/utils/constants';
+import { formatLastUpdated } from '@/lib/utils/formatters';
+import { getRelatedPosts } from '@/lib/blog-links';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import ResultsTable from '@/components/lottery/ResultsTable';
 import JsonLd from '@/components/seo/JsonLd';
@@ -27,14 +29,17 @@ export default async function LotteryPage({ params }: { params: Promise<{ lotter
   if (!lottery) notFound();
 
   let draws: import('@/lib/lotteries/types').DrawResult[] = [];
+  let lastUpdated = '';
   try {
     const data = loadLotteryData(slug);
     draws = data.draws;
+    lastUpdated = data.lastUpdated;
   } catch {
     // Data not yet available
   }
 
   const faqs = lotteryFaqs(lottery);
+  const relatedPosts = getRelatedPosts(slug, lottery.name, 3);
 
   return (
     <>
@@ -47,9 +52,14 @@ export default async function LotteryPage({ params }: { params: Promise<{ lotter
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Breadcrumbs items={[{ label: lottery.name }]} />
 
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
           {lottery.name} Results & Numbers
         </h1>
+        {lastUpdated && (
+          <p className="text-sm text-gray-500 mb-2">
+            {formatLastUpdated(lastUpdated)} · <a href={lottery.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Verify with {lottery.name} ↗</a>
+          </p>
+        )}
         <p className="text-lg text-gray-600 mb-8 max-w-3xl">{lottery.description}</p>
 
         {/* Quick Links */}
@@ -104,6 +114,21 @@ export default async function LotteryPage({ params }: { params: Promise<{ lotter
               <Link href={`/${slug}/results`} className="text-sm text-blue-600 hover:underline">View All →</Link>
             </div>
             <ResultsTable draws={draws} config={lottery} limit={10} />
+          </Card>
+        )}
+
+        {/* Related Articles */}
+        {relatedPosts.length > 0 && (
+          <Card className="mb-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Related Articles</h2>
+            <div className="space-y-3">
+              {relatedPosts.map(post => (
+                <Link key={post.slug} href={`/blog/${post.slug}`} className="block p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                  <p className="font-semibold text-gray-900 text-sm">{post.title}</p>
+                  <p className="text-xs text-gray-500 mt-1">{post.category} · {post.date}</p>
+                </Link>
+              ))}
+            </div>
           </Card>
         )}
 
