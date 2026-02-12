@@ -35,12 +35,38 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: npx tsx scripts/check-new-datasets.ts
 
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '[Auto] check-new-datasets failed';
+            const label = 'automation-failure';
+            const { data: issues } = await github.rest.issues.listForRepo({
+              ...context.repo,
+              state: 'open',
+              labels: label,
+            });
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: existing.number,
+                body: `Failed again on ${new Date().toISOString()}.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                ...context.repo,
+                title,
+                body: `The \`check-new-datasets\` job failed.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                labels: [label],
+              });
+            }
+
   quarterly-tax-update:
     name: Quarterly Tax Rate Update
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    # Only run on first Monday of Jan, Apr, Jul, Oct (quarterly)
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && contains(fromJSON('["01","04","07","10"]'), format('{0:MM}', github.event.schedule)))
 
     steps:
       - name: Check if first week of quarter month
@@ -93,3 +119,31 @@ jobs:
           git add src/data/state-tax-rates.ts
           git commit -m "chore: quarterly tax rate update $(date -u +%Y-%m-%d)"
           git push
+
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '[Auto] quarterly-tax-update failed';
+            const label = 'automation-failure';
+            const { data: issues } = await github.rest.issues.listForRepo({
+              ...context.repo,
+              state: 'open',
+              labels: label,
+            });
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: existing.number,
+                body: `Failed again on ${new Date().toISOString()}.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                ...context.repo,
+                title,
+                body: `The \`quarterly-tax-update\` job failed.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                labels: [label],
+              });
+            }

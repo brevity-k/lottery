@@ -28,10 +28,10 @@ export default async function NumbersPage({ params }: { params: Promise<{ lotter
   const lottery = getLottery(slug);
   if (!lottery) notFound();
 
-  let recommendationSets: Record<string, import('@/lib/lotteries/types').RecommendedSet[]> = {};
+  const recommendationSets: Record<string, import('@/lib/lotteries/types').RecommendedSet[]> = {};
   try {
     const data = loadLotteryData(slug);
-    for (const [key, _] of Object.entries(strategies)) {
+    for (const key of Object.keys(strategies)) {
       recommendationSets[key] = generateRecommendations(data.draws, lottery, key as StrategyType, 3);
     }
   } catch {

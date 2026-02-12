@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   update-data:
@@ -39,10 +40,47 @@ jobs:
         run: npx tsx scripts/update-data.ts
 
       - name: Generate daily blog post
-        if: ${{ env.ANTHROPIC_API_KEY != '' }}
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: npx tsx scripts/generate-blog-post.ts
+
+      - name: Check for stale data
+        id: stale_check
+        run: |
+          if [ -f src/data/.stale-warning ]; then
+            echo "stale=true" >> $GITHUB_OUTPUT
+            cat src/data/.stale-warning
+          fi
+
+      - name: Notify on stale data
+        if: steps.stale_check.outputs.stale == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const warning = fs.readFileSync('src/data/.stale-warning', 'utf-8');
+            const title = '[Auto] Stale lottery data detected';
+            const label = 'automation-failure';
+            const { data: issues } = await github.rest.issues.listForRepo({
+              ...context.repo,
+              state: 'open',
+              labels: label,
+            });
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: existing.number,
+                body: `Stale data detected again on ${new Date().toISOString()}:\n\n\`\`\`\n${warning}\n\`\`\``,
+              });
+            } else {
+              await github.rest.issues.create({
+                ...context.repo,
+                title,
+                body: `The data update script detected stale data:\n\n\`\`\`\n${warning}\n\`\`\`\n\nThis may indicate a SODA API outage or a game format change.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                labels: [label],
+              });
+            }
 
       - name: Check for changes
         id: check_changes
@@ -62,3 +100,31 @@ jobs:
           git add src/data/ content/blog/
           git commit -m "chore: update lottery data & blog $(date -u +%Y-%m-%d)"
           git push
+
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '[Auto] update-lottery-data failed';
+            const label = 'automation-failure';
+            const { data: issues } = await github.rest.issues.listForRepo({
+              ...context.repo,
+              state: 'open',
+              labels: label,
+            });
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: existing.number,
+                body: `Failed again on ${new Date().toISOString()}.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                ...context.repo,
+                title,
+                body: `The daily \`update-lottery-data\` workflow failed.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                labels: [label],
+              });
+            }

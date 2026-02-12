@@ -12,6 +12,8 @@
 import Anthropic from '@anthropic-ai/sdk';
 import fs from 'fs';
 import path from 'path';
+import { withRetry } from './lib/retry';
+import { CLAUDE_MODEL } from './lib/constants';
 
 // ---------------------------------------------------------------------------
 // Types (self-contained – no @/ imports so tsx can run standalone)
@@ -48,20 +50,6 @@ interface BlogPost {
   date: string;
   category: string;
   content: string;
-}
-
-interface GameAnalysis {
-  name: string;
-  slug: string;
-  maxMain: number;
-  hasBonus: boolean;
-  latest: DrawResult;
-  last5: DrawResult[];
-  hot: NumberStat[];
-  cold: NumberStat[];
-  overdue: OverdueStat[];
-  pairs: { pair: string; count: number }[];
-  totalDraws: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -302,18 +290,21 @@ Respond with ONLY valid JSON (no markdown fences, no explanation) in this exact 
   console.log(`Generating blog post for ${today} (topic: ${topic})...`);
 
   const client = new Anthropic();
-  const message = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 2048,
-    messages: [{ role: 'user', content: prompt }],
-  });
+  const message = await withRetry(
+    () => client.messages.create({
+      model: CLAUDE_MODEL,
+      max_tokens: 2048,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+    { maxAttempts: 2, baseDelayMs: 3000, label: 'Claude blog generation' }
+  );
 
   const text = message.content[0].type === 'text' ? message.content[0].text : '';
 
   let post: BlogPost;
   try {
     post = JSON.parse(text);
-  } catch (e) {
+  } catch {
     // Try extracting JSON from possible markdown fences
     const match = text.match(/\{[\s\S]*\}/);
     if (match) {

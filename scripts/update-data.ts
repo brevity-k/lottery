@@ -12,6 +12,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { withRetry } from './lib/retry';
 
 interface LotterySource {
   id: string;
@@ -24,6 +25,8 @@ interface LotterySource {
   middayField?: string;
   eveningField?: string;
   expectedDrawDays?: number[];  // 0=Sun, 1=Mon, ... 6=Sat
+  retiredDate?: string;         // ISO date string — skip stale check if retired
+  staleDays: number;            // Max days before latest draw is considered stale
 }
 
 const sources: LotterySource[] = [
@@ -35,6 +38,7 @@ const sources: LotterySource[] = [
     mainMax: 69,
     bonusMax: 26,
     expectedDrawDays: [1, 3, 6],  // Mon, Wed, Sat
+    staleDays: 4,
   },
   {
     id: 'mega-millions',
@@ -42,9 +46,12 @@ const sources: LotterySource[] = [
     url: 'https://data.ny.gov/resource/5xaw-6ayf.json',
     mainCount: 5,
     mainMax: 70,
-    bonusMax: 25,  // Was 25 pre-April 2025, now 24 — allow both for historical data
+    // Historical data has bonus up to 25 (pre-April 2025); current format is 1-24.
+    // Allow 25 here so historical draws don't trigger range warnings.
+    bonusMax: 25,
     bonusField: 'mega_ball',
     expectedDrawDays: [2, 5],  // Tue, Fri
+    staleDays: 4,
   },
   {
     id: 'cash4life',
@@ -55,6 +62,8 @@ const sources: LotterySource[] = [
     bonusMax: 4,
     bonusField: 'cash_ball',
     expectedDrawDays: [0, 1, 2, 3, 4, 5, 6],  // Daily
+    retiredDate: '2026-02-21',
+    staleDays: 3,
   },
   {
     id: 'ny-lotto',
@@ -65,6 +74,7 @@ const sources: LotterySource[] = [
     bonusMax: 59,
     bonusField: 'bonus',
     expectedDrawDays: [3, 6],  // Wed, Sat
+    staleDays: 5,
   },
   {
     id: 'take5',
@@ -76,6 +86,7 @@ const sources: LotterySource[] = [
     middayField: 'midday_winning_numbers',
     eveningField: 'evening_winning_numbers',
     expectedDrawDays: [0, 1, 2, 3, 4, 5, 6],  // Daily
+    staleDays: 3,
   },
 ];
 
@@ -158,10 +169,13 @@ async function fetchData(source: LotterySource): Promise<{ draws: DrawResult[]; 
   const url = `${source.url}?$limit=50000&$order=draw_date DESC`;
   console.log(`Fetching ${source.name} data from SODA API...`);
 
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${source.name}: ${response.status} ${response.statusText}`);
-  }
+  const response = await withRetry(
+    () => fetch(url).then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status} ${r.statusText}`);
+      return r;
+    }),
+    { maxAttempts: 3, baseDelayMs: 2000, label: `fetch ${source.name}` }
+  );
 
   const rawData: Record<string, string>[] = await response.json();
   console.log(`  Received ${rawData.length} records`);
@@ -254,6 +268,41 @@ async function fetchData(source: LotterySource): Promise<{ draws: DrawResult[]; 
   return { draws, warnings: allWarnings };
 }
 
+function checkStaleData(
+  sources: LotterySource[],
+  dataDir: string
+): string[] {
+  const warnings: string[] = [];
+  const now = new Date();
+
+  for (const source of sources) {
+    // Skip retired games
+    if (source.retiredDate && new Date(source.retiredDate) < now) {
+      continue;
+    }
+
+    const filePath = path.join(dataDir, `${source.id}.json`);
+    try {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const data: LotteryData = JSON.parse(content);
+      if (data.draws.length === 0) continue;
+
+      const latestDate = new Date(data.draws[0].date + 'T12:00:00Z');
+      const daysSince = Math.floor((now.getTime() - latestDate.getTime()) / 86400000);
+
+      if (daysSince > source.staleDays) {
+        warnings.push(
+          `${source.name}: Latest draw is ${data.draws[0].date} (${daysSince} days ago, threshold: ${source.staleDays} days)`
+        );
+      }
+    } catch {
+      warnings.push(`${source.name}: Could not read data file`);
+    }
+  }
+
+  return warnings;
+}
+
 async function main() {
   const dataDir = path.join(process.cwd(), 'src', 'data');
 
@@ -321,6 +370,21 @@ async function main() {
     }
     if (allWarnings.length > 20) {
       console.log(`  ... and ${allWarnings.length - 20} more warnings`);
+    }
+  }
+
+  // Stale data detection
+  const staleWarnings = checkStaleData(sources, dataDir);
+  if (staleWarnings.length > 0) {
+    const warningText = staleWarnings.join('\n');
+    console.log(`\n--- Stale Data Warnings ---`);
+    console.log(warningText);
+    fs.writeFileSync(path.join(dataDir, '.stale-warning'), warningText);
+  } else {
+    // Clean up stale warning file if data is fresh
+    const staleFile = path.join(dataDir, '.stale-warning');
+    if (fs.existsSync(staleFile)) {
+      fs.unlinkSync(staleFile);
     }
   }
 

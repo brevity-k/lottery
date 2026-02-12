@@ -8,8 +8,7 @@
  * Issue (when running in CI with GITHUB_TOKEN) or logs to console.
  */
 
-import fs from 'fs';
-import path from 'path';
+import { withRetry } from './lib/retry';
 
 const KNOWN_DATASETS: Record<string, string> = {
   'd6yy-54nr': 'Powerball',
@@ -19,7 +18,10 @@ const KNOWN_DATASETS: Record<string, string> = {
   'dg63-4siq': 'Take 5',
 };
 
-const LOTTERY_SEARCH_TERMS = ['lottery', 'lotto', 'winning numbers', 'draw', 'jackpot', 'mega', 'powerball'];
+const LOTTERY_SEARCH_TERMS = [
+  'lottery', 'lotto', 'winning numbers', 'draw', 'jackpot',
+  'mega', 'powerball', 'millionaire', 'pick', 'cash', 'numbers game', 'take five',
+];
 
 interface SodaCatalogEntry {
   resource: {
@@ -39,15 +41,20 @@ async function searchSodaCatalog(): Promise<SodaCatalogEntry[]> {
   for (const term of LOTTERY_SEARCH_TERMS) {
     try {
       const url = `https://api.us.socrata.com/api/catalog/v1?domains=data.ny.gov&search_context=data.ny.gov&q=${encodeURIComponent(term)}&limit=50`;
-      const response = await fetch(url);
-      if (!response.ok) continue;
+      const response = await withRetry(
+        () => fetch(url).then(r => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r;
+        }),
+        { maxAttempts: 2, baseDelayMs: 1000, label: `SODA catalog search "${term}"` }
+      );
 
       const data = await response.json();
       if (data.results) {
         results.push(...data.results);
       }
     } catch {
-      // Skip on error
+      // Skip on error — non-critical search term
     }
   }
 
