@@ -1,0 +1,95 @@
+name: Weekly Maintenance
+
+on:
+  schedule:
+    # Run every Monday at 8 AM UTC
+    - cron: '0 8 * * 1'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  check-new-datasets:
+    name: Check for New SODA Datasets
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for new lottery datasets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: npx tsx scripts/check-new-datasets.ts
+
+  quarterly-tax-update:
+    name: Quarterly Tax Rate Update
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Only run on first Monday of Jan, Apr, Jul, Oct (quarterly)
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && contains(fromJSON('["01","04","07","10"]'), format('{0:MM}', github.event.schedule)))
+
+    steps:
+      - name: Check if first week of quarter month
+        id: check_quarter
+        run: |
+          DAY=$(date -u +%d)
+          MONTH=$(date -u +%m)
+          if [[ "$MONTH" =~ ^(01|04|07|10)$ ]] && [ "$DAY" -le 7 ]; then
+            echo "run=true" >> $GITHUB_OUTPUT
+          else
+            echo "run=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Checkout repository
+        if: steps.check_quarter.outputs.run == 'true' || github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        if: steps.check_quarter.outputs.run == 'true' || github.event_name == 'workflow_dispatch'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: steps.check_quarter.outputs.run == 'true' || github.event_name == 'workflow_dispatch'
+        run: npm ci
+
+      - name: Update tax rates via Claude API
+        if: (steps.check_quarter.outputs.run == 'true' || github.event_name == 'workflow_dispatch') && env.ANTHROPIC_API_KEY != ''
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: npx tsx scripts/update-tax-rates.ts
+
+      - name: Check for changes
+        if: steps.check_quarter.outputs.run == 'true' || github.event_name == 'workflow_dispatch'
+        id: check_changes
+        run: |
+          git diff --quiet src/data/state-tax-rates.ts || echo "changes=true" >> $GITHUB_OUTPUT
+
+      - name: Verify build succeeds
+        if: steps.check_changes.outputs.changes == 'true'
+        run: npm run build
+
+      - name: Commit and push tax rate updates
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add src/data/state-tax-rates.ts
+          git commit -m "chore: quarterly tax rate update $(date -u +%Y-%m-%d)"
+          git push

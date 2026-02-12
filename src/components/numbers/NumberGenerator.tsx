@@ -14,6 +14,8 @@ export default function NumberGenerator({ config }: NumberGeneratorProps) {
   const [bonusNumber, setBonusNumber] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
+  const hasBonus = config.bonusNumber.count > 0;
+
   const generate = useCallback(() => {
     setIsAnimating(true);
 
@@ -29,16 +31,19 @@ export default function NumberGenerator({ config }: NumberGeneratorProps) {
     }
     mainNums.sort((a, b) => a - b);
 
-    const bonusArray = new Uint32Array(1);
-    crypto.getRandomValues(bonusArray);
-    const bonus = (bonusArray[0] % config.bonusNumber.max) + 1;
+    let bonus = 0;
+    if (hasBonus) {
+      const bonusArray = new Uint32Array(1);
+      crypto.getRandomValues(bonusArray);
+      bonus = (bonusArray[0] % config.bonusNumber.max) + 1;
+    }
 
     setTimeout(() => {
       setNumbers(mainNums);
       setBonusNumber(bonus);
       setIsAnimating(false);
     }, 500);
-  }, [config]);
+  }, [config, hasBonus]);
 
   return (
     <div className="text-center">
@@ -48,7 +53,7 @@ export default function NumberGenerator({ config }: NumberGeneratorProps) {
             {numbers.map((num, i) => (
               <LotteryBall key={i} number={num} type="main" size="lg" />
             ))}
-            <LotteryBall number={bonusNumber} type="bonus" size="lg" />
+            {hasBonus && <LotteryBall number={bonusNumber} type="bonus" size="lg" />}
           </>
         ) : (
           <p className="text-gray-400 text-lg">Click generate to get your numbers</p>

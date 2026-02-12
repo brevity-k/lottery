@@ -25,9 +25,10 @@ export function generateRecommendations(
   const mainOverdue = calculateOverdue(draws, config.mainNumbers.max, 'main');
   const pairs = calculatePairs(draws);
 
-  const bonusFreq = calculateFrequency(draws, config.bonusNumber.max, 'bonus');
-  const bonusHotCold = calculateHotCold(draws, config.bonusNumber.max, 'bonus');
-  const bonusOverdue = calculateOverdue(draws, config.bonusNumber.max, 'bonus');
+  const hasBonus = config.bonusNumber.count > 0;
+  const bonusFreq = hasBonus ? calculateFrequency(draws, config.bonusNumber.max, 'bonus') : [];
+  const bonusHotCold = hasBonus ? calculateHotCold(draws, config.bonusNumber.max, 'bonus') : [];
+  const bonusOverdue = hasBonus ? calculateOverdue(draws, config.bonusNumber.max, 'bonus') : [];
 
   // Score each main number
   const mainScores: NumberScore[] = [];
@@ -68,30 +69,32 @@ export function generateRecommendations(
     mainScores.push({ number: num, score, reasons });
   }
 
-  // Score bonus numbers
+  // Score bonus numbers (skip for games without bonus)
   const bonusScores: NumberScore[] = [];
-  for (let num = 1; num <= config.bonusNumber.max; num++) {
-    const freq = bonusFreq.find(f => f.number === num);
-    const hot = bonusHotCold.find(h => h.number === num);
-    const overdue = bonusOverdue.find(o => o.number === num);
+  if (hasBonus) {
+    for (let num = 1; num <= config.bonusNumber.max; num++) {
+      const freq = bonusFreq.find(f => f.number === num);
+      const hot = bonusHotCold.find(h => h.number === num);
+      const overdue = bonusOverdue.find(o => o.number === num);
 
-    const reasons: string[] = [];
-    let score = 0;
+      const reasons: string[] = [];
+      let score = 0;
 
-    if (freq) {
-      const freqRank = bonusFreq.indexOf(freq) / bonusFreq.length;
-      score += (1 - freqRank) * weights.frequency;
-      if (freqRank < 0.2) reasons.push('Frequently drawn bonus');
-    }
-    if (hot) {
-      const hotRank = bonusHotCold.indexOf(hot) / bonusHotCold.length;
-      score += (1 - hotRank) * weights.hot;
-    }
-    if (overdue) {
-      score += Math.min(overdue.overdueRatio / 3, 1) * weights.overdue;
-    }
+      if (freq) {
+        const freqRank = bonusFreq.indexOf(freq) / bonusFreq.length;
+        score += (1 - freqRank) * weights.frequency;
+        if (freqRank < 0.2) reasons.push('Frequently drawn bonus');
+      }
+      if (hot) {
+        const hotRank = bonusHotCold.indexOf(hot) / bonusHotCold.length;
+        score += (1 - hotRank) * weights.hot;
+      }
+      if (overdue) {
+        score += Math.min(overdue.overdueRatio / 3, 1) * weights.overdue;
+      }
 
-    bonusScores.push({ number: num, score, reasons });
+      bonusScores.push({ number: num, score, reasons });
+    }
   }
 
   mainScores.sort((a, b) => b.score - a.score);
@@ -102,7 +105,7 @@ export function generateRecommendations(
   for (let i = 0; i < count; i++) {
     const offset = i * 2;
     const selectedMain = selectNumbers(mainScores, config.mainNumbers.count, offset);
-    const selectedBonus = bonusScores[i % bonusScores.length];
+    const selectedBonus = hasBonus ? bonusScores[i % bonusScores.length] : null;
 
     const reasoning = selectedMain
       .flatMap(s => s.reasons)
@@ -115,7 +118,7 @@ export function generateRecommendations(
 
     sets.push({
       numbers: selectedMain.map(s => s.number).sort((a, b) => a - b),
-      bonusNumber: selectedBonus.number,
+      bonusNumber: selectedBonus ? selectedBonus.number : 0,
       strategy: strategyConfig.name,
       reasoning,
       confidence: Math.round((selectedMain.reduce((sum, s) => sum + s.score, 0) / selectedMain.length) * 100),

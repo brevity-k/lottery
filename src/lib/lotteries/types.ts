@@ -15,6 +15,7 @@ export interface LotteryConfig {
   };
   drawDays: string[];
   drawTime: string;
+  drawsPerDay?: number;
   ticketPrice: number;
   jackpotOdds: string;
   dataSource: {
@@ -26,6 +27,8 @@ export interface LotteryConfig {
       bonus: string;
       multiplier?: string;
       jackpot?: string;
+      middayNumbers?: string;
+      eveningNumbers?: string;
     };
   };
   colors: {
@@ -45,6 +48,7 @@ export interface DrawResult {
   bonusNumber: number;
   multiplier?: number;
   jackpot?: string;
+  drawTime?: 'midday' | 'evening';
 }
 
 export interface NumberFrequency {

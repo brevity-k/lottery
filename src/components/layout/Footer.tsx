@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 text-gray-400">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
           <div>
             <h3 className="text-white font-bold text-lg mb-4">{SITE_NAME}</h3>
             <p className="text-sm">AI-Powered Lottery Number Insights & Statistics for all major US lotteries.</p>
@@ -16,14 +16,22 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li><Link href="/powerball" className="hover:text-white transition-colors">Powerball</Link></li>
               <li><Link href="/mega-millions" className="hover:text-white transition-colors">Mega Millions</Link></li>
+              <li><Link href="/cash4life" className="hover:text-white transition-colors">Cash4Life</Link></li>
+              <li><Link href="/ny-lotto" className="hover:text-white transition-colors">NY Lotto</Link></li>
+              <li><Link href="/take5" className="hover:text-white transition-colors">Take 5</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-white font-semibold mb-4">Tools</h4>
             <ul className="space-y-2 text-sm">
+              <li><Link href="/tools/tax-calculator" className="hover:text-white transition-colors">Tax Calculator</Link></li>
               <li><Link href="/tools/number-generator" className="hover:text-white transition-colors">Number Generator</Link></li>
               <li><Link href="/tools/odds-calculator" className="hover:text-white transition-colors">Odds Calculator</Link></li>
+            </ul>
+            <h4 className="text-white font-semibold mb-4 mt-6">States</h4>
+            <ul className="space-y-2 text-sm">
+              <li><Link href="/states" className="hover:text-white transition-colors">All States</Link></li>
             </ul>
           </div>
 
@@ -35,6 +43,15 @@ export default function Footer() {
               <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
               <li><Link href="/disclaimer" className="hover:text-white transition-colors">Disclaimer</Link></li>
               <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-white font-semibold mb-4">Resources</h4>
+            <ul className="space-y-2 text-sm">
+              <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+              <li><a href="https://www.ncpgambling.org" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Problem Gambling Help</a></li>
+              <li><span className="text-xs">Helpline: 1-800-522-4700</span></li>
             </ul>
           </div>
         </div>
