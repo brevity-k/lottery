@@ -9,7 +9,7 @@ import { LotteryConfig, DrawResult } from '@/lib/lotteries/types';
  * - NY Lotto: bonus in separate bonus field
  * - Take 5: no bonus, midday/evening draws in separate fields
  */
-export function parseSodaResponse(rawData: any[], config: LotteryConfig): DrawResult[] {
+export function parseSodaResponse(rawData: Record<string, string>[], config: LotteryConfig): DrawResult[] {
   const draws: DrawResult[] = [];
 
   for (const entry of rawData) {
@@ -27,7 +27,7 @@ export function parseSodaResponse(rawData: any[], config: LotteryConfig): DrawRe
   return draws;
 }
 
-function parseEntry(entry: any, config: LotteryConfig): DrawResult | DrawResult[] | null {
+function parseEntry(entry: Record<string, string>, config: LotteryConfig): DrawResult | DrawResult[] | null {
   if (!entry.draw_date) return null;
 
   const date = parseDate(entry.draw_date);

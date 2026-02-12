@@ -13,6 +13,8 @@
 import Anthropic from '@anthropic-ai/sdk';
 import fs from 'fs';
 import path from 'path';
+import { withRetry } from './lib/retry';
+import { CLAUDE_MODEL } from './lib/constants';
 
 interface TaxRateUpdate {
   abbreviation: string;
@@ -21,6 +23,11 @@ interface TaxRateUpdate {
   suggestedRate: number;
   reason: string;
 }
+
+/** Sanity bounds: no US state exceeds ~13.3% tax on lottery winnings. */
+const MAX_RATE = 0.15;
+/** Reject changes larger than 3 percentage points (likely hallucination). */
+const MAX_CHANGE_PP = 0.03;
 
 async function main() {
   if (!process.env.ANTHROPIC_API_KEY) {
@@ -79,11 +86,14 @@ If no changes are needed, return {"updates": [], "noChanges": true, "notes": "Al
   console.log('Querying Claude for tax rate verification...');
 
   const client = new Anthropic();
-  const message = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 2048,
-    messages: [{ role: 'user', content: prompt }],
-  });
+  const message = await withRetry(
+    () => client.messages.create({
+      model: CLAUDE_MODEL,
+      max_tokens: 2048,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+    { maxAttempts: 2, baseDelayMs: 3000, label: 'Claude tax rate query' }
+  );
 
   const text = message.content[0].type === 'text' ? message.content[0].text : '';
 
@@ -108,37 +118,63 @@ If no changes are needed, return {"updates": [], "noChanges": true, "notes": "Al
   }
 
   console.log(`\nSuggested updates (${result.updates.length}):`);
-  let updatedContent = currentContent;
+  const lines = currentContent.split('\n');
   let changesApplied = 0;
 
   for (const update of result.updates) {
     console.log(`  ${update.name} (${update.abbreviation}): ${update.currentRate} -> ${update.suggestedRate} (${update.reason})`);
 
-    // Apply the change in the file content
-    const currentRateStr = `taxRate: ${update.currentRate}`;
-    const newRateStr = `taxRate: ${update.suggestedRate}`;
+    // Sanity bound: reject rates outside [0, MAX_RATE]
+    if (update.suggestedRate < 0 || update.suggestedRate > MAX_RATE) {
+      console.log(`    REJECTED: Rate ${update.suggestedRate} outside bounds [0, ${MAX_RATE}]`);
+      continue;
+    }
 
-    // Find the state block and update its rate
-    const stateBlockRegex = new RegExp(
-      `(abbreviation:\\s*'${update.abbreviation}'[^}]*?)taxRate:\\s*${update.currentRate.toString().replace('.', '\\.')}`,
-    );
+    // Sanity bound: reject changes > MAX_CHANGE_PP
+    const changePP = Math.abs(update.suggestedRate - update.currentRate);
+    if (changePP > MAX_CHANGE_PP) {
+      console.log(`    REJECTED: Change of ${(changePP * 100).toFixed(2)}pp exceeds max ${(MAX_CHANGE_PP * 100).toFixed(0)}pp`);
+      continue;
+    }
 
-    if (stateBlockRegex.test(updatedContent)) {
-      updatedContent = updatedContent.replace(
-        stateBlockRegex,
-        `$1taxRate: ${update.suggestedRate}`,
-      );
-      changesApplied++;
-    } else {
-      console.log(`    WARNING: Could not find matching pattern for ${update.abbreviation}`);
+    // Line-based editing: find the state block, then update its taxRate line
+    let stateLineIdx = -1;
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].includes(`abbreviation: '${update.abbreviation}'`)) {
+        stateLineIdx = i;
+        break;
+      }
+    }
+
+    if (stateLineIdx === -1) {
+      console.log(`    WARNING: Could not find abbreviation '${update.abbreviation}' in file`);
+      continue;
+    }
+
+    // Search forward from the abbreviation line for the taxRate line (within the same block)
+    let found = false;
+    for (let j = stateLineIdx; j < Math.min(stateLineIdx + 15, lines.length); j++) {
+      const taxRateMatch = lines[j].match(/^(\s*taxRate:\s*)[\d.]+(.*)$/);
+      if (taxRateMatch) {
+        lines[j] = `${taxRateMatch[1]}${update.suggestedRate}${taxRateMatch[2]}`;
+        changesApplied++;
+        found = true;
+        break;
+      }
+      // Stop if we hit the next state block (closing brace followed by opening brace or another abbreviation)
+      if (j > stateLineIdx && lines[j].includes('abbreviation:')) break;
+    }
+
+    if (!found) {
+      console.log(`    WARNING: Could not find taxRate line for ${update.abbreviation}`);
     }
   }
 
   if (changesApplied > 0) {
-    fs.writeFileSync(taxFilePath, updatedContent);
+    fs.writeFileSync(taxFilePath, lines.join('\n'));
     console.log(`\nApplied ${changesApplied} tax rate update(s) to state-tax-rates.ts`);
   } else {
-    console.log('\nNo changes could be applied (patterns not matched).');
+    console.log('\nNo changes could be applied (all rejected or not matched).');
   }
 }
 
