@@ -10,7 +10,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center space-x-2">
             <span className="text-2xl font-bold text-blue-600">🎰</span>
-            <span className="text-xl font-bold text-gray-900">Lottery</span>
+            <span className="text-xl font-bold text-gray-900">My Lotto Stats</span>
           </Link>
 
           <nav className="hidden md:flex items-center space-x-6">

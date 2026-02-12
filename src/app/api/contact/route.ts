@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
 const OWNER_EMAIL = 'brevity1s.wos@gmail.com';
-const FROM_EMAIL = 'Lottery <onboarding@resend.dev>';
+const FROM_EMAIL = 'My Lotto Stats <onboarding@resend.dev>';
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     await resend.emails.send({
       from: FROM_EMAIL,
       to: OWNER_EMAIL,
-      subject: `Lottery Contact: ${name}`,
+      subject: `My Lotto Stats Contact: ${name}`,
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
           <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 12px;">
@@ -82,7 +82,7 @@ export async function POST(request: Request) {
     await resend.emails.send({
       from: FROM_EMAIL,
       to: email,
-      subject: 'Thank you for contacting Lottery',
+      subject: 'Thank you for contacting My Lotto Stats',
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
           <div style="text-align: center; padding: 20px 0;">
@@ -93,7 +93,7 @@ export async function POST(request: Request) {
           </h2>
           <p style="color: #333; line-height: 1.8;">
             Hi <strong>${escapeHtml(name)}</strong>,<br><br>
-            Thank you for reaching out to Lottery.<br>
+            Thank you for reaching out to My Lotto Stats.<br>
             We will review your message and get back to you within <strong>1-2 business days</strong>.
           </p>
           <div style="margin: 24px 0; padding: 16px; background: #f0f5ff; border-radius: 8px;">
@@ -103,7 +103,7 @@ export async function POST(request: Request) {
           <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
           <p style="color: #999; font-size: 13px; text-align: center;">
             This is an automated reply.<br>
-            <a href="https://lottery.com" style="color: #2563eb;">lottery.com</a>
+            <a href="https://mylottostats.com" style="color: #2563eb;">mylottostats.com</a>
           </p>
         </div>
       `,
