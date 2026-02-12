@@ -5,14 +5,18 @@ import { calculateFrequency, getTopFrequent, getLeastFrequent } from '@/lib/anal
 import { calculateHotCold } from '@/lib/analysis/hotCold';
 import { calculateOverdue, getMostOverdue } from '@/lib/analysis/overdue';
 import { calculatePairs } from '@/lib/analysis/pairs';
+import { calculateTriplets } from '@/lib/analysis/triplets';
+import { calculateQuadruplets } from '@/lib/analysis/quadruplets';
 import { generateLotteryMetadata } from '@/lib/seo/metadata';
-import { breadcrumbSchema } from '@/lib/seo/structuredData';
+import { breadcrumbSchema, faqSchema } from '@/lib/seo/structuredData';
+import { getStatisticsFaqs } from '@/lib/seo/faqContent';
 import { SITE_URL, DISCLAIMER_TEXT } from '@/lib/utils/constants';
 import { formatPercentage } from '@/lib/utils/formatters';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import HotColdChart from '@/components/numbers/HotColdChart';
 import LotteryBall from '@/components/lottery/LotteryBall';
 import JsonLd from '@/components/seo/JsonLd';
+import FAQSection from '@/components/seo/FAQSection';
 import Card from '@/components/ui/Card';
 
 export function generateStaticParams() {
@@ -35,6 +39,8 @@ export default async function StatisticsPage({ params }: { params: Promise<{ lot
   let hotCold: import('@/lib/lotteries/types').HotColdNumber[] = [];
   let overdue: import('@/lib/lotteries/types').OverdueNumber[] = [];
   let pairs: import('@/lib/lotteries/types').PairFrequency[] = [];
+  let triplets: import('@/lib/lotteries/types').TripletFrequency[] = [];
+  let quadruplets: import('@/lib/lotteries/types').QuadrupletFrequency[] = [];
   let totalDraws = 0;
 
   try {
@@ -44,6 +50,8 @@ export default async function StatisticsPage({ params }: { params: Promise<{ lot
     hotCold = calculateHotCold(data.draws, lottery.mainNumbers.max, 'main');
     overdue = calculateOverdue(data.draws, lottery.mainNumbers.max, 'main');
     pairs = calculatePairs(data.draws, 15);
+    triplets = calculateTriplets(data.draws, 15);
+    quadruplets = calculateQuadruplets(data.draws, 10);
   } catch {
     // Data not available
   }
@@ -52,6 +60,8 @@ export default async function StatisticsPage({ params }: { params: Promise<{ lot
   const leastFrequent = getLeastFrequent(frequency, 10);
   const mostOverdue = getMostOverdue(overdue, 10);
 
+  const faqs = getStatisticsFaqs(lottery);
+
   return (
     <>
       <JsonLd data={breadcrumbSchema([
@@ -59,6 +69,7 @@ export default async function StatisticsPage({ params }: { params: Promise<{ lot
         { name: lottery.name, url: `${SITE_URL}/${lottery.slug}` },
         { name: 'Statistics', url: `${SITE_URL}/${lottery.slug}/statistics` },
       ])} />
+      <JsonLd data={faqSchema(faqs)} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Breadcrumbs items={[
@@ -151,6 +162,48 @@ export default async function StatisticsPage({ params }: { params: Promise<{ lot
                 </div>
               </Card>
             )}
+
+            {/* Triplets */}
+            {triplets.length > 0 && (
+              <Card className="mb-8">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Most Common Triplets</h2>
+                <p className="text-sm text-gray-500 mb-4">Three-number combinations that appear together most frequently.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                  {triplets.map((t, i) => (
+                    <div key={i} className="flex items-center justify-center gap-1 p-3 bg-gray-50 rounded-lg">
+                      <LotteryBall number={t.triplet[0]} type="main" size="sm" />
+                      <span className="text-gray-400 text-xs">+</span>
+                      <LotteryBall number={t.triplet[1]} type="main" size="sm" />
+                      <span className="text-gray-400 text-xs">+</span>
+                      <LotteryBall number={t.triplet[2]} type="main" size="sm" />
+                      <span className="text-xs text-gray-500 ml-1">({t.count})</span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            )}
+
+            {/* Quadruplets */}
+            {quadruplets.length > 0 && (
+              <Card className="mb-8">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Most Common Quadruplets</h2>
+                <p className="text-sm text-gray-500 mb-4">Four-number combinations that appear together most frequently.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                  {quadruplets.map((q, i) => (
+                    <div key={i} className="flex items-center justify-center gap-1 p-3 bg-gray-50 rounded-lg">
+                      <LotteryBall number={q.quadruplet[0]} type="main" size="sm" />
+                      <span className="text-gray-400 text-xs">+</span>
+                      <LotteryBall number={q.quadruplet[1]} type="main" size="sm" />
+                      <span className="text-gray-400 text-xs">+</span>
+                      <LotteryBall number={q.quadruplet[2]} type="main" size="sm" />
+                      <span className="text-gray-400 text-xs">+</span>
+                      <LotteryBall number={q.quadruplet[3]} type="main" size="sm" />
+                      <span className="text-xs text-gray-500 ml-1">({q.count})</span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            )}
           </>
         )}
 
@@ -159,6 +212,8 @@ export default async function StatisticsPage({ params }: { params: Promise<{ lot
             <p className="text-center text-gray-500 py-8">No statistical data available yet. Run the data update script to fetch historical data.</p>
           </Card>
         )}
+
+        <FAQSection faqs={faqs} />
 
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 text-center">
           <p className="text-sm text-amber-800">{DISCLAIMER_TEXT}</p>

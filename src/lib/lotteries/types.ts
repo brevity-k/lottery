@@ -81,6 +81,18 @@ export interface PairFrequency {
   percentage: number;
 }
 
+export interface TripletFrequency {
+  triplet: [number, number, number];
+  count: number;
+  percentage: number;
+}
+
+export interface QuadrupletFrequency {
+  quadruplet: [number, number, number, number];
+  count: number;
+  percentage: number;
+}
+
 export interface GapAnalysis {
   number: number;
   minGap: number;

@@ -1,8 +1,10 @@
 import { Metadata } from 'next';
 import { getAllLotteries } from '@/lib/lotteries/config';
-import { softwareAppSchema, breadcrumbSchema } from '@/lib/seo/structuredData';
+import { softwareAppSchema, breadcrumbSchema, faqSchema } from '@/lib/seo/structuredData';
+import { getOddsCalculatorFaqs } from '@/lib/seo/faqContent';
 import { SITE_NAME, SITE_URL } from '@/lib/utils/constants';
 import JsonLd from '@/components/seo/JsonLd';
+import FAQSection from '@/components/seo/FAQSection';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import Card from '@/components/ui/Card';
 
@@ -24,9 +26,11 @@ function combinations(n: number, r: number): number {
 
 export default function OddsCalculatorPage() {
   const lotteries = getAllLotteries();
+  const faqs = getOddsCalculatorFaqs();
 
   return (
     <>
+      <JsonLd data={faqSchema(faqs)} />
       <JsonLd data={softwareAppSchema({
         name: 'Lottery Odds Calculator',
         description: 'Calculate and compare lottery odds for US lotteries',
@@ -92,6 +96,8 @@ export default function OddsCalculatorPage() {
             </Card>
           );
         })}
+
+        <FAQSection faqs={faqs} />
       </div>
     </>
   );

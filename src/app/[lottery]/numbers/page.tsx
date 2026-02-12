@@ -3,14 +3,17 @@ import { getLottery, getAllLotterySlugs, strategies } from '@/lib/lotteries/conf
 import { loadLotteryData } from '@/lib/data/fetcher';
 import { generateRecommendations } from '@/lib/analysis/recommendations';
 import { generateLotteryMetadata } from '@/lib/seo/metadata';
-import { breadcrumbSchema } from '@/lib/seo/structuredData';
+import { breadcrumbSchema, faqSchema } from '@/lib/seo/structuredData';
+import { getNumbersPageFaqs } from '@/lib/seo/faqContent';
 import { SITE_URL, DISCLAIMER_TEXT } from '@/lib/utils/constants';
 import { StrategyType } from '@/lib/lotteries/types';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import NumberGenerator from '@/components/numbers/NumberGenerator';
 import RecommendedNumbers from '@/components/numbers/RecommendedNumbers';
 import JsonLd from '@/components/seo/JsonLd';
+import FAQSection from '@/components/seo/FAQSection';
 import Card from '@/components/ui/Card';
+import Link from 'next/link';
 
 export function generateStaticParams() {
   return getAllLotterySlugs().map(slug => ({ lottery: slug }));
@@ -45,6 +48,7 @@ export default async function NumbersPage({ params }: { params: Promise<{ lotter
         { name: lottery.name, url: `${SITE_URL}/${lottery.slug}` },
         { name: 'Number Insights', url: `${SITE_URL}/${lottery.slug}/numbers` },
       ])} />
+      <JsonLd data={faqSchema(getNumbersPageFaqs(lottery))} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Breadcrumbs items={[
@@ -105,6 +109,44 @@ export default async function NumbersPage({ params }: { params: Promise<{ lotter
             </div>
           </div>
         </Card>
+
+        {/* Explore Individual Numbers */}
+        <Card className="mb-8">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Explore Individual Numbers</h2>
+          <p className="text-sm text-gray-500 mb-4">Click any number to view detailed frequency analysis, hot/cold status, gap analysis, and recent appearances.</p>
+
+          <h3 className="text-sm font-semibold text-gray-700 mb-3">{lottery.mainNumbers.label} (1-{lottery.mainNumbers.max})</h3>
+          <div className="flex flex-wrap gap-1.5 mb-6">
+            {Array.from({ length: lottery.mainNumbers.max }, (_, i) => i + 1).map(n => (
+              <Link
+                key={n}
+                href={`/${slug}/numbers/main-${n}`}
+                className="w-9 h-9 rounded-full bg-white border-2 border-gray-300 inline-flex items-center justify-center text-xs font-bold text-gray-900 hover:border-blue-500 hover:bg-blue-50 transition-colors"
+              >
+                {n}
+              </Link>
+            ))}
+          </div>
+
+          {lottery.bonusNumber.count > 0 && (
+            <>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3">{lottery.bonusNumber.label} (1-{lottery.bonusNumber.max})</h3>
+              <div className="flex flex-wrap gap-1.5">
+                {Array.from({ length: lottery.bonusNumber.max }, (_, i) => i + 1).map(n => (
+                  <Link
+                    key={n}
+                    href={`/${slug}/numbers/bonus-${n}`}
+                    className="w-9 h-9 rounded-full bg-red-500 text-white inline-flex items-center justify-center text-xs font-bold hover:bg-red-600 transition-colors"
+                  >
+                    {n}
+                  </Link>
+                ))}
+              </div>
+            </>
+          )}
+        </Card>
+
+        <FAQSection faqs={getNumbersPageFaqs(lottery)} />
 
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 text-center">
           <p className="text-sm text-amber-800">{DISCLAIMER_TEXT}</p>

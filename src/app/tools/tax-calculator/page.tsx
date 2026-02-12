@@ -1,8 +1,10 @@
 import { Metadata } from 'next';
-import { softwareAppSchema, breadcrumbSchema } from '@/lib/seo/structuredData';
+import { softwareAppSchema, breadcrumbSchema, faqSchema } from '@/lib/seo/structuredData';
+import { getTaxCalculatorFaqs } from '@/lib/seo/faqContent';
 import { SITE_NAME, SITE_URL, DISCLAIMER_TEXT } from '@/lib/utils/constants';
 import TaxCalculator from '@/components/tools/TaxCalculator';
 import JsonLd from '@/components/seo/JsonLd';
+import FAQSection from '@/components/seo/FAQSection';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 
 export const metadata: Metadata = {
@@ -21,8 +23,11 @@ export const metadata: Metadata = {
 };
 
 export default function TaxCalculatorPage() {
+  const faqs = getTaxCalculatorFaqs();
+
   return (
     <>
+      <JsonLd data={faqSchema(faqs)} />
       <JsonLd data={softwareAppSchema({
         name: 'Lottery Tax Calculator',
         description: 'Calculate lottery winnings after federal and state taxes for all 50 US states',
@@ -67,6 +72,8 @@ export default function TaxCalculatorPage() {
               </p>
             </div>
           </div>
+
+          <FAQSection faqs={faqs} />
 
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 text-center">
             <p className="text-sm text-amber-800 mb-2">{DISCLAIMER_TEXT}</p>
