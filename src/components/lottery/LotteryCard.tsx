@@ -28,14 +28,19 @@ export default function LotteryCard({ lottery, latestDraw }: LotteryCardProps) {
               {latestDraw.numbers.map((num, i) => (
                 <LotteryBall key={i} number={num} type="main" color={lottery.colors.ball} />
               ))}
-              <LotteryBall number={latestDraw.bonusNumber} type="bonus" color={lottery.colors.bonusBall} />
+              {lottery.bonusNumber.count > 0 && (
+                <LotteryBall number={latestDraw.bonusNumber} type="bonus" color={lottery.colors.bonusBall} />
+              )}
             </div>
           </div>
         )}
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-gray-500">
-            {lottery.mainNumbers.count}/{lottery.mainNumbers.max} + {lottery.bonusNumber.count}/{lottery.bonusNumber.max}
+            {lottery.bonusNumber.count > 0
+              ? `${lottery.mainNumbers.count}/${lottery.mainNumbers.max} + ${lottery.bonusNumber.count}/${lottery.bonusNumber.max}`
+              : `${lottery.mainNumbers.count}/${lottery.mainNumbers.max}`
+            }
           </span>
           <span className="text-blue-600 font-medium group-hover:underline">View Details →</span>
         </div>

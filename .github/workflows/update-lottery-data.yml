@@ -7,6 +7,8 @@ on:
     #
     # Powerball draws: Mon, Wed, Sat → fetch Tue, Thu, Sun at 6 AM UTC
     # Mega Millions draws: Tue, Fri → fetch Wed, Sat at 6 AM UTC
+    # Cash4Life / Take 5: Daily
+    # NY Lotto: Wed, Sat
     #
     # Combined schedule (daily is simplest and ensures no misses):
     - cron: '0 6 * * *'    # Daily at 6 AM UTC (1 AM ET)
@@ -33,7 +35,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Fetch latest lottery data
+      - name: Fetch latest lottery data (all 5 games)
         run: npx tsx scripts/update-data.ts
 
       - name: Generate daily blog post

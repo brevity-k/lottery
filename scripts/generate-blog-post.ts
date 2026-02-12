@@ -22,6 +22,7 @@ interface DrawResult {
   numbers: number[];
   bonusNumber: number;
   multiplier?: number;
+  drawTime?: 'midday' | 'evening';
 }
 
 interface LotteryData {
@@ -49,13 +50,31 @@ interface BlogPost {
   content: string;
 }
 
+interface GameAnalysis {
+  name: string;
+  slug: string;
+  maxMain: number;
+  hasBonus: boolean;
+  latest: DrawResult;
+  last5: DrawResult[];
+  hot: NumberStat[];
+  cold: NumberStat[];
+  overdue: OverdueStat[];
+  pairs: { pair: string; count: number }[];
+  totalDraws: number;
+}
+
 // ---------------------------------------------------------------------------
 // Data loading
 // ---------------------------------------------------------------------------
 
-function loadLotteryData(slug: string): LotteryData {
+function loadLotteryData(slug: string): LotteryData | null {
   const filePath = path.join(process.cwd(), 'src', 'data', `${slug}.json`);
-  return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  } catch {
+    return null;
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -123,6 +142,18 @@ function getTopPairs(draws: DrawResult[], count: number): { pair: string; count:
 }
 
 // ---------------------------------------------------------------------------
+// Game configs (standalone, no imports)
+// ---------------------------------------------------------------------------
+
+const GAMES = [
+  { slug: 'powerball', name: 'Powerball', maxMain: 69, hasBonus: true, bonusLabel: 'PB' },
+  { slug: 'mega-millions', name: 'Mega Millions', maxMain: 70, hasBonus: true, bonusLabel: 'MB' },
+  { slug: 'cash4life', name: 'Cash4Life', maxMain: 60, hasBonus: true, bonusLabel: 'CB' },
+  { slug: 'ny-lotto', name: 'NY Lotto', maxMain: 59, hasBonus: true, bonusLabel: 'Bonus' },
+  { slug: 'take5', name: 'Take 5', maxMain: 39, hasBonus: false, bonusLabel: '' },
+];
+
+// ---------------------------------------------------------------------------
 // Existing post titles (to avoid duplicates)
 // ---------------------------------------------------------------------------
 
@@ -142,21 +173,59 @@ function getExistingTitles(): string[] {
 }
 
 // ---------------------------------------------------------------------------
-// Topic rotation (7 topics, one per day-of-week)
+// Topic rotation (14 topics, cycling through all games)
 // ---------------------------------------------------------------------------
 
 const TOPICS = [
-  'Recap and analysis of the latest Powerball Saturday draw results',
-  'Weekly hot and cold number trends across Powerball and Mega Millions',
-  'Analysis of the latest Powerball Monday draw and emerging patterns',
+  'Recap and analysis of the latest Powerball draw results',
+  'Weekly hot and cold number trends across all five lottery games',
   'Mega Millions draw analysis and statistical trends',
-  'Deep dive into overdue numbers that are statistically due',
+  'Cash4Life daily game spotlight: patterns and strategies',
+  'Deep dive into overdue numbers across all games that are statistically due',
   'Number pair spotlight: which combinations appear together most often',
-  'Mega Millions Friday draw recap and weekend lottery outlook',
+  'Mega Millions draw recap and weekend lottery outlook',
+  'NY Lotto analysis: frequency trends and number insights',
+  'Take 5 midday vs evening draw comparison and patterns',
+  'Lottery tax analysis: which states give you the best net payout',
+  'Multi-game comparison: Powerball vs Mega Millions vs Cash4Life odds',
+  'Statistical anomalies and interesting patterns in recent draws',
+  'State lottery spotlight: best states for lottery winners in terms of taxes',
+  'Lump sum vs annuity: what the numbers actually show for current jackpots',
 ] as const;
 
 function getTopicForToday(): string {
-  return TOPICS[new Date().getDay()];
+  const dayOfYear = Math.floor(
+    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
+  );
+  return TOPICS[dayOfYear % TOPICS.length];
+}
+
+// ---------------------------------------------------------------------------
+// Build analysis for a game
+// ---------------------------------------------------------------------------
+
+function buildGameAnalysis(slug: string, name: string, maxMain: number, hasBonus: boolean, bonusLabel: string): string | null {
+  const data = loadLotteryData(slug);
+  if (!data || data.draws.length === 0) return null;
+
+  const latest = data.draws[0];
+  const last5 = data.draws.slice(0, 5);
+  const hot = getHotNumbers(data.draws, maxMain, 10);
+  const cold = getColdNumbers(data.draws, maxMain, 10);
+  const overdue = getOverdueNumbers(data.draws, maxMain, 10);
+  const pairs = getTopPairs(data.draws, 5);
+
+  const bonusSuffix = hasBonus ? ` + ${bonusLabel} ${latest.bonusNumber}` : '';
+
+  return `=== ${name.toUpperCase()} DATA ===
+Latest draw (${latest.date}): ${latest.numbers.join(', ')}${bonusSuffix}
+Last 5 draws:
+${last5.map((d) => `  ${d.date}: ${d.numbers.join(', ')}${hasBonus ? ` + ${bonusLabel} ${d.bonusNumber}` : ''}`).join('\n')}
+Hot numbers (last 100 draws): ${hot.map((n) => `#${n.number}(${n.count}x)`).join(', ')}
+Cold numbers (last 100 draws): ${cold.map((n) => `#${n.number}(${n.count}x)`).join(', ')}
+Most overdue: ${overdue.map((n) => `#${n.number}(${n.drawsSince} draws)`).join(', ')}
+Top pairs (last 200 draws): ${pairs.map((p) => `[${p.pair}](${p.count}x)`).join(', ')}
+Total draws in database: ${data.draws.length}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -183,34 +252,19 @@ async function main() {
     }
   }
 
-  // Load lottery data
-  const pbData = loadLotteryData('powerball');
-  const mmData = loadLotteryData('mega-millions');
+  // Build analysis sections for all games
+  const gameSections = GAMES
+    .map(g => buildGameAnalysis(g.slug, g.name, g.maxMain, g.hasBonus, g.bonusLabel))
+    .filter(Boolean)
+    .join('\n\n');
 
-  // Build analysis context
-  const ctx = {
-    today,
-    topic: getTopicForToday(),
-    powerball: {
-      latest: pbData.draws[0],
-      last5: pbData.draws.slice(0, 5),
-      hot: getHotNumbers(pbData.draws, 69, 10),
-      cold: getColdNumbers(pbData.draws, 69, 10),
-      overdue: getOverdueNumbers(pbData.draws, 69, 10),
-      pairs: getTopPairs(pbData.draws, 5),
-      totalDraws: pbData.draws.length,
-    },
-    megaMillions: {
-      latest: mmData.draws[0],
-      last5: mmData.draws.slice(0, 5),
-      hot: getHotNumbers(mmData.draws, 70, 10),
-      cold: getColdNumbers(mmData.draws, 70, 10),
-      overdue: getOverdueNumbers(mmData.draws, 70, 10),
-      pairs: getTopPairs(mmData.draws, 5),
-      totalDraws: mmData.draws.length,
-    },
-    existingTitles: getExistingTitles().slice(-30),
-  };
+  if (!gameSections) {
+    console.log('No lottery data available – skipping blog generation.');
+    return;
+  }
+
+  const topic = getTopicForToday();
+  const existingTitles = getExistingTitles().slice(-30);
 
   // Build prompt
   const prompt = `You are a lottery statistics blogger for MyLottoStats.com, an SEO-optimized lottery information website.
@@ -226,43 +280,26 @@ RULES:
 - Make the title unique — do NOT reuse any title from the existing titles list
 - Use proper HTML tags: h2, h3, p, ul, li, ol, strong, em
 - Make it informative and interesting for lottery enthusiasts
+- Cover multiple games when relevant, not just Powerball and Mega Millions
 
-TODAY'S DATE: ${ctx.today}
-TOPIC FOCUS: ${ctx.topic}
+TODAY'S DATE: ${today}
+TOPIC FOCUS: ${topic}
 
-=== POWERBALL DATA ===
-Latest draw (${ctx.powerball.latest.date}): ${ctx.powerball.latest.numbers.join(', ')} + PB ${ctx.powerball.latest.bonusNumber}
-Last 5 draws:
-${ctx.powerball.last5.map((d) => `  ${d.date}: ${d.numbers.join(', ')} + PB ${d.bonusNumber}`).join('\n')}
-Hot numbers (last 100 draws): ${ctx.powerball.hot.map((n) => `#${n.number}(${n.count}x)`).join(', ')}
-Cold numbers (last 100 draws): ${ctx.powerball.cold.map((n) => `#${n.number}(${n.count}x)`).join(', ')}
-Most overdue: ${ctx.powerball.overdue.map((n) => `#${n.number}(${n.drawsSince} draws)`).join(', ')}
-Top pairs (last 200 draws): ${ctx.powerball.pairs.map((p) => `[${p.pair}](${p.count}x)`).join(', ')}
-Total draws in database: ${ctx.powerball.totalDraws}
-
-=== MEGA MILLIONS DATA ===
-Latest draw (${ctx.megaMillions.latest.date}): ${ctx.megaMillions.latest.numbers.join(', ')} + MB ${ctx.megaMillions.latest.bonusNumber}
-Last 5 draws:
-${ctx.megaMillions.last5.map((d) => `  ${d.date}: ${d.numbers.join(', ')} + MB ${d.bonusNumber}`).join('\n')}
-Hot numbers (last 100 draws): ${ctx.megaMillions.hot.map((n) => `#${n.number}(${n.count}x)`).join(', ')}
-Cold numbers (last 100 draws): ${ctx.megaMillions.cold.map((n) => `#${n.number}(${n.count}x)`).join(', ')}
-Most overdue: ${ctx.megaMillions.overdue.map((n) => `#${n.number}(${n.drawsSince} draws)`).join(', ')}
-Top pairs (last 200 draws): ${ctx.megaMillions.pairs.map((p) => `[${p.pair}](${p.count}x)`).join(', ')}
-Total draws in database: ${ctx.megaMillions.totalDraws}
+${gameSections}
 
 === EXISTING POST TITLES (do NOT reuse these) ===
-${ctx.existingTitles.map((t) => `- ${t}`).join('\n') || '(none yet)'}
+${existingTitles.map((t) => `- ${t}`).join('\n') || '(none yet)'}
 
 Respond with ONLY valid JSON (no markdown fences, no explanation) in this exact format:
 {
-  "slug": "lowercase-hyphenated-slug-including-date-${ctx.today}",
+  "slug": "lowercase-hyphenated-slug-including-date-${today}",
   "title": "Unique SEO Title Under 70 Characters",
   "description": "Meta description under 160 characters",
-  "category": "Draw Recap | Weekly Analysis | Statistics | Number Trends | Deep Dive",
+  "category": "Draw Recap | Weekly Analysis | Statistics | Number Trends | Deep Dive | Tax Analysis | Game Comparison",
   "content": "<h2>First Section</h2><p>Content...</p>"
 }`;
 
-  console.log(`Generating blog post for ${today} (topic: ${ctx.topic})...`);
+  console.log(`Generating blog post for ${today} (topic: ${topic})...`);
 
   const client = new Anthropic();
   const message = await client.messages.create({

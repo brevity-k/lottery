@@ -45,7 +45,10 @@ export default function NumberGeneratorPage() {
           <Card key={lottery.slug} className="mb-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4 text-center">{lottery.name}</h2>
             <p className="text-sm text-gray-500 text-center mb-4">
-              {lottery.mainNumbers.count} numbers from 1-{lottery.mainNumbers.max} + 1 {lottery.bonusNumber.label} from 1-{lottery.bonusNumber.max}
+              {lottery.bonusNumber.count > 0
+                ? `${lottery.mainNumbers.count} numbers from 1-${lottery.mainNumbers.max} + 1 ${lottery.bonusNumber.label} from 1-${lottery.bonusNumber.max}`
+                : `${lottery.mainNumbers.count} numbers from 1-${lottery.mainNumbers.max}`
+              }
             </p>
             <NumberGenerator config={lottery} />
           </Card>

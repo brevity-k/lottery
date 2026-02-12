@@ -14,16 +14,11 @@ export default function Header() {
           </Link>
 
           <nav className="hidden md:flex items-center space-x-6">
-            {lotteries.map(lottery => (
-              <Link
-                key={lottery.slug}
-                href={`/${lottery.slug}`}
-                className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors"
-              >
-                {lottery.name}
-              </Link>
-            ))}
+            <LotteriesDropdown lotteries={lotteries} />
             <ToolsDropdown />
+            <Link href="/states" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
+              States
+            </Link>
             <Link href="/blog" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
               Blog
             </Link>
@@ -39,6 +34,32 @@ export default function Header() {
   );
 }
 
+function LotteriesDropdown({ lotteries }: { lotteries: ReturnType<typeof getAllLotteries> }) {
+  return (
+    <div className="relative group">
+      <button className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-1">
+        Lotteries
+        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      <div className="absolute left-0 top-full pt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150">
+        <div className="bg-white rounded-lg shadow-lg border border-gray-200 py-2">
+          {lotteries.map(lottery => (
+            <Link
+              key={lottery.slug}
+              href={`/${lottery.slug}`}
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+            >
+              {lottery.name}
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ToolsDropdown() {
   return (
     <div className="relative group">
@@ -50,6 +71,9 @@ function ToolsDropdown() {
       </button>
       <div className="absolute left-0 top-full pt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150">
         <div className="bg-white rounded-lg shadow-lg border border-gray-200 py-2">
+          <Link href="/tools/tax-calculator" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+            Tax Calculator
+          </Link>
           <Link href="/tools/number-generator" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
             Number Generator
           </Link>
@@ -71,7 +95,8 @@ function MobileMenu({ lotteries }: { lotteries: ReturnType<typeof getAllLotterie
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </summary>
-        <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+        <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+          <span className="block px-4 py-1 text-xs font-semibold text-gray-400 uppercase">Lotteries</span>
           {lotteries.map(lottery => (
             <Link
               key={lottery.slug}
@@ -83,6 +108,9 @@ function MobileMenu({ lotteries }: { lotteries: ReturnType<typeof getAllLotterie
           ))}
           <div className="border-t border-gray-100 my-1" />
           <span className="block px-4 py-1 text-xs font-semibold text-gray-400 uppercase">Tools</span>
+          <Link href="/tools/tax-calculator" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+            Tax Calculator
+          </Link>
           <Link href="/tools/number-generator" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
             Number Generator
           </Link>
@@ -90,6 +118,9 @@ function MobileMenu({ lotteries }: { lotteries: ReturnType<typeof getAllLotterie
             Odds Calculator
           </Link>
           <div className="border-t border-gray-100 my-1" />
+          <Link href="/states" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+            States
+          </Link>
           <Link href="/blog" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
             Blog
           </Link>

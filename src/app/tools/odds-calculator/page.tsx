@@ -53,7 +53,8 @@ export default function OddsCalculatorPage() {
 
         {lotteries.map(lottery => {
           const mainCombs = combinations(lottery.mainNumbers.max, lottery.mainNumbers.count);
-          const bonusCombs = lottery.bonusNumber.max;
+          const hasBonus = lottery.bonusNumber.count > 0;
+          const bonusCombs = hasBonus ? lottery.bonusNumber.max : 1;
           const totalOdds = mainCombs * bonusCombs;
 
           return (
@@ -71,11 +72,13 @@ export default function OddsCalculatorPage() {
                 <p>
                   <strong>Main numbers:</strong> Choose {lottery.mainNumbers.count} from {lottery.mainNumbers.max} = {mainCombs.toLocaleString()} combinations
                 </p>
+                {hasBonus && (
+                  <p>
+                    <strong>{lottery.bonusNumber.label}:</strong> Choose 1 from {lottery.bonusNumber.max} = {bonusCombs} options
+                  </p>
+                )}
                 <p>
-                  <strong>{lottery.bonusNumber.label}:</strong> Choose 1 from {lottery.bonusNumber.max} = {bonusCombs} options
-                </p>
-                <p>
-                  <strong>Total combinations:</strong> {mainCombs.toLocaleString()} x {bonusCombs} = {totalOdds.toLocaleString()}
+                  <strong>Total combinations:</strong> {hasBonus ? `${mainCombs.toLocaleString()} x ${bonusCombs} = ` : ''}{totalOdds.toLocaleString()}
                 </p>
               </div>
 

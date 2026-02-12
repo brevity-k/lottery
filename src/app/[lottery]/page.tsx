@@ -74,7 +74,12 @@ export default async function LotteryPage({ params }: { params: Promise<{ lotter
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
               <p className="text-sm text-gray-500">Format</p>
-              <p className="font-semibold">{lottery.mainNumbers.count}/{lottery.mainNumbers.max} + {lottery.bonusNumber.count}/{lottery.bonusNumber.max}</p>
+              <p className="font-semibold">
+                {lottery.bonusNumber.count > 0
+                  ? `${lottery.mainNumbers.count}/${lottery.mainNumbers.max} + ${lottery.bonusNumber.count}/${lottery.bonusNumber.max}`
+                  : `${lottery.mainNumbers.count}/${lottery.mainNumbers.max}`
+                }
+              </p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Draw Days</p>

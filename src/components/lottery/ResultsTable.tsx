@@ -10,6 +10,9 @@ interface ResultsTableProps {
 
 export default function ResultsTable({ draws, config, limit }: ResultsTableProps) {
   const displayDraws = limit ? draws.slice(0, limit) : draws;
+  const hasBonus = config.bonusNumber.count > 0;
+  const hasMultiplier = !!config.dataSource.fields.multiplier;
+  const hasDrawTime = displayDraws.some(d => d.drawTime);
 
   return (
     <div className="overflow-x-auto">
@@ -17,17 +20,25 @@ export default function ResultsTable({ draws, config, limit }: ResultsTableProps
         <thead>
           <tr className="border-b border-gray-200">
             <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Date</th>
+            {hasDrawTime && (
+              <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Draw</th>
+            )}
             <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">{config.mainNumbers.label}</th>
-            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">{config.bonusNumber.label}</th>
-            {config.dataSource.fields.multiplier && (
+            {hasBonus && (
+              <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">{config.bonusNumber.label}</th>
+            )}
+            {hasMultiplier && (
               <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Multiplier</th>
             )}
           </tr>
         </thead>
         <tbody>
           {displayDraws.map((draw, index) => (
-            <tr key={draw.date + index} className="border-b border-gray-100 hover:bg-gray-50">
+            <tr key={draw.date + (draw.drawTime || '') + index} className="border-b border-gray-100 hover:bg-gray-50">
               <td className="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">{formatDate(draw.date)}</td>
+              {hasDrawTime && (
+                <td className="py-3 px-4 text-xs text-gray-500 capitalize">{draw.drawTime || '-'}</td>
+              )}
               <td className="py-3 px-4">
                 <div className="flex gap-1.5">
                   {draw.numbers.map((num, i) => (
@@ -35,10 +46,12 @@ export default function ResultsTable({ draws, config, limit }: ResultsTableProps
                   ))}
                 </div>
               </td>
-              <td className="py-3 px-4">
-                <LotteryBall number={draw.bonusNumber} type="bonus" size="sm" />
-              </td>
-              {config.dataSource.fields.multiplier && (
+              {hasBonus && (
+                <td className="py-3 px-4">
+                  <LotteryBall number={draw.bonusNumber} type="bonus" size="sm" />
+                </td>
+              )}
+              {hasMultiplier && (
                 <td className="py-3 px-4 text-sm text-gray-700">{draw.multiplier ? `${draw.multiplier}x` : '-'}</td>
               )}
             </tr>

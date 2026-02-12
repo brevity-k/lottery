@@ -8,6 +8,8 @@ interface RecommendedNumbersProps {
 }
 
 export default function RecommendedNumbers({ sets, config }: RecommendedNumbersProps) {
+  const hasBonus = config.bonusNumber.count > 0;
+
   return (
     <div className="space-y-4">
       {sets.map((set, index) => (
@@ -23,8 +25,12 @@ export default function RecommendedNumbers({ sets, config }: RecommendedNumbersP
             {set.numbers.map((num, i) => (
               <LotteryBall key={i} number={num} type="main" size="md" />
             ))}
-            <span className="text-gray-300 mx-1">+</span>
-            <LotteryBall number={set.bonusNumber} type="bonus" size="md" />
+            {hasBonus && (
+              <>
+                <span className="text-gray-300 mx-1">+</span>
+                <LotteryBall number={set.bonusNumber} type="bonus" size="md" />
+              </>
+            )}
           </div>
 
           <div className="border-t border-gray-100 pt-3">
