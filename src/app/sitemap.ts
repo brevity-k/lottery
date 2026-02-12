@@ -22,6 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/tools/number-generator`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/tools/odds-calculator`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/tools/tax-calculator`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${SITE_URL}/tools/ticket-checker`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/contact`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${SITE_URL}/states`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
   ];
@@ -47,5 +48,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...lotteryPages, ...blogPages, ...statePages];
+  const numberPages: MetadataRoute.Sitemap = lotteries.flatMap(lottery => {
+    const mainPages = Array.from({ length: lottery.mainNumbers.max }, (_, i) => ({
+      url: `${SITE_URL}/${lottery.slug}/numbers/main-${i + 1}`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    }));
+    const bonusPages = lottery.bonusNumber.count > 0
+      ? Array.from({ length: lottery.bonusNumber.max }, (_, i) => ({
+          url: `${SITE_URL}/${lottery.slug}/numbers/bonus-${i + 1}`,
+          lastModified: now,
+          changeFrequency: 'weekly' as const,
+          priority: 0.5,
+        }))
+      : [];
+    return [...mainPages, ...bonusPages];
+  });
+
+  return [...staticPages, ...lotteryPages, ...numberPages, ...blogPages, ...statePages];
 }

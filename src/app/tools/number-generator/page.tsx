@@ -1,9 +1,11 @@
 import { Metadata } from 'next';
 import { getAllLotteries } from '@/lib/lotteries/config';
-import { softwareAppSchema, breadcrumbSchema } from '@/lib/seo/structuredData';
+import { softwareAppSchema, breadcrumbSchema, faqSchema } from '@/lib/seo/structuredData';
+import { getNumberGeneratorFaqs } from '@/lib/seo/faqContent';
 import { SITE_NAME, SITE_URL } from '@/lib/utils/constants';
 import NumberGenerator from '@/components/numbers/NumberGenerator';
 import JsonLd from '@/components/seo/JsonLd';
+import FAQSection from '@/components/seo/FAQSection';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import Card from '@/components/ui/Card';
 
@@ -14,9 +16,11 @@ export const metadata: Metadata = {
 
 export default function NumberGeneratorPage() {
   const lotteries = getAllLotteries();
+  const faqs = getNumberGeneratorFaqs();
 
   return (
     <>
+      <JsonLd data={faqSchema(faqs)} />
       <JsonLd data={softwareAppSchema({
         name: 'Lottery Number Generator',
         description: 'Generate cryptographically secure random lottery numbers',
@@ -68,6 +72,8 @@ export default function NumberGeneratorPage() {
             </p>
           </div>
         </Card>
+
+        <FAQSection faqs={faqs} />
       </div>
     </>
   );

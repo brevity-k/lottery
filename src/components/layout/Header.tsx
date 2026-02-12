@@ -80,6 +80,9 @@ function ToolsDropdown() {
           <Link href="/tools/odds-calculator" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
             Odds Calculator
           </Link>
+          <Link href="/tools/ticket-checker" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+            Ticket Checker
+          </Link>
         </div>
       </div>
     </div>
@@ -116,6 +119,9 @@ function MobileMenu({ lotteries }: { lotteries: ReturnType<typeof getAllLotterie
           </Link>
           <Link href="/tools/odds-calculator" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
             Odds Calculator
+          </Link>
+          <Link href="/tools/ticket-checker" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+            Ticket Checker
           </Link>
           <div className="border-t border-gray-100 my-1" />
           <Link href="/states" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
