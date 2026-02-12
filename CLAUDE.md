@@ -10,6 +10,7 @@ My Lotto Stats is a free, SEO-optimized lottery information website that provide
 **Hosting:** Vercel (auto-deploys on push)
 **Google Analytics:** G-5TW1TM399X
 **Google Search Console:** Verified + sitemap submitted
+**Current page count:** 173 static pages + 1 serverless API route
 
 ---
 
@@ -17,9 +18,11 @@ My Lotto Stats is a free, SEO-optimized lottery information website that provide
 
 ```
 [Build Time]  SODA API JSON files ──> Next.js SSG ──> Static HTML ──> Vercel CDN
-[Runtime]     Client-side: number generator, chart interactions
+[Runtime]     Client-side: number generator, tax calculator, chart interactions
 [Runtime]     Serverless: /api/contact (Resend email)
-[Daily Cron]  GitHub Action fetches latest data + generates blog ──> git push ──> Vercel rebuild
+[Daily Cron]  GitHub Action fetches 5 lottery datasets + generates blog ──> git push ──> Vercel rebuild
+[Weekly Cron] GitHub Action checks for new SODA datasets ──> creates GitHub Issue if found
+[Quarterly]   GitHub Action auto-updates state tax rates via Claude API
 ```
 
 | Layer | Technology |
@@ -29,11 +32,30 @@ My Lotto Stats is a free, SEO-optimized lottery information website that provide
 | Styling | Tailwind CSS v4 |
 | Charts | Recharts 3 |
 | Email | Resend (contact form auto-reply) |
-| Data source | NY Open Data SODA API (free, no key) |
+| Data source | NY Open Data SODA API (free, no key) — 5 games |
 | Data storage | JSON files in `src/data/` |
-| Blog generation | Claude Haiku via Anthropic API (daily, automated) |
+| State tax data | TypeScript file in `src/data/state-tax-rates.ts` |
+| Blog generation | Claude Haiku via Anthropic API (daily, automated, 14-topic rotation) |
 | Hosting | Vercel free tier |
 | DNS | Porkbun → Vercel (A: 76.76.21.21, CNAME: cname.vercel-dns.com) |
+
+---
+
+## Lottery Games Supported
+
+| Game | Slug | Format | Bonus | Draw Schedule | SODA Dataset ID | Data Since |
+|---|---|---|---|---|---|---|
+| Powerball | `powerball` | 5/69 + 1/26 | Powerball | Mon, Wed, Sat 10:59 PM ET | `d6yy-54nr` | 2010 |
+| Mega Millions | `mega-millions` | 5/70 + 1/24 | Mega Ball | Tue, Fri 11:00 PM ET | `5xaw-6ayf` | 2002 |
+| Cash4Life | `cash4life` | 5/60 + 1/4 | Cash Ball | Daily 9:00 PM ET | `kwxv-fwze` | 2014 |
+| NY Lotto | `ny-lotto` | 6/59 + 1/59 | Bonus | Wed, Sat 8:15 PM ET | `6nbc-h7bj` | 2001 |
+| Take 5 | `take5` | 5/39 | None | Daily 2:30 PM & 10:30 PM ET | `dg63-4siq` | 2001 |
+
+**Notes:**
+- Take 5 has **no bonus number** (`bonusNumber.count === 0`). All UI, analysis, and recommendation code handles this.
+- Take 5 has **two draws per day** (midday/evening). Data is stored with `drawTime: 'midday' | 'evening'`.
+- Cash4Life is **retiring Feb 21, 2026**. Historical data remains valuable.
+- **Millionaire for Life** launches Feb 22, 2026 replacing Cash4Life + Lucky for Life. SODA endpoint expected soon — the weekly `check-new-datasets.ts` script will auto-detect it.
 
 ---
 
@@ -45,17 +67,21 @@ rottery/
 │   ├── app/
 │   │   ├── layout.tsx                # Root layout (Header + Footer + GA + Search Console)
 │   │   ├── page.tsx                  # Homepage: lottery grid + hero
-│   │   ├── sitemap.ts               # Dynamic sitemap
+│   │   ├── sitemap.ts               # Dynamic sitemap (lotteries + blog + states + tools)
 │   │   ├── robots.ts                # robots.txt generator
-│   │   ├── [lottery]/               # /powerball, /mega-millions
+│   │   ├── [lottery]/               # /powerball, /mega-millions, /cash4life, /ny-lotto, /take5
 │   │   │   ├── page.tsx             # Lottery overview + latest results + FAQ
 │   │   │   ├── numbers/page.tsx     # Recommendations + random generator
 │   │   │   ├── results/page.tsx     # Full results history
-│   │   │   ├── results/[year]/      # Results by year (2002-2026)
+│   │   │   ├── results/[year]/      # Results by year (2001-2026)
 │   │   │   └── statistics/page.tsx  # Frequency charts, hot/cold, overdue, pairs
+│   │   ├── states/                  # State lottery hubs
+│   │   │   ├── page.tsx             # States index (10 states)
+│   │   │   └── [state]/page.tsx     # Individual state hub (tax, games, claims, FAQ)
 │   │   ├── api/contact/route.ts     # Serverless: Resend email API
 │   │   ├── contact/page.tsx         # Contact form page
 │   │   ├── tools/
+│   │   │   ├── tax-calculator/      # Federal + state tax calculator, lump sum vs annuity
 │   │   │   ├── number-generator/    # Crypto-random number generator
 │   │   │   └── odds-calculator/     # Lottery odds breakdown
 │   │   ├── blog/                    # Blog index + article pages
@@ -65,28 +91,40 @@ rottery/
 │   │   ├── terms/page.tsx           # Required for AdSense
 │   │   └── disclaimer/page.tsx      # Required for AdSense
 │   ├── components/
-│   │   ├── layout/    Header, Footer, Breadcrumbs
-│   │   ├── lottery/   LotteryCard, LotteryBall, ResultsTable, JackpotDisplay
-│   │   ├── numbers/   NumberGenerator, HotColdChart, RecommendedNumbers
+│   │   ├── layout/    Header (Lotteries/Tools dropdowns + States), Footer, Breadcrumbs
+│   │   ├── lottery/   LotteryCard, LotteryBall, ResultsTable (handles no-bonus + drawTime)
+│   │   ├── numbers/   NumberGenerator (handles no-bonus), HotColdChart, RecommendedNumbers
+│   │   ├── tools/     TaxCalculator (client component)
 │   │   ├── contact/   ContactForm (client component)
 │   │   ├── ads/       AdUnit (placeholder, renders when ADSENSE_CLIENT_ID set)
 │   │   ├── seo/       JsonLd
 │   │   └── ui/        Button, Card, Tabs
 │   ├── lib/
-│   │   ├── lotteries/ config.ts (lottery definitions), types.ts
-│   │   ├── data/      fetcher.ts (SODA API + JSON loader), parser.ts
-│   │   ├── analysis/  frequency, hotCold, overdue, gaps, pairs, recommendations
-│   │   ├── seo/       metadata.ts, structuredData.ts (JSON-LD schemas)
+│   │   ├── lotteries/ config.ts (5 lottery definitions), types.ts (supports optional bonus, drawsPerDay, drawTime)
+│   │   ├── states/    config.ts (10 state configs with tax, games, claims, facts)
+│   │   ├── data/      fetcher.ts (SODA API + JSON loader), parser.ts (handles all game formats)
+│   │   ├── analysis/  frequency, hotCold, overdue, gaps, pairs, recommendations (handles no-bonus)
+│   │   ├── seo/       metadata.ts, structuredData.ts (JSON-LD schemas, game-specific FAQs)
 │   │   ├── blog.ts    Static blog post content + getters
 │   │   └── utils/     formatters.ts, constants.ts
 │   └── data/
-│       ├── powerball.json           # ~1,900 draws (2010-02-03 to present)
-│       └── mega-millions.json       # ~2,474 draws (2002-05-17 to present)
+│       ├── powerball.json           # ~1,900 draws (2010 to present)
+│       ├── mega-millions.json       # ~2,475 draws (2002 to present)
+│       ├── cash4life.json           # ~2,938 draws (2014 to present)
+│       ├── ny-lotto.json            # ~2,547 draws (2001 to present)
+│       ├── take5.json               # ~12,174 draws (2001 to present, 2x/day)
+│       └── state-tax-rates.ts       # All 50 states + DC tax data (auto-updated quarterly)
 ├── scripts/
-│   ├── update-data.ts               # SODA API fetcher (run via `npx tsx`)
-│   └── generate-blog-post.ts        # Claude-powered daily blog generation
+│   ├── lib/
+│   │   ├── retry.ts                 # Shared retry utility with exponential backoff
+│   │   └── constants.ts             # Shared constants (CLAUDE_MODEL, etc.)
+│   ├── update-data.ts               # SODA API fetcher for all 5 games + validation + stale detection
+│   ├── generate-blog-post.ts        # Claude-powered daily blog (14-topic rotation, 5 games)
+│   ├── check-new-datasets.ts        # Auto-detect new SODA lottery datasets (weekly)
+│   └── update-tax-rates.ts          # Auto-update state tax rates via Claude API (quarterly)
 ├── .github/workflows/
-│   └── update-lottery-data.yml      # Daily cron at 6 AM UTC
+│   ├── update-lottery-data.yml      # Daily cron at 6 AM UTC (data + blog)
+│   └── weekly-maintenance.yml       # Weekly: new datasets check, quarterly: tax rate update
 ├── content/blog/                    # Auto-generated daily blog posts (JSON)
 ├── public/
 │   └── ads.txt                      # AdSense placeholder
@@ -100,12 +138,14 @@ rottery/
 ```bash
 # Development
 npm run dev                    # Start dev server (http://localhost:3000)
-npm run build                  # Build for production
+npm run build                  # Build for production (~173 pages)
 npm run start                  # Serve production build
 
 # Data updates
-npx tsx scripts/update-data.ts          # Fetch latest draws from SODA API
-npx tsx scripts/generate-blog-post.ts   # Generate daily blog post (needs ANTHROPIC_API_KEY)
+npx tsx scripts/update-data.ts              # Fetch all 5 games from SODA API
+npx tsx scripts/generate-blog-post.ts       # Generate daily blog post (needs ANTHROPIC_API_KEY)
+npx tsx scripts/check-new-datasets.ts       # Check for new SODA lottery datasets
+npx tsx scripts/update-tax-rates.ts         # Update state tax rates via Claude (needs ANTHROPIC_API_KEY)
 
 # Lint
 npm run lint                   # ESLint check
@@ -118,8 +158,68 @@ npm run lint                   # ESLint check
 | Variable | Required | Where Set | Description |
 |---|---|---|---|
 | `RESEND_API_KEY` | Yes | Vercel + `.env.local` | Resend API key for contact form emails |
-| `ANTHROPIC_API_KEY` | No | GitHub Secrets | For auto blog generation in GitHub Actions |
+| `ANTHROPIC_API_KEY` | No | GitHub Secrets | For auto blog generation + tax rate updates |
 | `NEXT_PUBLIC_ADSENSE_CLIENT_ID` | No (Phase 2) | Vercel | Google AdSense publisher ID |
+| `GITHUB_TOKEN` | Auto | GitHub Actions | Used by check-new-datasets.ts to create issues |
+
+---
+
+## Automation & Self-Sufficiency
+
+The site is designed to run itself with minimal manual intervention.
+
+### Daily Automation (6 AM UTC)
+1. Fetch all 5 lottery datasets from SODA API (with retry: 3 attempts, exponential backoff)
+2. Validate data: range checks, schedule validation, duplicate detection, record count guard
+3. Check for stale data: per-game staleness thresholds (PB/MM: 4 days, C4L/T5: 3 days, NYL: 5 days)
+4. Generate blog post via Claude Haiku (14-topic rotation covering all 5 games + tax/state topics, with retry)
+5. Build verification before commit
+6. Auto-commit + push → Vercel auto-deploys
+7. On failure: auto-creates GitHub Issue with `automation-failure` label (deduplicates with existing issues)
+8. On stale data: writes `.stale-warning` marker → workflow creates GitHub Issue
+
+### Weekly Automation (Monday 8 AM UTC)
+- Scan `data.ny.gov` SODA catalog for new lottery-related datasets (12 search terms, with retry)
+- Compare against known dataset IDs (5 games)
+- Auto-create GitHub Issue if new datasets found (e.g., Millionaire for Life)
+- On failure: auto-creates GitHub Issue with `automation-failure` label
+
+### Quarterly Automation (Jan, Apr, Jul, Oct)
+- Use Claude API to verify/update state tax rates against current data (with retry)
+- Sanity bounds: reject rates > 15% or changes > 3 percentage points (catches hallucinations)
+- Line-based file editing (safer than regex)
+- Auto-commit changes if rates have changed
+- On failure: auto-creates GitHub Issue with `automation-failure` label
+
+### Data Validation (in `update-data.ts`)
+- **Range validation:** Every number checked against game's max values
+- **Schedule validation:** Draw dates verified against expected days of week
+- **Duplicate detection:** Flags duplicate draw dates
+- **Record count guard:** Never overwrites if new data has fewer records (prevents data loss)
+- **Stale data detection:** Per-game staleness thresholds; writes `.stale-warning` marker file (gitignored)
+- **Retired game handling:** Games with `retiredDate` (e.g., Cash4Life 2026-02-21) skip stale checks after retirement
+- **Anomaly warnings:** Logged to console, included in CI output
+
+### Retry Logic (in `scripts/lib/retry.ts`)
+All API calls use `withRetry()` with exponential backoff:
+- **SODA API fetches:** 3 attempts, 2s base delay
+- **Claude API calls:** 2 attempts, 3s base delay
+- **SODA catalog searches:** 2 attempts, 1s base delay
+
+### Failure Notifications
+All GitHub Actions workflows create Issues on failure:
+- **Label:** `automation-failure` — used for deduplication (comment on existing open issue instead of creating duplicates)
+- **Stale data:** Separate `[Auto] Stale lottery data detected` issue with warning details
+- **Workflow failures:** `[Auto] update-lottery-data failed`, `[Auto] check-new-datasets failed`, `[Auto] quarterly-tax-update failed`
+
+### Self-Corrective Behaviors
+- Build verification before any automated commit (broken builds don't get pushed)
+- New game detection auto-creates actionable GitHub Issues
+- Tax rates auto-verified quarterly with sanity bounds (rejects hallucinated rates)
+- Blog topics cycle through 14 variations to prevent repetition
+- Stale data detection alerts before data goes too stale
+- Retry logic prevents transient API failures from breaking the pipeline
+- All failure notifications are deduplicated to prevent issue spam
 
 ---
 
@@ -140,9 +240,9 @@ npm run lint                   # ESLint check
 
 | Feature | Competitors | My Lotto Stats | Priority |
 |---|---|---|---|
-| Multi-state game results | 240+ games | 2 games | HIGH |
-| State lottery hubs (50 states) | All majors have it | None | HIGH |
-| Tax/payout calculator | USAMega, LotteryUSA, Powerball.net | None | HIGH |
+| Multi-state game results | 240+ games | 5 games | DONE (Phase 2) |
+| State lottery hubs (50 states) | All majors have it | 10 states | DONE (Phase 2, expand Phase 3) |
+| Tax/payout calculator | USAMega, LotteryUSA, Powerball.net | All 50 states + DC | DONE (Phase 2) |
 | Ticket/number checker | LotteryUSA, Powerball.net, LotteryValley | None | MEDIUM |
 | Per-number analysis pages | Powerball.net, LottoNumbers | None | MEDIUM |
 | Triplet/quadruplet analysis | LottoNumbers, Powerball.net | None | MEDIUM |
@@ -156,8 +256,11 @@ npm run lint                   # ESLint check
 2. **Modern tech stack** — Next.js 16, Tailwind v4, clean responsive UI
 3. **AI-powered analysis branding** — unique positioning vs. competitors
 4. **Multi-strategy recommendation engine** — most competitors lack this
-5. **Automated daily blog generation** — builds content and SEO authority automatically
+5. **Automated daily blog generation** — builds content and SEO authority automatically (14 topics, 5 games)
 6. **Full SEO infrastructure** — JSON-LD, sitemap, robots, per-page metadata
+7. **Self-sufficient automation** — daily data, weekly monitoring, quarterly tax updates, all zero-touch
+8. **Tax calculator** — covers all 50 states + DC with local taxes (NYC, Yonkers, Baltimore)
+9. **State hubs** — 10 state pages with game availability, tax info, claim procedures
 
 ---
 
@@ -172,30 +275,37 @@ npm run lint                   # ESLint check
 - "overdue powerball numbers"
 - "mega millions statistics"
 - "powerball number pairs"
+- "cash4life winning numbers"
+- "ny lotto results"
+- "take 5 winning numbers"
 
-**Tier 2 — Educational/guide content:**
-- "how to pick powerball numbers statistically"
-- "powerball vs mega millions which is better"
-- "how does power play work"
-- "powerball odds of winning each prize"
-
-**Tier 3 — Tool-based traffic:**
+**Tier 2 — Tool-based traffic (NEW — high-intent):**
+- "lottery tax calculator by state"
+- "powerball after tax calculator"
+- "mega millions lump sum calculator"
+- "lottery winnings tax by state"
 - "powerball number generator"
 - "lottery probability calculator"
-- "mega millions tax calculator by state"
-- "check my powerball numbers"
 
-**Tier 4 — State-specific long tail (future):**
-- "powerball winners in [state]"
+**Tier 3 — State-specific (NEW — long tail):**
+- "california lottery tax rate"
+- "new york lottery tax calculator"
+- "florida lottery no tax"
+- "texas lottery winnings tax"
 - "lottery tax rate [state]"
-- "mega millions results [state]"
+
+**Tier 4 — Educational/guide content:**
+- "how to pick powerball numbers statistically"
+- "powerball vs mega millions which is better"
+- "lump sum vs annuity lottery"
+- "how does power play work"
 
 ### SEO Best Practices
 
 - **Intent-first title tags:** "Powerball Results Today [Date] | Winning Numbers & Statistics" (not brand-first)
 - **Featured snippet optimization:** Answer queries in 40-60 words directly after H2 headings
 - **Table snippets:** Clean HTML tables for odds, prize charts (Google pulls these)
-- **FAQ schema:** FAQPage JSON-LD on every game overview page with 8-10 high-search-volume questions
+- **FAQ schema:** FAQPage JSON-LD on every game overview page and state hub page
 - **Internal linking:** Every results page links to statistics, numbers, and blog posts
 - **Content freshness:** Results updated daily via GitHub Actions; timestamp displayed on pages
 
@@ -203,38 +313,39 @@ npm run lint                   # ESLint check
 
 This site falls under **YMYL (Your Money Your Life)** — Google applies higher standards:
 
-- **Experience:** Show real calculations, methodology transparency, interactive tools
+- **Experience:** Show real calculations, methodology transparency, interactive tools (tax calculator)
 - **Expertise:** Cite data sources, mathematical rigor, never claim "prediction"
-- **Authoritativeness:** Comprehensive coverage, regular publishing, linkable data visualizations
-- **Trustworthiness:** Legal pages, disclaimers, "verify with official lottery" language, responsible gambling messaging
+- **Authoritativeness:** Comprehensive coverage (5 games, 10 states), regular publishing, linkable data visualizations
+- **Trustworthiness:** Legal pages, disclaimers, "verify with official lottery" language, responsible gambling messaging (helpline in footer)
 
 ---
 
 ## Data Validation & Credibility
 
-### Current Data Source
+### Current Data Sources
 
 NY Open Data SODA API (government source):
-- Powerball: `data.ny.gov/resource/d6yy-54nr.json`
-- Mega Millions: `data.ny.gov/resource/5xaw-6ayf.json`
 
-### Required Validation Rules
+| Game | API Endpoint | Dataset ID |
+|---|---|---|
+| Powerball | `data.ny.gov/resource/d6yy-54nr.json` | `d6yy-54nr` |
+| Mega Millions | `data.ny.gov/resource/5xaw-6ayf.json` | `5xaw-6ayf` |
+| Cash4Life | `data.ny.gov/resource/kwxv-fwze.json` | `kwxv-fwze` |
+| NY Lotto | `data.ny.gov/resource/6nbc-h7bj.json` | `6nbc-h7bj` |
+| Take 5 | `data.ny.gov/resource/dg63-4siq.json` | `dg63-4siq` |
 
-**Structural validation (automated in update script):**
-- Number ranges match game format (1-69 main, 1-26 bonus for Powerball; 1-70 main, 1-24 bonus for Mega Millions)
-- Correct number of balls per draw (5 main + 1 bonus)
-- Draw dates align with expected schedule (Mon/Wed/Sat for PB, Tue/Fri for MM)
-- No duplicate draw dates
-- Record count never decreases between updates
+### Automated Validation Rules (in `scripts/update-data.ts`)
 
-**Temporal validation:**
-- Draws appear in chronological order
-- No missing draw dates (gaps in expected schedule)
-- No future-dated draws
+**Structural validation:**
+- Number ranges match game config (e.g., 1-69 main, 1-26 bonus for Powerball)
+- Draw dates align with expected schedule per game
+- No duplicate draw dates (or draw date + drawTime for Take 5)
+- Record count never decreases between updates (prevents data loss)
 
-**Cross-referencing (recommended for Phase 2):**
-- Validate against a secondary source (official lottery website or second API)
-- Flag discrepancies for manual review before publishing
+**Known historical anomalies (expected warnings):**
+- Powerball bonus range was 1-35 before Oct 2015, changed to 1-26 (old draws trigger range warnings)
+- Mega Millions bonus range was 1-25 before April 2025, changed to 1-24
+- These are historical format changes, not data errors
 
 ### Required Disclaimers
 
@@ -245,7 +356,7 @@ Every results page and analysis page must include:
 4. **Entertainment only:** All analysis is for informational and entertainment purposes
 5. **No prediction claims:** Statistical analysis examines historical patterns but does not predict future outcomes
 6. **Data source attribution:** "Results sourced from NY Open Data (data.ny.gov)"
-7. **Responsible gambling:** National Council on Problem Gambling helpline: 1-800-522-4700
+7. **Responsible gambling:** National Council on Problem Gambling helpline: 1-800-522-4700 (in footer)
 
 ### Format Change Monitoring
 
@@ -253,6 +364,7 @@ Lottery game formats change every 3-8 years. The April 2025 Mega Millions overha
 
 **Monitoring approach:**
 - Automated range anomaly detection in update script
+- Weekly `check-new-datasets.ts` scans SODA catalog for new games
 - Google Alerts for "Powerball rule change" and "Mega Millions rule change"
 - Quarterly manual fact-check against official lottery websites
 - Document all verified facts in this file (see Verified Information section below)
@@ -277,36 +389,42 @@ Lottery game formats change every 3-8 years. The April 2025 Mega Millions overha
 - [x] Custom domain (mylottostats.com via Porkbun)
 - [x] Vercel deployment with auto-deploy on push
 
-### Phase 2: High-Impact Content Expansion (Target: 300+ pages)
+### Phase 2 Priority 1: High-Impact Expansion (COMPLETE — 173 pages)
+- [x] **Tax/payout calculator** — all 50 states + DC, lump sum vs annuity, local taxes (NYC/Yonkers/Baltimore)
+- [x] **3 additional games** — Cash4Life, NY Lotto, Take 5 (each with overview, numbers, results, statistics, year archives)
+- [x] **Top 10 state lottery hubs** — CA, TX, FL, NY, PA, OH, IL, MI, GA, NC (tax info, games, claims, FAQ)
+- [x] **No-bonus game support** — Take 5 (bonusNumber.count === 0) handled across all layers
+- [x] **Midday/evening draw support** — Take 5's twice-daily draws with drawTime field
+- [x] **Data validation** — range, schedule, duplicate, record count guards in update script
+- [x] **Enhanced blog generator** — 14-topic rotation, all 5 games, tax/state topics
+- [x] **Auto-detect new SODA datasets** — weekly GitHub Actions + auto-creates Issues
+- [x] **Auto-update tax rates** — quarterly via Claude API
+- [x] **Responsible gambling** — helpline in footer, NCPG link
+- [x] **Navigation overhaul** — Lotteries dropdown, Tools dropdown (Tax Calculator first), States link
 
-**Priority 1 — Highest traffic impact:**
-- [ ] **Tax/payout calculator tool** — federal + state tax by state, lump sum vs annuity comparison (captures "mega millions after tax" queries — one of the highest-intent keywords)
-- [ ] **3 additional multi-state games** — Lucky for Life, Cash4Life, Lotto America (each adds overview, results, statistics, numbers, year archives = ~25 pages per game)
-- [ ] **Top 10 state lottery hubs** — CA, TX, FL, NY, PA, OH, IL, MI, GA, NC (each state page: available games, tax rates, claim procedures, where to buy = 10+ pages)
-
-**Priority 2 — SEO authority building:**
-- [ ] **Per-number analysis pages** — individual pages for each number (1-69 main + 1-26 bonus for Powerball = 95 pages; similar for MM). Each shows: frequency, last drawn, avg gap, most paired with
-- [ ] **Ticket/number checker tool** — user enters numbers + draw date, system checks against historical data (drives repeat visits)
+### Phase 2 Priority 2: SEO Authority Building
+- [ ] **Per-number analysis pages** — individual pages for each number (1-69 main + 1-26 bonus for Powerball = 95 pages; similar for other games)
+- [ ] **Ticket/number checker tool** — user enters numbers + draw date, checks against historical data
 - [ ] **Triplet analysis** — expand pair analysis to triplets and quadruplets
 - [ ] **FAQ sections on all pages** — structured FAQPage schema for featured snippet eligibility
 
-**Priority 3 — Content depth:**
-- [ ] **20+ manual quality blog posts** targeting long-tail keywords: "powerball vs mega millions odds comparison", "lottery tax by state guide", "biggest lottery winners 2026"
+### Phase 2 Priority 3: Content Depth
+- [ ] **20+ manual quality blog posts** targeting long-tail keywords
 - [ ] **Jackpot tracker/history page** — current + historical jackpots with progression charts
-- [ ] **Enhanced disclaimer page** — add unofficial status, discrepancy clause, data source attribution, responsible gambling helpline
+- [ ] **Enhanced disclaimer page** — full unofficial status, discrepancy clause, data source attribution
 - [ ] **Methodology page** — explain how statistical analyses are calculated (E-E-A-T signal)
 
-**Priority 4 — SEO optimization:**
+### Phase 2 Priority 4: SEO Optimization
 - [ ] **Intent-first title tags** on all pages
 - [ ] **"Last updated" timestamps** displayed on all results/statistics pages
 - [ ] **"Verify with official lottery" links** on every results table
-- [ ] **Responsible gambling notice** in site footer
 - [ ] **Increase internal linking** between results, statistics, and blog posts
 - [ ] Apply for Google AdSense (after 2-4 weeks of organic traffic)
 
 ### Phase 3: Full Coverage & Monetization (Target: 500+ pages)
 - [ ] All 45 state hubs + state-specific game pages
 - [ ] Pick 3/Pick 4/daily game coverage (daily draws = massive page multiplication)
+- [ ] Millionaire for Life (replacing Cash4Life, launching Feb 22, 2026)
 - [ ] AdSense integration
 - [ ] Monthly archive pages (in addition to yearly)
 - [ ] "Share your numbers" social feature
@@ -329,25 +447,63 @@ Lottery game formats change every 3-8 years. The April 2025 Mega Millions overha
 The GitHub Actions workflow runs daily at 6 AM UTC:
 
 1. Checkout repo → Install dependencies
-2. Fetch latest lottery data from SODA API
-3. Generate daily blog post via Claude Haiku (if ANTHROPIC_API_KEY set)
-4. Check if data/blog files changed
-5. If changed: verify build succeeds → commit + push → Vercel auto-deploys
-6. All static pages regenerated with fresh data
+2. Fetch all 5 lottery datasets from SODA API with validation (retry on failure)
+3. Check for stale data → write `.stale-warning` if any game exceeds threshold
+4. Generate daily blog post via Claude Haiku (14-topic rotation, all 5 games, retry on failure)
+5. If stale data detected → create/update GitHub Issue
+6. Check if data/blog files changed
+7. If changed: verify build succeeds → commit + push → Vercel auto-deploys
+8. On any step failure → create/update GitHub Issue with `automation-failure` label
+9. All 173+ static pages regenerated with fresh data
 
 **Cost: $0** (GitHub Actions free for public repos, Vercel rebuilds free, SODA API free)
 
 ### Draw Schedule
 
-| Day | What's Fetched | Draw That Occurred |
+| Day | What's Fetched | Games With New Draws |
 |---|---|---|
-| Mon 6AM UTC | Nothing new (no Sun draw) | — |
-| Tue 6AM UTC | Powerball Mon draw | Powerball (Mon 10:59 PM ET) |
-| Wed 6AM UTC | Mega Millions Tue draw | Mega Millions (Tue 11 PM ET) |
-| Thu 6AM UTC | Powerball Wed draw | Powerball (Wed 10:59 PM ET) |
-| Fri 6AM UTC | Nothing new (no Thu draw) | — |
-| Sat 6AM UTC | Mega Millions Fri draw | Mega Millions (Fri 11 PM ET) |
-| Sun 6AM UTC | Powerball Sat draw | Powerball (Sat 10:59 PM ET) |
+| Mon 6AM UTC | Cash4Life, Take 5 (2x) | Cash4Life (Sun 9 PM), Take 5 (Sun midday + evening) |
+| Tue 6AM UTC | Powerball, Cash4Life, Take 5 (2x) | Powerball (Mon 10:59 PM), Cash4Life (Mon 9 PM), Take 5 |
+| Wed 6AM UTC | Mega Millions, Cash4Life, Take 5 (2x) | Mega Millions (Tue 11 PM), Cash4Life, Take 5 |
+| Thu 6AM UTC | Powerball, NY Lotto, Cash4Life, Take 5 (2x) | Powerball (Wed 10:59 PM), NY Lotto (Wed 8:15 PM), Cash4Life, Take 5 |
+| Fri 6AM UTC | Cash4Life, Take 5 (2x) | Cash4Life (Thu 9 PM), Take 5 |
+| Sat 6AM UTC | Mega Millions, Cash4Life, Take 5 (2x) | Mega Millions (Fri 11 PM), Cash4Life, Take 5 |
+| Sun 6AM UTC | Powerball, NY Lotto, Cash4Life, Take 5 (2x) | Powerball (Sat 10:59 PM), NY Lotto (Sat 8:15 PM), Cash4Life, Take 5 |
+
+---
+
+## State Lottery Hubs
+
+10 state hub pages at `/states/[state]`:
+
+| State | Slug | Tax Rate | Games | Notes |
+|---|---|---|---|---|
+| California | `california` | 0% | PB, MM | No state tax on lottery winnings |
+| Texas | `texas` | 0% | PB, MM | No state income tax |
+| Florida | `florida` | 0% | PB, MM, C4L | No state income tax |
+| New York | `new-york` | 10.9% | PB, MM, C4L, NYL, T5 | Highest state tax; NYC adds 3.876%, Yonkers 1.959% |
+| Pennsylvania | `pennsylvania` | 3.07% | PB, MM, C4L | Low flat rate |
+| Ohio | `ohio` | 4.0% | PB, MM | — |
+| Illinois | `illinois` | 4.95% | PB, MM | Flat rate |
+| Michigan | `michigan` | 4.25% | PB, MM, C4L | — |
+| Georgia | `georgia` | 5.49% | PB, MM, C4L | Funds HOPE Scholarship |
+| North Carolina | `north-carolina` | 4.5% | PB, MM | — |
+
+---
+
+## Tax Calculator
+
+- **Page:** `/tools/tax-calculator`
+- **Component:** `src/components/tools/TaxCalculator.tsx` (client component)
+- **Data:** `src/data/state-tax-rates.ts` (all 50 states + DC, auto-updated quarterly)
+- **Features:**
+  - Jackpot amount input with quick-pick buttons ($10M, $100M, $500M, $1B)
+  - State selector (all 50 states + DC)
+  - Lump sum vs annuity toggle
+  - Local tax support (NYC 3.876%, Yonkers 1.959%, Baltimore 3.2%)
+  - Detailed breakdown: federal withholding (24%) + additional to 37% + state + local
+  - Side-by-side lump sum vs annuity comparison table
+- **Federal rates:** 24% withholding, 37% top marginal, ~50% lump sum factor
 
 ---
 
@@ -365,7 +521,7 @@ The GitHub Actions workflow runs daily at 6 AM UTC:
 ## AdSense Setup
 
 ### Prerequisites Before Applying
-- Live website with original, quality content (74+ pages — meets threshold)
+- Live website with original, quality content (173+ pages — exceeds threshold)
 - Legal pages present: About, Privacy, Terms, Disclaimer
 - Informational only — no ticket sales or gambling promotion
 - 500+ words on key pages (blog posts meet this)
@@ -416,6 +572,32 @@ Verified against 3+ independent sources: official lottery websites (powerball.co
 | Megaplier: retired | UPDATED | Replaced by automatic 2x-10x multiplier on every ticket |
 | Starting jackpot: $50M | NEW | Up from $20M |
 
+#### Cash4Life — VERIFIED
+| Fact | Status | Sources |
+|---|---|---|
+| Format: 5/60 + 1/4 | CORRECT | nylottery.ny.gov |
+| Draw: Daily 9:00 PM ET | CORRECT | nylottery.ny.gov |
+| Ticket price: $2 | CORRECT | nylottery.ny.gov |
+| Top prize: $1,000/day for life | CORRECT | nylottery.ny.gov |
+| Jackpot odds: 1 in 21,846,048 | CORRECT | nylottery.ny.gov |
+| Retiring: Feb 21, 2026 | CORRECT | Official announcement |
+
+#### NY Lotto — VERIFIED
+| Fact | Status | Sources |
+|---|---|---|
+| Format: 6/59 + 1/59 bonus | CORRECT | nylottery.ny.gov |
+| Draw: Wed, Sat 8:15 PM ET | CORRECT | nylottery.ny.gov |
+| Ticket price: $1 | CORRECT | nylottery.ny.gov |
+| Jackpot odds: ~1 in 45,057,474 | CORRECT | nylottery.ny.gov |
+
+#### Take 5 — VERIFIED
+| Fact | Status | Sources |
+|---|---|---|
+| Format: 5/39, no bonus | CORRECT | nylottery.ny.gov |
+| Draw: Daily, midday 2:30 PM + evening 10:30 PM ET | CORRECT | nylottery.ny.gov |
+| Ticket price: $1 | CORRECT | nylottery.ny.gov |
+| Top prize odds: 1 in 575,757 | CORRECT | nylottery.ny.gov |
+
 #### Biggest Jackpots — UPDATED
 | Rank | Amount | Game | Date | Location | Status |
 |---|---|---|---|---|---|
@@ -436,8 +618,18 @@ Verified against 3+ independent sources: official lottery websites (powerball.co
 1. **Hybrid rendering** — Static pages for all content + serverless `/api/contact` for email. Enables free Vercel hosting with maximum CDN performance
 2. **JSON data files** — No database needed; data updated via git commits from GitHub Actions
 3. **Client-side number generator** — Uses `crypto.getRandomValues()` for true randomness, zero server load
-4. **Blog as TypeScript module + auto-generated JSON** — `src/lib/blog.ts` for seed posts, `content/blog/` for daily auto-generated posts
-5. **AdSense-ready but not active** — All legal pages present, `AdUnit` component renders only when env var is set
-6. **"AI-Powered" branding** — Refers to the statistical analysis algorithms; legitimate and distinctive positioning
-7. **Resend for email** — Free tier sufficient for contact form volume; auto-reply builds trust
-8. **Porkbun for domain** — Consistent pricing, no renewal markup, free WHOIS privacy
+4. **Client-side tax calculator** — All calculations in browser, zero server load, instant results
+5. **Blog as TypeScript module + auto-generated JSON** — `src/lib/blog.ts` for seed posts, `content/blog/` for daily auto-generated posts
+6. **AdSense-ready but not active** — All legal pages present, `AdUnit` component renders only when env var is set
+7. **"AI-Powered" branding** — Refers to the statistical analysis algorithms; legitimate and distinctive positioning
+8. **Resend for email** — Free tier sufficient for contact form volume; auto-reply builds trust
+9. **Porkbun for domain** — Consistent pricing, no renewal markup, free WHOIS privacy
+10. **No-bonus game abstraction** — `bonusNumber.count === 0` pattern used throughout config, parser, analysis, and UI to cleanly support Take 5 without special-casing
+11. **Midday/evening draw support** — `drawTime` field on DrawResult allows Take 5's twice-daily draws without schema changes
+12. **State tax as TypeScript file** — Allows auto-updates via Claude API while keeping type safety; imported directly by components
+13. **Self-sufficient automation** — Daily data + blog, weekly dataset monitoring, quarterly tax updates — all zero-touch after initial setup
+14. **Shared retry utility** — `scripts/lib/retry.ts` provides exponential backoff for all API calls; centralized so behavior is consistent
+15. **Centralized model constant** — `scripts/lib/constants.ts` exports `CLAUDE_MODEL` so model rotation only requires one change
+16. **Failure notifications via GitHub Issues** — All workflows create/comment on issues with `automation-failure` label; deduplication prevents spam
+17. **Stale data detection** — Per-game staleness thresholds with `.stale-warning` marker file; retired games (e.g., Cash4Life) are automatically excluded
+18. **Tax rate sanity bounds** — Rejects Claude-suggested rates > 15% or changes > 3pp to guard against hallucinations; line-based file editing replaces brittle regex
