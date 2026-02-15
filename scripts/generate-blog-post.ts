@@ -388,7 +388,8 @@ Respond with ONLY valid JSON (no markdown fences, no explanation) in this exact 
 
   const client = new Anthropic();
 
-  // Wrap API call + JSON parsing together in retry so malformed JSON triggers a retry
+  // Wrap API call + JSON parsing + content validation in retry so forbidden terms
+  // or quality issues trigger a fresh generation attempt instead of failing outright.
   const post = await withRetry(
     async () => {
       const message = await client.messages.create({
@@ -402,34 +403,33 @@ Respond with ONLY valid JSON (no markdown fences, no explanation) in this exact 
         throw new Error('Claude response contains no text block');
       }
 
-      return parseBlogJson(textBlock.text);
+      const parsed = parseBlogJson(textBlock.text);
+
+      // Validate required fields
+      const requiredFields = ['slug', 'title', 'description', 'category', 'content'] as const;
+      for (const field of requiredFields) {
+        if (!parsed[field] || typeof parsed[field] !== 'string' || parsed[field].trim() === '') {
+          throw new Error(`Blog post missing or empty required field: ${field}`);
+        }
+      }
+
+      // Content quality validation
+      const wordCount = parsed.content.split(/\s+/).filter(Boolean).length;
+      if (wordCount < BLOG_MIN_WORDS) {
+        throw new Error(`Blog post too short: ${wordCount} words (minimum: ${BLOG_MIN_WORDS})`);
+      }
+
+      const contentLower = parsed.content.toLowerCase();
+      for (const term of BLOG_FORBIDDEN_TERMS) {
+        if (contentLower.includes(term)) {
+          throw new Error(`Blog post contains forbidden term: "${term}" — retrying generation`);
+        }
+      }
+
+      return parsed;
     },
-    { ...RETRY_PRESETS.CLAUDE_API, maxAttempts: 3, label: 'Claude blog generation + parse' }
+    { ...RETRY_PRESETS.CLAUDE_API, maxAttempts: 3, label: 'Claude blog generation + validate' }
   );
-
-  // Validate required fields
-  const requiredFields = ['slug', 'title', 'description', 'category', 'content'] as const;
-  for (const field of requiredFields) {
-    if (!post[field] || typeof post[field] !== 'string' || post[field].trim() === '') {
-      console.error(`Blog post missing or empty required field: ${field}`);
-      process.exit(1);
-    }
-  }
-
-  // Content quality validation
-  const wordCount = post.content.split(/\s+/).filter(Boolean).length;
-  if (wordCount < BLOG_MIN_WORDS) {
-    console.error(`Blog post too short: ${wordCount} words (minimum: ${BLOG_MIN_WORDS})`);
-    process.exit(1);
-  }
-
-  const contentLower = post.content.toLowerCase();
-  for (const term of BLOG_FORBIDDEN_TERMS) {
-    if (contentLower.includes(term)) {
-      console.error(`Blog post contains forbidden term: "${term}" — rewrite needed`);
-      process.exit(1);
-    }
-  }
 
   // Enforce today's date
   post.date = today;
