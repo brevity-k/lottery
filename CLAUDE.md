@@ -44,7 +44,7 @@ My Lotto Stats is a free, SEO-optimized lottery information website that provide
 | Blog generation | Claude Haiku via Anthropic API (daily, automated, 14-topic rotation) |
 | Social posting | twitter-api-v2 (daily auto-post to X after blog generation) |
 | Hosting | Vercel free tier |
-| DNS | Porkbun → Vercel (A: 76.76.21.21, CNAME: cname.vercel-dns.com) |
+| DNS | Porkbun → Vercel |
 
 ---
 
@@ -205,7 +205,7 @@ npm run lint                   # ESLint check
 |---|---|---|---|
 | `RESEND_API_KEY` | Yes | Vercel + `.env.local` | Resend API key for contact form emails |
 | `ANTHROPIC_API_KEY` | No | GitHub Secrets | For auto blog generation + tax rate updates |
-| `CONTACT_EMAIL` | No | Vercel | Contact form recipient (default: rottery0.kr@gmail.com) |
+| `CONTACT_EMAIL` | No | Vercel | Contact form recipient (set in Vercel env vars) |
 | `X_CONSUMER_KEY` | No | GitHub Secrets + `.env.local` | X API consumer key (OAuth 1.0a) |
 | `X_SECRET_KEY` | No | GitHub Secrets + `.env.local` | X API consumer secret |
 | `X_API_ACCESS_TOKEN` | No | GitHub Secrets + `.env.local` | X API access token |
@@ -602,7 +602,7 @@ Two separate GitHub Actions workflows run daily:
 - **API route:** `src/app/api/contact/route.ts` (serverless on Vercel)
 - **Email service:** Resend (`RESEND_API_KEY` in Vercel env vars + `.env.local`)
 - **From address:** `My Lotto Stats <onboarding@resend.dev>`
-- **Owner email:** `rottery0.kr@gmail.com`
+- **Owner email:** Set via `CONTACT_EMAIL` env var in Vercel
 - **Flow:** User submits form → owner gets notification email → sender gets auto-reply confirmation
 - **Env var:** `RESEND_API_KEY` must be set in Vercel project settings for production
 
