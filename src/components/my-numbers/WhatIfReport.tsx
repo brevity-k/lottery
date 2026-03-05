@@ -33,8 +33,8 @@ export default function WhatIfReport({ numberSet, lotteries }: Props) {
       await Promise.all(
         slugs.map(async (slug) => {
           try {
-            const module = await import(`@/data/${slug}.json`);
-            const data = module.default || module;
+            const imported = await import(`@/data/${slug}.json`);
+            const data = imported.default || imported;
             loaded[slug] = data.draws || [];
           } catch {
             loaded[slug] = [];
@@ -52,7 +52,7 @@ export default function WhatIfReport({ numberSet, lotteries }: Props) {
     return () => { cancelled = true; };
   }, [numberSet.game, lotteries]);
 
-  const draws = drawsByGame[numberSet.game] || [];
+  const draws = useMemo(() => drawsByGame[numberSet.game] || [], [drawsByGame, numberSet.game]);
 
   const whatIfResult = useMemo(() => {
     if (draws.length === 0) return null;

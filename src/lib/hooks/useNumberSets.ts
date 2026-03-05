@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { NumberSet } from '@/lib/lotteries/types';
 
 const STORAGE_KEY = 'myLottoStats:numberSets';
@@ -20,13 +20,8 @@ function saveSets(sets: NumberSet[]): void {
 }
 
 export function useNumberSets() {
-  const [sets, setSets] = useState<NumberSet[]>([]);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    setSets(loadSets());
-    setHydrated(true);
-  }, []);
+  const [sets, setSets] = useState<NumberSet[]>(loadSets);
+  const hydrated = typeof window !== 'undefined';
 
   const addSet = useCallback((set: Omit<NumberSet, 'id' | 'createdAt'>) => {
     setSets(prev => {
