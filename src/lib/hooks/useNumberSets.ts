@@ -1,15 +1,21 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useSyncExternalStore, useCallback, useRef } from 'react';
 import { NumberSet } from '@/lib/lotteries/types';
 
 const STORAGE_KEY = 'myLottoStats:numberSets';
 
-function loadSets(): NumberSet[] {
-  if (typeof window === 'undefined') return [];
+function getSnapshot(): string {
+  return localStorage.getItem(STORAGE_KEY) || '[]';
+}
+
+function getServerSnapshot(): string {
+  return '[]';
+}
+
+function parseSets(raw: string): NumberSet[] {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    return JSON.parse(raw);
   } catch {
     return [];
   }
@@ -17,39 +23,47 @@ function loadSets(): NumberSet[] {
 
 function saveSets(sets: NumberSet[]): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(sets));
+  // Trigger re-render via storage event for same-tab listeners
+  window.dispatchEvent(new StorageEvent('storage', { key: STORAGE_KEY }));
 }
 
 export function useNumberSets() {
-  const [sets, setSets] = useState<NumberSet[]>(loadSets);
-  const hydrated = typeof window !== 'undefined';
+  const listenersRef = useRef<Set<() => void>>(new Set());
+
+  const subscribe = useCallback((callback: () => void) => {
+    listenersRef.current.add(callback);
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY || e.key === null) callback();
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => {
+      listenersRef.current.delete(callback);
+      window.removeEventListener('storage', handleStorage);
+    };
+  }, []);
+
+  const raw = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const sets = parseSets(raw);
+  const hydrated = true;
 
   const addSet = useCallback((set: Omit<NumberSet, 'id' | 'createdAt'>) => {
-    setSets(prev => {
-      const newSet: NumberSet = {
-        ...set,
-        id: crypto.randomUUID(),
-        createdAt: new Date().toISOString(),
-      };
-      const updated = [...prev, newSet];
-      saveSets(updated);
-      return updated;
-    });
+    const current = parseSets(getSnapshot());
+    const newSet: NumberSet = {
+      ...set,
+      id: crypto.randomUUID(),
+      createdAt: new Date().toISOString(),
+    };
+    saveSets([...current, newSet]);
   }, []);
 
   const updateSet = useCallback((id: string, updates: Partial<Omit<NumberSet, 'id' | 'createdAt'>>) => {
-    setSets(prev => {
-      const updated = prev.map(s => s.id === id ? { ...s, ...updates } : s);
-      saveSets(updated);
-      return updated;
-    });
+    const current = parseSets(getSnapshot());
+    saveSets(current.map(s => s.id === id ? { ...s, ...updates } : s));
   }, []);
 
   const deleteSet = useCallback((id: string) => {
-    setSets(prev => {
-      const updated = prev.filter(s => s.id !== id);
-      saveSets(updated);
-      return updated;
-    });
+    const current = parseSets(getSnapshot());
+    saveSets(current.filter(s => s.id !== id));
   }, []);
 
   return { sets, hydrated, addSet, updateSet, deleteSet };

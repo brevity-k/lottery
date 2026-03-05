@@ -83,10 +83,13 @@ export default function NumberSetManager({
           {sets.map(set => {
             const lottery = lotteries.find(l => l.slug === set.game);
             return (
-              <button
+              <div
                 key={set.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => onSelect(set.id)}
-                className={`w-full text-left rounded-lg border p-3 transition-colors ${
+                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') onSelect(set.id); }}
+                className={`w-full text-left rounded-lg border p-3 transition-colors cursor-pointer ${
                   selectedId === set.id
                     ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500'
                     : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
@@ -125,7 +128,7 @@ export default function NumberSetManager({
                     </button>
                   </div>
                 )}
-              </button>
+              </div>
             );
           })}
         </div>
