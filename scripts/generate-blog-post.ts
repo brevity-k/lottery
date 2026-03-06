@@ -176,19 +176,23 @@ if (TOPICS.length !== TARGET_KEYWORDS.length) {
 function getTopicForToday(): string {
   const now = new Date();
   const month = now.getMonth() + 1; // 1-12
+  const dayOfMonth = now.getDate();
   const yearMonth = now.toISOString().slice(0, 7); // YYYY-MM
 
-  // Check for one-time special topics first
-  if (SPECIAL_TOPICS[yearMonth]) {
-    return SPECIAL_TOPICS[yearMonth];
+  // Use seasonal/special topics only every 4th day to avoid near-duplicate posts.
+  // Other days use the standard 14-topic rotation.
+  const useOverride = dayOfMonth % 4 === 0;
+
+  if (useOverride) {
+    if (SPECIAL_TOPICS[yearMonth]) {
+      return SPECIAL_TOPICS[yearMonth];
+    }
+    if (SEASONAL_OVERRIDES[month]) {
+      return SEASONAL_OVERRIDES[month];
+    }
   }
 
-  // Check for seasonal overrides
-  if (SEASONAL_OVERRIDES[month]) {
-    return SEASONAL_OVERRIDES[month];
-  }
-
-  // Fall back to standard rotation (day 1 = Jan 1)
+  // Standard rotation (day 1 = Jan 1)
   const startOfYear = new Date(now.getFullYear(), 0, 1);
   const dayOfYear = Math.floor(
     (now.getTime() - startOfYear.getTime()) / 86400000
