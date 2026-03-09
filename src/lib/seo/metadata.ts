@@ -8,21 +8,21 @@ export function generateLotteryMetadata(
   extra?: { year?: string }
 ): Metadata {
   const titles: Record<string, string> = {
-    overview: `${lottery.name} Results, Numbers & Statistics | ${SITE_NAME}`,
-    numbers: `${lottery.name} Number Recommendations - AI-Powered Insights | ${SITE_NAME}`,
+    overview: `${lottery.name} Results & Statistics | ${SITE_NAME}`,
+    numbers: `${lottery.name} Number Insights | ${SITE_NAME}`,
     results: extra?.year
       ? `${lottery.name} Results ${extra.year} | ${SITE_NAME}`
-      : `${lottery.name} Past Results & Winning Numbers | ${SITE_NAME}`,
-    statistics: `${lottery.name} Statistics & Frequency Analysis | ${SITE_NAME}`,
+      : `${lottery.name} Past Results | ${SITE_NAME}`,
+    statistics: `${lottery.name} Statistics & Analysis | ${SITE_NAME}`,
   };
 
   const descriptions: Record<string, string> = {
-    overview: `Latest ${lottery.name} results, winning numbers, and draw information. Get AI-powered number insights and statistical analysis.`,
-    numbers: `Get statistically-analyzed ${lottery.name} number recommendations. Our analysis engine examines frequency trends, hot/cold patterns, and overdue numbers.`,
+    overview: `Free ${lottery.name} results updated daily. Latest winning numbers, AI-powered number insights, and statistical analysis for every draw.`,
+    numbers: `Free ${lottery.name} number recommendations based on frequency trends, hot/cold patterns, and overdue analysis. Updated after every draw.`,
     results: extra?.year
-      ? `Complete ${lottery.name} winning numbers and results for ${extra.year}. Browse all draw results with statistical breakdowns.`
-      : `Browse complete ${lottery.name} past results and winning numbers history. Search by date and view detailed draw information.`,
-    statistics: `Detailed ${lottery.name} statistics including number frequency, hot/cold analysis, overdue numbers, and pair frequency data.`,
+      ? `All ${lottery.name} winning numbers from ${extra.year}. Complete draw-by-draw results with full number breakdowns.`
+      : `Complete ${lottery.name} winning numbers history. Every draw result from the full archive, updated daily.`,
+    statistics: `${lottery.name} number frequency, hot/cold trends, overdue analysis, and pair data. Free tools updated after every draw.`,
   };
 
   const url = page === 'overview'
@@ -44,12 +44,14 @@ export function generateLotteryMetadata(
 }
 
 export function generateHomeMetadata(): Metadata {
+  const title = `${SITE_NAME} | Free Lottery Stats & Insights`;
+  const description = 'Free lottery statistics and number insights for Powerball, Mega Millions, and more. Results, analysis, and tools updated daily.';
   return {
-    title: `${SITE_NAME} - AI-Powered Lottery Number Insights & Statistics`,
-    description: SITE_DESCRIPTION + '. Get number recommendations, results, and statistics for Powerball, Mega Millions, and more US lotteries.',
+    title,
+    description,
     openGraph: {
-      title: `${SITE_NAME} - AI-Powered Lottery Number Insights & Statistics`,
-      description: SITE_DESCRIPTION,
+      title,
+      description,
       url: SITE_URL,
     },
     alternates: {

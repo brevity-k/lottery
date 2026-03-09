@@ -47,14 +47,13 @@ export async function generateMetadata({ params }: { params: Promise<{ lottery: 
   if (!lottery || !parsed) return {};
 
   const label = parsed.type === 'bonus' ? lottery.bonusNumber.label : 'Number';
-  const title = `${lottery.name} ${label} #${parsed.number} — Frequency & Analysis | ${SITE_NAME}`;
-  const description = `Detailed analysis of ${lottery.name} ${label.toLowerCase()} ${parsed.number}: frequency, hot/cold status, gap analysis, common pairings, and recent appearances.`;
+  const title = `${lottery.name} ${label} ${parsed.number} | ${SITE_NAME}`;
+  const description = `${lottery.name} ${label.toLowerCase()} ${parsed.number}: frequency rank, hot/cold status, gap analysis, top pairings, and recent draws. Free stats updated daily.`;
   const url = `${SITE_URL}/${lottery.slug}/numbers/${numberSlug}`;
 
   return {
     title,
     description,
-    robots: { index: false, follow: true },
     openGraph: { title, description, url },
     alternates: { canonical: url },
   };

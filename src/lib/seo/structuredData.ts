@@ -7,8 +7,18 @@ export function websiteSchema() {
     '@type': 'WebSite',
     name: SITE_NAME,
     url: SITE_URL,
-    description: 'AI-Powered Lottery Number Insights & Statistics',
+    description: 'Free lottery statistics and number insights for US lotteries',
     inLanguage: 'en-US',
+    publisher: organizationSchema(),
+  };
+}
+
+export function organizationSchema() {
+  return {
+    '@type': 'Organization',
+    name: SITE_NAME,
+    url: SITE_URL,
+    description: 'Free lottery statistics, results, and AI-powered number insights for US lotteries.',
   };
 }
 
