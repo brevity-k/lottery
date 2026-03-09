@@ -16,23 +16,36 @@ export default function HomePage() {
     <>
       <JsonLd data={websiteSchema()} />
 
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 text-white py-16 md:py-24">
+      {/* Hero — Simulator CTA */}
+      <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            AI-Powered Lottery Insights
+            What If You Never Missed a Draw?
           </h1>
-          <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto mb-8">
-            Statistical analysis and number recommendations for all major US lotteries. Data-driven insights from millions of historical draws.
+          <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto mb-8">
+            Pick your lucky numbers. We&apos;ll replay every historical draw and show you what would have happened.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/powerball/numbers" className="bg-white text-blue-700 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
-              Get Powerball Numbers
-            </Link>
-            <Link href="/mega-millions/numbers" className="bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-400 transition-colors border border-blue-400">
-              Get Mega Millions Numbers
-            </Link>
-          </div>
+          <Link href="/simulator" className="inline-block bg-white text-gray-900 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl">
+            Try the Simulator
+          </Link>
+        </div>
+      </section>
+
+      {/* Sub-hero — Existing tools */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-wrap justify-center gap-3">
+          <Link href="/powerball/numbers" className="px-5 py-2.5 rounded-full text-sm font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">
+            Powerball Numbers
+          </Link>
+          <Link href="/mega-millions/numbers" className="px-5 py-2.5 rounded-full text-sm font-medium bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors">
+            Mega Millions Numbers
+          </Link>
+          <Link href="/tools/tax-calculator" className="px-5 py-2.5 rounded-full text-sm font-medium bg-green-50 text-green-700 hover:bg-green-100 transition-colors">
+            Tax Calculator
+          </Link>
+          <Link href="/tools/number-generator" className="px-5 py-2.5 rounded-full text-sm font-medium bg-amber-50 text-amber-700 hover:bg-amber-100 transition-colors">
+            Number Generator
+          </Link>
         </div>
       </section>
 
