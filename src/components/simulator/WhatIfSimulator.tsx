@@ -141,7 +141,7 @@ export default function WhatIfSimulator({ lotteries, drawsByGame }: WhatIfSimula
     const hasBonus_ = lottery.bonusNumber.count > 0;
 
     return (
-      <div className="space-y-8">
+      <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
         <style>{`
           @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
@@ -329,46 +329,47 @@ export default function WhatIfSimulator({ lotteries, drawsByGame }: WhatIfSimula
   const mainNumbersFull = selectedNumbers.length >= mainCount;
 
   return (
-    <div className="space-y-8">
-      {/* Title */}
-      <div className="text-center">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
-          What If You Never Missed a Draw?
-        </h2>
-        <p className="mt-2 text-gray-500">
-          Pick your numbers. We&apos;ll replay every draw in history.
-        </p>
-      </div>
-
-      {/* Game Selector — Horizontal Pills */}
-      <div className="flex flex-wrap justify-center gap-2">
-        {lotteries.map(l => (
-          <button
-            key={l.slug}
-            onClick={() => handleGameChange(l.slug)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              selectedGame === l.slug
-                ? 'bg-gray-900 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            {l.name}
-          </button>
-        ))}
-      </div>
-
-      {lottery && (
-        <>
-          {/* Number Counter */}
-          <p className="text-center text-sm text-gray-500">
-            Pick {mainCount} numbers from 1&ndash;{mainMax}{' '}
-            <span className="font-semibold text-gray-700">
-              ({selectedNumbers.length}/{mainCount})
-            </span>
+    <div className="min-h-[80vh] flex flex-col items-center justify-center px-4 py-12">
+      <div className="w-full max-w-lg space-y-8">
+        {/* Title */}
+        <div className="text-center">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
+            What If You Never Missed a Draw?
+          </h1>
+          <p className="mt-2 text-gray-500">
+            Pick your numbers. We&apos;ll replay every draw in history.
           </p>
+        </div>
 
-          {/* Main Number Grid */}
-          <div className={`grid ${mainMax <= 39 ? 'grid-cols-8' : 'grid-cols-7'} sm:grid-cols-10 gap-2 max-w-md sm:max-w-xl mx-auto`}>
+        {/* Game Selector — Horizontal Pills */}
+        <div className="flex flex-wrap justify-center gap-2">
+          {lotteries.map(l => (
+            <button
+              key={l.slug}
+              onClick={() => handleGameChange(l.slug)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                selectedGame === l.slug
+                  ? 'bg-gray-900 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {l.name}
+            </button>
+          ))}
+        </div>
+
+        {lottery && (
+          <>
+            {/* Number Counter */}
+            <p className="text-center text-sm text-gray-500">
+              Pick {mainCount} numbers from 1&ndash;{mainMax}{' '}
+              <span className="font-semibold text-gray-700">
+                ({selectedNumbers.length}/{mainCount})
+              </span>
+            </p>
+
+            {/* Main Number Grid */}
+            <div className={`grid ${mainMax <= 39 ? 'grid-cols-8' : 'grid-cols-7'} sm:grid-cols-10 gap-2 mx-auto`}>
             {Array.from({ length: mainMax }, (_, i) => i + 1).map(num => {
               const isSelected = selectedNumbers.includes(num);
               const isDisabled = !isSelected && mainNumbersFull;
@@ -490,6 +491,7 @@ export default function WhatIfSimulator({ lotteries, drawsByGame }: WhatIfSimula
           </button>
         </>
       )}
+      </div>
     </div>
   );
 }
