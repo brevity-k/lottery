@@ -54,6 +54,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lottery: 
   return {
     title,
     description,
+    robots: { index: false, follow: true },
     openGraph: { title, description, url },
     alternates: { canonical: url },
   };

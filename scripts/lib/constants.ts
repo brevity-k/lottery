@@ -91,7 +91,11 @@ export const RETRY_PRESETS = {
 // Blog generation constants
 // ---------------------------------------------------------------------------
 
-/** Seasonal topic overrides — keyed by month number (1-12). */
+/**
+ * Seasonal topic overrides — keyed by month number (1-12).
+ * These are injected into the topic rotation (every 3rd day) instead of
+ * replacing the entire month, to prevent near-duplicate daily posts.
+ */
 export const SEASONAL_OVERRIDES: Record<number, string> = {
   1: 'New Year lottery number trends and fresh start strategies for the new year',
   3: 'Tax season guide for lottery winners — what to know before filing',
@@ -100,10 +104,11 @@ export const SEASONAL_OVERRIDES: Record<number, string> = {
   12: 'Holiday jackpot fever — Christmas lottery traditions and year-end jackpot recap',
 };
 
-/** One-time special topics — keyed by YYYY-MM date prefix. */
-export const SPECIAL_TOPICS: Record<string, string> = {
-  '2026-02': 'Cash4Life retirement on February 21 — what it means for players and what comes next',
-};
+/**
+ * One-time special topics — keyed by YYYY-MM date prefix.
+ * Same as seasonal overrides: injected every 3rd day, not every day.
+ */
+export const SPECIAL_TOPICS: Record<string, string> = {};
 
 /** Blog topic rotation — 14 topics cycling daily, paired 1:1 with TARGET_KEYWORDS. */
 export const TOPICS: string[] = [
