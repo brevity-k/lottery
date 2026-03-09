@@ -360,13 +360,31 @@ export default function WhatIfSimulator({ lotteries, drawsByGame }: WhatIfSimula
 
         {lottery && (
           <>
-            {/* Number Counter */}
-            <p className="text-center text-sm text-gray-500">
-              Pick {mainCount} numbers from 1&ndash;{mainMax}{' '}
-              <span className="font-semibold text-gray-700">
-                ({selectedNumbers.length}/{mainCount})
-              </span>
-            </p>
+            {/* Number Counter + Quick Pick */}
+            <div className="flex items-center justify-center gap-3">
+              <p className="text-sm text-gray-500">
+                Pick {mainCount} numbers from 1&ndash;{mainMax}{' '}
+                <span className="font-semibold text-gray-700">
+                  ({selectedNumbers.length}/{mainCount})
+                </span>
+              </p>
+              <button
+                onClick={() => {
+                  const nums = new Set<number>();
+                  while (nums.size < mainCount) {
+                    nums.add(Math.floor(Math.random() * mainMax) + 1);
+                  }
+                  setSelectedNumbers([...nums].sort((a, b) => a - b));
+                  if (hasBonus) {
+                    setSelectedBonus(Math.floor(Math.random() * bonusMax) + 1);
+                  }
+                  setResult(null);
+                }}
+                className="text-xs font-medium text-blue-600 hover:text-blue-700 transition-colors"
+              >
+                Random
+              </button>
+            </div>
 
             {/* Main Number Grid */}
             <div className={`grid ${mainMax <= 39 ? 'grid-cols-8' : 'grid-cols-7'} sm:grid-cols-10 gap-2 mx-auto`}>
