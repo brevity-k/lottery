@@ -8,11 +8,11 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import Card from '@/components/ui/Card';
 
 export const metadata: Metadata = {
-  title: `US Lottery by State - Tax Rates, Games & Claim Info | ${SITE_NAME}`,
-  description: 'Find lottery information for every US state. State tax rates on winnings, available games, how to claim prizes, and more.',
+  title: { absolute: `Lottery Tax Rates by State — All 50 States Compared` },
+  description: 'Compare lottery tax rates across every US state. Find your state\'s tax on winnings, available games, claim steps, and minimum purchase age.',
   openGraph: {
-    title: `US Lottery by State | ${SITE_NAME}`,
-    description: 'Find lottery information for every US state. Tax rates, available games, and claim procedures.',
+    title: 'Lottery Tax Rates by State — All 50 States Compared',
+    description: 'Compare lottery tax rates across every US state. Find your state\'s tax on winnings, available games, and claim procedures.',
     url: `${SITE_URL}/states`,
   },
   alternates: { canonical: `${SITE_URL}/states` },

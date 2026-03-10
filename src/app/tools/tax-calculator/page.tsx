@@ -8,10 +8,10 @@ import FAQSection from '@/components/seo/FAQSection';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 
 export const metadata: Metadata = {
-  title: { absolute: 'Lottery Tax Calculator - Lump Sum vs Annuity by State' },
-  description: 'Calculate lottery winnings after federal & state taxes. Compare lump sum vs annuity for Powerball, Mega Millions & more. All 50 states. Free.',
+  title: { absolute: 'Lottery Tax Calculator — See Your Take-Home by State' },
+  description: 'How much do you actually keep? Calculate lottery winnings after federal & state taxes. Compare lump sum vs annuity for all 50 states. Free.',
   openGraph: {
-    title: 'Lottery Tax Calculator - Lump Sum vs Annuity by State',
+    title: 'Lottery Tax Calculator — See Your Take-Home by State',
     description: 'Calculate lottery winnings after federal & state taxes. Compare lump sum vs annuity for all 50 states.',
     url: `${SITE_URL}/tools/tax-calculator`,
   },

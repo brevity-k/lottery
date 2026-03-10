@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: `${SITE_NAME} - AI-Powered Lottery Number Insights & Statistics`,
+    default: `${SITE_NAME} — Free Lottery Analysis, Simulator & Number Picks`,
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,

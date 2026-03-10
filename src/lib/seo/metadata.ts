@@ -10,21 +10,21 @@ export function generateLotteryMetadata(
   extra?: { year?: string }
 ): Metadata {
   const titles: Record<string, string> = {
-    overview: `${lottery.name} Results Today - Winning Numbers ${year}`,
-    numbers: `${lottery.name} Number Recommendations - AI Analysis`,
+    overview: `${lottery.name} — Latest Results, Hot Numbers & AI Analysis`,
+    numbers: `Pick Smarter ${lottery.name} Numbers — 3 Data-Driven Strategies`,
     results: extra?.year
-      ? `${lottery.name} Results ${extra.year} - Past Winning Numbers`
-      : `${lottery.name} Winning Numbers History - All Results`,
-    statistics: `${lottery.name} Statistics - Hot & Cold Numbers ${year}`,
+      ? `${lottery.name} Results ${extra.year} — Every Winning Number`
+      : `Every ${lottery.name} Result Since ${lottery.startYear} — Full History`,
+    statistics: `Which ${lottery.name} Numbers Hit Most? ${year} Frequency Data`,
   };
 
   const descriptions: Record<string, string> = {
-    overview: `Latest ${lottery.name} winning numbers updated daily. Check results, see hot & cold number trends, and get AI-powered number recommendations. Free.`,
-    numbers: `Get ${lottery.name} number recommendations based on frequency, hot/cold trends, and overdue patterns. Three AI strategies to choose from. Updated daily.`,
+    overview: `Today's ${lottery.name} winning numbers plus frequency trends, hot & cold analysis, and a What-If simulator. See which numbers hit most often. Updated daily.`,
+    numbers: `${lottery.name} number picks based on frequency trends, overdue patterns, and hot/cold analysis. Three strategies to choose from — or generate random picks. Free tool.`,
     results: extra?.year
-      ? `All ${lottery.name} winning numbers from ${extra.year}. Complete draw-by-draw results with every number.`
-      : `Complete ${lottery.name} results history. Every winning number from ${lottery.startYear} to today. Updated after every draw.`,
-    statistics: `${lottery.name} number frequency, hot/cold analysis, overdue numbers, and common pairs. Free statistical tools updated after every draw.`,
+      ? `All ${lottery.name} winning numbers drawn in ${extra.year}. Complete draw-by-draw results searchable by date.`
+      : `Searchable ${lottery.name} winning numbers from ${lottery.startYear} to today. Every draw, every number. Updated after each drawing.`,
+    statistics: `See which ${lottery.name} numbers are drawn most, which are overdue, and the most common pairs and triplets. Historical frequency charts updated after every draw.`,
   };
 
   const url = page === 'overview'
@@ -46,8 +46,8 @@ export function generateLotteryMetadata(
 }
 
 export function generateHomeMetadata(): Metadata {
-  const title = `Lottery Statistics & Results ${year} - Free Number Analysis`;
-  const description = 'Free lottery statistics for Powerball, Mega Millions, and more. Check results, analyze hot & cold numbers, and try our What-If simulator. Updated daily.';
+  const title = `What If You Never Missed a Draw? Free Lottery Analysis Tools`;
+  const description = 'Replay every lottery draw with your numbers. Plus hot/cold analysis, frequency stats, and AI-powered number picks for Powerball, Mega Millions & more.';
   return {
     title: { absolute: title },
     description,

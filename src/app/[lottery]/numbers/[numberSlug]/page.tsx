@@ -47,8 +47,8 @@ export async function generateMetadata({ params }: { params: Promise<{ lottery: 
   if (!lottery || !parsed) return {};
 
   const label = parsed.type === 'bonus' ? lottery.bonusNumber.label : 'Number';
-  const title = `${lottery.name} ${label} ${parsed.number} - Frequency & Stats`;
-  const description = `${lottery.name} ${label.toLowerCase()} ${parsed.number}: frequency rank, hot/cold status, gap analysis, top pairings, and recent draws. Free stats updated daily.`;
+  const title = `${lottery.name} ${label} ${parsed.number} — How Often Does It Hit?`;
+  const description = `How often does ${lottery.name} ${label.toLowerCase()} ${parsed.number} get drawn? See its frequency rank, hot/cold status, gap history, and best pairings. Updated daily.`;
   const url = `${SITE_URL}/${lottery.slug}/numbers/${numberSlug}`;
 
   return {

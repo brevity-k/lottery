@@ -8,11 +8,11 @@ import JsonLd from '@/components/seo/JsonLd';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 
 export const metadata: Metadata = {
-  title: `Lottery Blog - Tips, Statistics & Guides`,
-  description: `Read expert lottery articles covering Powerball, Mega Millions, statistics, and more. Data-driven insights from ${SITE_NAME}.`,
+  title: `Lottery Insights Blog — Strategy, Draw Analysis & Number Trends`,
+  description: `Data-driven articles on Powerball, Mega Millions, and lottery strategy. Frequency trends, number analysis, and weekly draw recaps. New posts daily.`,
   openGraph: {
-    title: 'Lottery Blog - Tips, Statistics & Guides',
-    description: `Read expert lottery articles covering Powerball, Mega Millions, statistics, and more. Data-driven insights from ${SITE_NAME}.`,
+    title: 'Lottery Insights Blog — Strategy, Draw Analysis & Number Trends',
+    description: `Data-driven articles on Powerball, Mega Millions, and lottery strategy. Frequency trends, number analysis, and weekly draw recaps.`,
     url: `${SITE_URL}/blog`,
   },
   alternates: { canonical: `${SITE_URL}/blog` },

@@ -1,6 +1,6 @@
 export const SITE_NAME = 'My Lotto Stats';
 
-export const SITE_DESCRIPTION = 'AI-Powered Lottery Number Insights & Statistics';
+export const SITE_DESCRIPTION = 'Free lottery analysis tools — replay draws with your numbers, see hot/cold trends, and get data-driven number picks.';
 
 export const SITE_URL = 'https://mylottostats.com';
 

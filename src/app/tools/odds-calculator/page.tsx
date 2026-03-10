@@ -9,11 +9,11 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import Card from '@/components/ui/Card';
 
 export const metadata: Metadata = {
-  title: { absolute: 'Lottery Odds Calculator - Compare Jackpot Probabilities' },
-  description: 'Compare lottery odds for Powerball, Mega Millions & more. See exact probabilities for every prize tier. Free calculator.',
+  title: { absolute: 'Lottery Odds Calculator — Your Real Chances of Winning' },
+  description: 'What are your actual odds? See exact probabilities for every prize tier across Powerball, Mega Millions & more. Compare games side by side. Free.',
   openGraph: {
-    title: 'Lottery Odds Calculator - Compare Jackpot Probabilities',
-    description: 'Compare lottery odds for Powerball, Mega Millions & more. See exact probabilities for every prize tier.',
+    title: 'Lottery Odds Calculator — Your Real Chances of Winning',
+    description: 'See exact probabilities for every prize tier across Powerball, Mega Millions & more. Compare games side by side.',
     url: `${SITE_URL}/tools/odds-calculator`,
   },
   alternates: { canonical: `${SITE_URL}/tools/odds-calculator` },

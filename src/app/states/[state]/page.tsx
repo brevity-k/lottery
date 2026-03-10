@@ -20,9 +20,9 @@ export async function generateMetadata({ params }: { params: Promise<{ state: st
   const state = getState(slug);
   if (!state) return {};
 
-  const taxDisplay = state.taxRate > 0 ? `${(state.taxRate * 100).toFixed(1)}% Tax` : 'No State Tax';
-  const title = `${state.name} Lottery - ${taxDisplay}, ${state.availableGames.length} Games & Claims`;
-  const description = `${state.name} lottery guide: ${state.taxRate > 0 ? `${(state.taxRate * 100).toFixed(2)}% state tax` : 'no state tax'} on winnings, ${state.availableGames.length} games available, prize claim steps. Free info updated regularly.`;
+  const taxDisplay = state.taxRate > 0 ? `${(state.taxRate * 100).toFixed(1)}%` : 'No';
+  const title = `${state.name} Lottery Tax & Games — ${taxDisplay} State Tax on Winnings`;
+  const description = `How much does ${state.name} tax lottery winnings? ${state.taxRate > 0 ? `${(state.taxRate * 100).toFixed(2)}% state tax rate` : 'No state tax'}, ${state.availableGames.length} games available, plus claim steps and purchase age. Free guide.`;
 
   return {
     title: { absolute: title },
