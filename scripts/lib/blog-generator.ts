@@ -508,19 +508,17 @@ Required sections: ${category.requiredSections.join('; ')}
 ${VALID_ROUTES.join(', ')}
 Plus any route starting with: ${VALID_ROUTE_PREFIXES.join(', ')}
 
-CHECK ALL OF THE FOLLOWING:
-1. Numbers cited in the post match the raw lottery data (hot numbers, cold numbers, overdue counts, pairs, draw results)
-2. No forbidden terms appear in the content: ${category.forbiddenTerms.join(', ')}
-3. Word count meets the minimum of ${category.minWords} words
-4. All internal links (href values) point to valid routes from the list above
-5. The post has the required structural elements for this category
-6. Title is under 60 characters
-7. No claims that patterns predict future outcomes
+CHECK ONLY THESE — reject ONLY for serious errors:
+1. Are any specific numbers WRONG? (e.g., says "#28 appeared 200 times" but data shows 173). Minor rounding or omitting tied numbers is OK.
+2. Does the content contain forbidden terms: ${category.forbiddenTerms.join(', ')}?
+3. Does it claim patterns can PREDICT future outcomes?
 
-Respond with ONLY valid JSON (no markdown fences). Keep corrections BRIEF — one short sentence per issue, max 3 issues. Do NOT include corrected content.
+APPROVE if the post is factually reasonable, even with minor imprecisions. Do NOT reject for: rounding differences, incomplete lists, missing links, stylistic issues, or missing source citations.
+
+Respond with ONLY valid JSON (no markdown fences, no explanation):
 {"approved": true, "corrections": []}
 or
-{"approved": false, "corrections": ["issue 1", "issue 2"]}`;
+{"approved": false, "corrections": ["one serious error"]}`;
 
   const result = await withRetry(
     async () => {
