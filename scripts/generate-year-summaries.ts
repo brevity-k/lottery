@@ -85,7 +85,6 @@ function buildSummary(
   displayName: string,
   year: number,
   draws: DrawResult[],
-  _hasBonus: boolean,
 ): string {
   const total = draws.length;
 
@@ -122,10 +121,6 @@ function buildSummary(
   return summary.trim();
 }
 
-function hasBonus(slug: string): boolean {
-  return slug !== 'take5';
-}
-
 function main(): void {
   const summaries: Record<string, string> = {};
 
@@ -152,7 +147,7 @@ function main(): void {
       const draws = byYear[year];
       if (!draws || draws.length === 0) continue;
 
-      const summary = buildSummary(game.displayName, year, draws, hasBonus(game.slug));
+      const summary = buildSummary(game.displayName, year, draws);
       if (summary) {
         summaries[`${game.slug}-${year}`] = summary;
         gameTotal++;

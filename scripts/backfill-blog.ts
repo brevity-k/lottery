@@ -24,6 +24,7 @@ import {
   BlogPost,
 } from './lib/blog-generator';
 import { BLOG_QUEUE } from './lib/constants';
+import { sleep } from './lib/utils';
 
 // ---------------------------------------------------------------------------
 // CLI arg parsing
@@ -55,10 +56,6 @@ function parseArgs(): { count: number; dryRun: boolean } {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 /**
  * Determine whether a queue topic has already been consumed.
@@ -243,12 +240,8 @@ async function main() {
         post.slug = `${post.slug}-${today}`;
       }
 
-      // Resolve slug collisions against files already on disk
-      const existingFiles = fs
-        .readdirSync(outputDir)
-        .filter((f) => f.endsWith('.json'))
-        .map((f) => f.replace('.json', ''));
-      if (existingFiles.includes(post.slug)) {
+      // Resolve slug collisions using in-memory list (maintained below)
+      if (existingSlugs.includes(post.slug)) {
         post.slug = `${post.slug}-${Date.now()}`;
       }
 

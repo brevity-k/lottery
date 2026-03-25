@@ -119,10 +119,6 @@ const VALID_ROUTE_PREFIXES = ['/states/', '/blog/'];
 
 export function loadCategory(slug: string): CategoryConfig {
   const filePath = path.join(process.cwd(), 'content', 'categories', `${slug}.md`);
-  if (!fs.existsSync(filePath)) {
-    throw new Error(`Category template not found: ${filePath}`);
-  }
-
   const raw = fs.readFileSync(filePath, 'utf-8');
   const { data, content } = matter(raw);
 

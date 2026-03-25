@@ -21,6 +21,7 @@ import {
   loadCategory,
   BlogPost,
 } from './lib/blog-generator';
+import { sleep } from './lib/utils';
 
 // ---------------------------------------------------------------------------
 // Guide topics
@@ -90,10 +91,6 @@ interface GuidePost {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 function blogPostToGuidePost(post: BlogPost, slug: string, today: string): GuidePost {
   return {

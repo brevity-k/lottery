@@ -133,11 +133,8 @@ async function main() {
     post.slug = `${post.slug}-${today}`;
   }
 
-  // Check for slug collisions against existing posts
-  const existingFiles = fs
-    .readdirSync(outputDir)
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => f.replace('.json', ''));
+  // Check for slug collisions against existing posts (reuse `existing` read above)
+  const existingFiles = existing.map((f) => f.replace('.json', ''));
   if (existingFiles.includes(post.slug)) {
     console.log(`Slug collision detected: ${post.slug} — appending timestamp`);
     post.slug = `${post.slug}-${Date.now()}`;

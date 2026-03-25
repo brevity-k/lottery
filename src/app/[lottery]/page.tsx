@@ -44,6 +44,8 @@ export default async function LotteryPage({ params }: { params: Promise<{ lotter
 
   const faqs = lotteryFaqs(lottery);
   const relatedPosts = getRelatedPosts(slug, lottery.name, 3);
+  const prizeTiers = PRIZE_TIERS[slug] || [];
+  const notableJackpots = NOTABLE_JACKPOTS[slug] || [];
 
   return (
     <>
@@ -126,7 +128,7 @@ export default async function LotteryPage({ params }: { params: Promise<{ lotter
         </Card>
 
         {/* Prize Tiers */}
-        {PRIZE_TIERS[slug] && PRIZE_TIERS[slug].length > 0 && (
+        {prizeTiers.length > 0 && (
           <Card className="mb-8">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Prize Tiers & Odds</h2>
             <div className="overflow-x-auto">
@@ -136,7 +138,7 @@ export default async function LotteryPage({ params }: { params: Promise<{ lotter
                   <th className="text-left py-2 font-semibold text-gray-900">Prize</th>
                   <th className="text-left py-2 font-semibold text-gray-900">Odds</th>
                 </tr></thead>
-                <tbody>{PRIZE_TIERS[slug].map((tier, i) => (
+                <tbody>{prizeTiers.map((tier, i) => (
                   <tr key={i} className="border-b border-gray-100 last:border-0">
                     <td className="py-2 text-gray-700">{tier.match}</td>
                     <td className="py-2 font-semibold text-gray-900">{tier.prize}</td>
@@ -157,10 +159,10 @@ export default async function LotteryPage({ params }: { params: Promise<{ lotter
         )}
 
         {/* Notable Jackpots */}
-        {NOTABLE_JACKPOTS[slug] && NOTABLE_JACKPOTS[slug].length > 0 && (
+        {notableJackpots.length > 0 && (
           <Card className="mb-8">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Notable Jackpots</h2>
-            <div className="space-y-3">{NOTABLE_JACKPOTS[slug].map((jp, i) => (
+            <div className="space-y-3">{notableJackpots.map((jp, i) => (
               <div key={i} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
                 <div><span className="font-bold text-gray-900">{jp.amount}</span><span className="text-gray-500 text-sm ml-2">{jp.date}</span></div>
                 <div className="text-sm text-gray-500">{jp.state} · {jp.status}</div>

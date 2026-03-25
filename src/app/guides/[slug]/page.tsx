@@ -1,48 +1,12 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import fs from 'fs';
-import path from 'path';
 import { SITE_URL, DISCLAIMER_TEXT } from '@/lib/utils/constants';
 import Byline from '@/components/blog/Byline';
 import { breadcrumbSchema } from '@/lib/seo/structuredData';
 import JsonLd from '@/components/seo/JsonLd';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
-
-interface GuidePost {
-  slug: string;
-  title: string;
-  description: string;
-  content: string;
-  lastReviewed: string;
-}
-
-const GUIDES_DIR = path.join(process.cwd(), 'content', 'guides');
-
-function getAllGuides(): GuidePost[] {
-  try {
-    return fs
-      .readdirSync(GUIDES_DIR)
-      .filter((f) => f.endsWith('.json'))
-      .map((f) => {
-        const raw = fs.readFileSync(path.join(GUIDES_DIR, f), 'utf-8');
-        return JSON.parse(raw) as GuidePost;
-      });
-  } catch {
-    return [];
-  }
-}
-
-function getGuide(slug: string): GuidePost | null {
-  try {
-    const filePath = path.join(GUIDES_DIR, `${slug}.json`);
-    if (!fs.existsSync(filePath)) return null;
-    const raw = fs.readFileSync(filePath, 'utf-8');
-    return JSON.parse(raw) as GuidePost;
-  } catch {
-    return null;
-  }
-}
+import { getAllGuides, getGuide } from '@/lib/guides';
 
 export function generateStaticParams() {
   return getAllGuides().map((guide) => ({ slug: guide.slug }));

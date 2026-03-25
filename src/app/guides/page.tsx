@@ -1,36 +1,10 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import fs from 'fs';
-import path from 'path';
 import { SITE_NAME, SITE_URL } from '@/lib/utils/constants';
 import { breadcrumbSchema } from '@/lib/seo/structuredData';
 import JsonLd from '@/components/seo/JsonLd';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
-
-interface GuidePost {
-  slug: string;
-  title: string;
-  description: string;
-  content: string;
-  lastReviewed: string;
-}
-
-const GUIDES_DIR = path.join(process.cwd(), 'content', 'guides');
-
-function getAllGuides(): GuidePost[] {
-  try {
-    return fs
-      .readdirSync(GUIDES_DIR)
-      .filter((f) => f.endsWith('.json'))
-      .map((f) => {
-        const raw = fs.readFileSync(path.join(GUIDES_DIR, f), 'utf-8');
-        return JSON.parse(raw) as GuidePost;
-      })
-      .sort((a, b) => b.lastReviewed.localeCompare(a.lastReviewed));
-  } catch {
-    return [];
-  }
-}
+import { getAllGuides } from '@/lib/guides';
 
 export const metadata: Metadata = {
   title: `Lottery Guides — How Lotteries Work, Taxes, Odds & More | ${SITE_NAME}`,
