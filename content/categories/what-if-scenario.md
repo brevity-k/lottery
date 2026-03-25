@@ -7,7 +7,7 @@ voice: "Conversational and relatable. Write like you're telling a friend about a
 requiredSections:
   - h2 introduction with a relatable everyday premise
   - specific dollar amounts and number examples grounded in real data
-  - "what would happen" framing that walks through consequences step by step
+  - "'what would happen' framing that walks through consequences step by step"
   - HTML table showing hypothetical outcomes or comparisons
   - blockquote with the most mind-bending implication of the scenario
   - 2-3 internal links including at least one to a game page
