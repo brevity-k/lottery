@@ -27,6 +27,7 @@ export function getAllGuides(): GuidePost[] {
 }
 
 export function getGuide(slug: string): GuidePost | null {
+  if (!/^[a-z0-9-]+$/.test(slug)) return null;
   try {
     const raw = fs.readFileSync(path.join(GUIDES_DIR, `${slug}.json`), 'utf-8');
     return JSON.parse(raw) as GuidePost;

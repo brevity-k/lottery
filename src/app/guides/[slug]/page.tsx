@@ -8,6 +8,8 @@ import JsonLd from '@/components/seo/JsonLd';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { getAllGuides, getGuide } from '@/lib/guides';
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return getAllGuides().map((guide) => ({ slug: guide.slug }));
 }
