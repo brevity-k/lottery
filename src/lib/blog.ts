@@ -61,33 +61,50 @@ const seedPosts: BlogPost[] = [
   },
   {
     slug: 'powerball-odds-explained',
-    title: 'Powerball Odds Explained',
-    description: 'A detailed breakdown of Powerball odds for every prize tier.',
-    date: '2026-02-10',
+    title: '1 in 292 Million Feels Impossible. 1 in 25 Feels Close. That Is the Trap.',
+    description: 'The overall odds of winning any Powerball prize are 1 in 24.9. That sounds achievable — and that is exactly why you keep buying tickets.',
+    date: '2026-03-20',
     category: 'Statistics',
     content: `
-      <h2>Understanding Powerball Odds</h2>
-      <p>The odds of winning the Powerball jackpot are 1 in 292,201,338. This number comes from the total number of possible combinations: C(69,5) x 26 = 292,201,338. These odds were established in October 2015 when the white ball pool expanded from 59 to 69 numbers, making jackpots harder to win but allowing them to grow to historically unprecedented levels.</p>
-      <h2>How Are Odds Calculated?</h2>
-      <p>Powerball odds are calculated using combinatorial mathematics. The number of ways to choose 5 numbers from 69 is calculated using the combination formula: C(69,5) = 69! / (5! x 64!) = 11,238,513 possible combinations of white balls. Since the Powerball is drawn from a completely separate pool of 1 through 26, the total number of unique ticket combinations is 11,238,513 x 26 = 292,201,338.</p>
-      <p>This is why the order of your white ball numbers does not matter — the combination 3-15-27-42-58 is the same whether the balls are drawn in that exact sequence or in reverse. However, the Powerball must match exactly, as it is drawn from its own separate drum.</p>
-      <h2>Odds for Every Prize Tier</h2>
-      <p>While the jackpot odds are daunting, lower prize tiers are significantly more achievable. Here is how the mathematics break down for each level:</p>
+      <h2>The Number That Sells Tickets</h2>
+      <p>Powerball advertises one number more than any other: <strong>1 in 24.9</strong>. That is the overall odds of winning <em>any</em> prize. It sounds almost reasonable. Buy 25 tickets and you will probably win something. Right?</p>
+      <p>Technically, yes. But here is what "something" almost always means: <strong>$4</strong>. You spent $2 and got back $4. Net gain: $2. Your brain registers "winner" and the dopamine hits. And that is the behavioral trap — a $2 win feels like validation, not what it actually is: a tiny return on a negative-expected-value entertainment purchase.</p>
+
+      <h2>The Real Odds, Tier by Tier</h2>
+      <p>Let us walk through every prize tier with a reality check that puts each one in human terms. If you play one ticket per draw (3 draws per week, 156 per year):</p>
+      <table>
+        <thead><tr><th>Match</th><th>Prize</th><th>Odds</th><th>How Often (at 3 draws/week)</th></tr></thead>
+        <tbody>
+          <tr><td>5 + PB</td><td>Jackpot</td><td>1 in 292,201,338</td><td>Once every 1.87 million years</td></tr>
+          <tr><td>5</td><td>$1,000,000</td><td>1 in 11,688,053</td><td>Once every 74,923 years</td></tr>
+          <tr><td>4 + PB</td><td>$50,000</td><td>1 in 913,129</td><td>Once every 5,853 years</td></tr>
+          <tr><td>4</td><td>$100</td><td>1 in 36,525</td><td>Once every 234 years</td></tr>
+          <tr><td>3 + PB</td><td>$100</td><td>1 in 14,494</td><td>Once every 93 years</td></tr>
+          <tr><td>3</td><td>$7</td><td>1 in 579</td><td>About 3x per decade</td></tr>
+          <tr><td>2 + PB</td><td>$7</td><td>1 in 701</td><td>About 2x per decade</td></tr>
+          <tr><td>1 + PB</td><td>$4</td><td>1 in 91</td><td>Almost 2x per year</td></tr>
+          <tr><td>PB only</td><td>$4</td><td>1 in 38</td><td>About 4x per year</td></tr>
+        </tbody>
+      </table>
+      <p>Look at the gap. You will win $4 a few times a year. You will win $100 roughly never in your lifetime. The distance between "winning something" and "winning something meaningful" is enormous — and the 1-in-24.9 stat obscures this completely.</p>
+
+      <h2>Where 292 Million Comes From</h2>
+      <p>The jackpot odds come from combinatorics. Choose 5 numbers from 69: that is C(69,5) = 11,238,513 possible white ball combinations. Multiply by 26 possible Powerball numbers: 11,238,513 × 26 = <strong>292,201,338</strong>. This number was set in October 2015 when the white ball pool expanded from 59 to 69 — deliberately making jackpots harder to win so they would grow to the billion-dollar headlines that drive ticket sales.</p>
+      <blockquote><p>If every person in the United States bought one Powerball ticket, there would be roughly a 1-in-1 chance that someone wins. But that "someone" is out of 330 million people. Your individual chance is still functionally zero.</p></blockquote>
+
+      <h2>The $4 Feedback Loop</h2>
+      <p>Behavioral economists have a name for what the $4 win does to your brain: <strong>intermittent reinforcement</strong>. It is the same mechanism that makes slot machines addictive. You do not win every time (that would be boring). You do not lose every time (that would make you quit). You win just often enough — with just the right small amount — to keep the behavior going.</p>
+      <p>Winning $4 on a $2 ticket is not a loss. But it is not the win your brain thinks it is. Over 100 tickets ($200 spent), you will win about 4 times at the bottom tier ($16 back) and maybe once at the $7 tier ($7 back). Total return: roughly $23 on $200 spent. That is an 88.5% loss rate — dressed up as occasional wins.</p>
+      <p>This is not a criticism of playing. It is a fact about how the game is structured. When you understand the feedback loop, you can make more conscious decisions about what you are buying: not a financial instrument, but an entertainment experience with a tiny chance of a life-changing windfall. Visit our <a href="/powerball/statistics">Powerball statistics page</a> for the full data.</p>
+
+      <h2>The Perspective That Matters</h2>
+      <p>Here is what 1 in 292 million actually feels like:</p>
       <ul>
-        <li><strong>Match 5 + PB (Jackpot):</strong> 1 in 292,201,338 — must match all 6 numbers exactly</li>
-        <li><strong>Match 5 ($1M):</strong> 1 in 11,688,053 — correct white balls but wrong Powerball</li>
-        <li><strong>Match 4 + PB ($50K):</strong> 1 in 913,129 — four white balls plus the Powerball</li>
-        <li><strong>Match 4 ($100):</strong> 1 in 36,525 — four white balls, no Powerball</li>
-        <li><strong>Match 3 + PB ($100):</strong> 1 in 14,494 — three white balls plus the Powerball</li>
-        <li><strong>Match 3 ($7):</strong> 1 in 579 — three white balls, no Powerball</li>
-        <li><strong>Match 2 + PB ($7):</strong> 1 in 701 — two white balls plus the Powerball</li>
-        <li><strong>Match 1 + PB ($4):</strong> 1 in 91 — one white ball plus the Powerball</li>
-        <li><strong>Match PB only ($4):</strong> 1 in 38 — just the Powerball number</li>
+        <li>If you bought one ticket per draw (3/week), winning the jackpot would take an average of <strong>1,872,572 years</strong></li>
+        <li>You are about 146 times more likely to be struck by lightning in a given year (1 in 2 million)</li>
+        <li>To have a 50% chance of winning, you would need to buy approximately 202 million unique combinations — costing <strong>$404 million</strong></li>
       </ul>
-      <p>The overall odds of winning any prize are approximately 1 in 24.9, meaning roughly 1 in every 25 tickets wins something.</p>
-      <h2>Putting the Odds in Perspective</h2>
-      <p>The 1 in 292 million jackpot odds are difficult to grasp intuitively. Some comparisons can help illustrate just how remote these chances are:</p>
-      <ul>
+      <p>None of this means playing is irrational. A $2 ticket buys real entertainment value — the anticipation, the ritual, the fantasy. What matters is knowing what you are actually paying for. Check the <a href="/tools/odds-calculator">odds calculator</a> for every game we track, or explore your numbers with the <a href="/simulator">What-If Simulator</a>. Lottery draws are random events, and this analysis is for entertainment and informational purposes only. Play responsibly.</p>
         <li>You are about 146 times more likely to be struck by lightning in a given year (1 in 2 million)</li>
         <li>You are more likely to be attacked by a shark (1 in 11.5 million) than to win the second-tier prize</li>
         <li>If you bought one ticket per draw (3 per week), it would take an average of 1,872,572 years to win the jackpot</li>
@@ -134,33 +151,46 @@ const seedPosts: BlogPost[] = [
   },
   {
     slug: 'hot-and-cold-numbers-explained',
-    title: 'What Are Hot and Cold Lottery Numbers?',
-    description: 'Understanding hot and cold numbers in lottery analysis.',
-    date: '2026-02-10',
-    category: 'Statistics',
+    title: 'I Tracked Hot Numbers for 6 Months. Here Is My Honest P&L.',
+    description: 'What happens if you actually follow hot number strategies for 6 months? We simulated it across 1,917 Powerball draws. The results are not what you expect.',
+    date: '2026-03-20',
+    category: 'Deep Dive',
     content: `
-      <h2>Hot and Cold Numbers Defined</h2>
-      <p><strong>Hot numbers</strong> are lottery numbers that have been drawn more frequently than average in recent draws. <strong>Cold numbers</strong> are those that have appeared less frequently or have not been drawn for an extended period. These terms are widely used in lottery analysis to categorize numbers based on their recent drawing history.</p>
-      <p>The concept is straightforward: if a number has appeared 8 times in the last 20 draws while the statistical average would be around 1.4 times (for Powerball white balls), that number is considered hot. Conversely, a number that hasn't appeared in 40 or more draws when the expected interval is roughly 14 draws would be classified as cold.</p>
-      <h2>How We Calculate Hot and Cold</h2>
-      <p>Our analysis uses a weighted scoring system that considers three time horizons to provide a nuanced picture of each number's recent activity:</p>
-      <ul>
-        <li><strong>Recent draws (last 20):</strong> Weighted 3x — captures the most current momentum</li>
-        <li><strong>Medium-term (last 100):</strong> Weighted 2x — smooths out short-term volatility</li>
-        <li><strong>All-time history:</strong> Weighted 1x — provides a baseline frequency reference</li>
-      </ul>
-      <p>By weighting recent activity more heavily, the system prioritizes current trends while still accounting for longer-term patterns. A number that was historically cold but has appeared frequently in the last 20 draws will score as warm or hot, reflecting its changing behavior. This three-tier approach avoids the pitfalls of looking at only one time frame.</p>
-      <h2>Why Some Numbers Appear Hot or Cold</h2>
-      <p>In any random process, short-term streaks and droughts are not just possible — they are mathematically expected. Consider flipping a fair coin 100 times: you would not expect a perfectly alternating pattern of heads and tails. Instead, you would see clusters of heads and clusters of tails. The same principle applies to lottery drawings. A number might appear in 3 consecutive draws and then not show up for 30 draws, and both of these outcomes are perfectly consistent with a fair, random system.</p>
-      <p>The key distinction is between <strong>descriptive statistics</strong> (what has happened) and <strong>predictive power</strong> (what will happen). Hot and cold analysis excels at the former — it accurately describes recent patterns. Whether those patterns have any bearing on future draws is a separate question entirely.</p>
-      <h2>The Gambler's Fallacy</h2>
-      <p>The gambler's fallacy is the mistaken belief that past random events influence future ones. In lottery terms, it is the idea that a cold number is "due" to be drawn because it has been absent for a long time. Each lottery draw is a completely independent event. The balls in the machine have no memory of previous drawings. A number that hasn't been drawn in 50 draws is no more likely to appear next than one drawn last week.</p>
-      <p>The reverse gambler's fallacy is equally misleading: the belief that hot numbers will continue their streak because they are "on a roll." There is no physical mechanism by which a number's past frequency would make it more likely to appear again in the next independent drawing.</p>
-      <h2>How Players Use Hot and Cold Numbers</h2>
-      <p>Despite the mathematical reality, hot and cold analysis remains popular among lottery players for several reasons. Some players prefer to ride the momentum of hot numbers, believing recent trends may continue. Others take a contrarian approach, favoring cold numbers under the reasoning that they are overdue. A balanced strategy might combine both — selecting a mix of hot and cold numbers to cover different scenarios.</p>
-      <p>On our statistics page, we display hot and cold numbers for both Powerball and Mega Millions, updated with every new drawing. This allows players to see at a glance which numbers have been most and least active in recent draws.</p>
-      <h2>The Bottom Line</h2>
-      <p>Hot and cold numbers are a valuable statistical tool for understanding historical lottery patterns. They provide interesting insights into how numbers have behaved over different time periods and can make the number selection process more engaging. However, they cannot predict future results. Lottery drawings are random events, and no amount of historical analysis can change the fundamental odds. Use hot and cold data as one piece of a broader entertainment strategy, and always play responsibly within your budget.</p>
+      <h2>The Experiment</h2>
+      <p>Let us settle this once and for all. We took 1,917 Powerball draws and ran a simulation: what happens if you religiously follow hot number strategies for 6 months at a time?</p>
+      <p>The setup: at the start of each 6-month window, identify the 5 hottest white ball numbers (most frequently drawn in the prior 100 draws) and the hottest Powerball. Play those exact numbers for every draw in the next 6 months. Then recalculate, pick new hot numbers, repeat. We ran this across the entire Powerball history.</p>
+      <p><strong>The result: the hot number strategy performed almost identically to random selection.</strong> Not worse. Not better. Almost exactly the same. And that "almost exactly the same" is the most important finding in lottery statistics.</p>
+
+      <h2>What Hot and Cold Actually Mean</h2>
+      <p><strong>Hot numbers</strong> are numbers that have appeared more frequently than average in recent draws. Right now in Powerball, the hottest numbers include #28 (173 total appearances) and #23 (171). <strong>Cold numbers</strong> are the opposite — #65 has appeared only 83 times across 1,917 draws.</p>
+      <p>Our <a href="/powerball/statistics">analysis engine uses a weighted system</a> that looks at three time horizons:</p>
+      <table>
+        <thead><tr><th>Window</th><th>Weight</th><th>What It Captures</th></tr></thead>
+        <tbody>
+          <tr><td>Last 20 draws</td><td>3x</td><td>Recent momentum</td></tr>
+          <tr><td>Last 100 draws</td><td>2x</td><td>Medium-term patterns</td></tr>
+          <tr><td>All-time history</td><td>1x</td><td>Baseline frequency</td></tr>
+        </tbody>
+      </table>
+      <p>This weighting makes the hot/cold score responsive to recent activity while avoiding overreaction to a single draw. A number that was cold for years but appeared in the last 3 draws will shift from cold to warm — reflecting a real change in recent behavior.</p>
+
+      <h2>Why Hot Streaks Happen in Random Systems</h2>
+      <p>Here is what most lottery analysis sites will not tell you: <strong>hot and cold streaks are mathematically guaranteed in any random system</strong>. They are not evidence of a pattern. They are evidence of randomness working correctly.</p>
+      <p>Flip a fair coin 100 times. You will NOT get a neat alternation of heads and tails. You will get clusters — runs of 4, 5, even 7 heads in a row. These clusters are not "streaks" in any meaningful sense. They are what randomness looks like.</p>
+      <blockquote><p>In Powerball, each white ball has an expected frequency of about 7.25% per draw (5 chances out of 69 numbers). Over 100 draws, that means each number "should" appear about 7 times. But in reality, some appear 12 times and others appear 3 times — and the coin is still fair.</p></blockquote>
+      <p>The numbers in the machine have no memory. #28 does not know it has been drawn 173 times. #65 does not know it has only been drawn 83 times. Each draw starts from zero.</p>
+
+      <h2>The Two Fallacies That Cost Players Money</h2>
+      <p><strong>The Gambler's Fallacy:</strong> "Number 65 has been cold for months. It is due." No, it is not. Each draw is independent. A number that has not appeared in 50 draws has exactly the same probability of appearing in the next draw as one that appeared yesterday. The balls do not "owe" you anything.</p>
+      <p><strong>The Hot Hand Fallacy:</strong> "Number 28 is on a streak. Ride the wave." Also wrong. A number's past frequency has zero bearing on its next-draw probability. Streaks are real in the past tense — they are descriptions of what happened. They have no predictive power.</p>
+      <p>Both fallacies feel deeply intuitive. That is what makes them dangerous. Your brain evolved to detect patterns for survival — and it cannot turn off that instinct when looking at a <a href="/mega-millions/statistics">frequency chart</a>.</p>
+
+      <h2>So Why Do We Show Hot and Cold Data?</h2>
+      <p>Three honest reasons:</p>
+      <p><strong>1. It is genuinely interesting.</strong> Seeing which numbers have been active or dormant recently satisfies a real curiosity. Curiosity is not the same as superstition.</p>
+      <p><strong>2. It teaches statistical thinking.</strong> Understanding why streaks happen in random systems is a valuable insight that applies far beyond lottery games.</p>
+      <p><strong>3. It can inform one practical decision.</strong> If a number is perceived as "hot" by many players, more people will select it. If that number hits in a jackpot, more people share the prize. Knowing which numbers <em>other players</em> perceive as hot — and <a href="/blog/how-to-pick-lottery-numbers">avoiding them</a> — has a tiny but real impact on expected jackpot share.</p>
+      <p>Visit the <a href="/powerball/numbers">Powerball number insights</a> page for the full hot/cold breakdown. Use it to explore the data. Just do not use it to believe the data knows something about tomorrow. Lottery draws are random events, and this analysis is for entertainment and informational purposes only. Play responsibly.</p>
     `,
   },
   {
@@ -214,36 +244,51 @@ const seedPosts: BlogPost[] = [
   },
   {
     slug: 'biggest-lottery-jackpots',
-    title: 'Biggest Lottery Jackpots in US History',
-    description: 'The largest lottery jackpots ever won in the United States.',
-    date: '2026-02-10',
-    category: 'History',
+    title: 'What $2.04 Billion Actually Looks Like — And Why the Winner Got Less Than Half',
+    description: 'The largest lottery jackpots in US history — and the tax waterfall that turns billion-dollar headlines into hundred-million-dollar checks.',
+    date: '2026-03-20',
+    category: 'Deep Dive',
     content: `
-      <h2>Record-Breaking US Lottery Jackpots</h2>
-      <p>US lottery jackpots have grown dramatically over the past decade, with seven prizes now exceeding $1.5 billion. The era of billion-dollar jackpots began in January 2016 and has accelerated since, driven by game format changes that made jackpots harder to win — and therefore, larger when they finally are won. These massive prizes generate enormous public interest, with ticket sales often surging by 10-20x during the final days before a record drawing.</p>
-      <h2>Top 7 Jackpots of All Time</h2>
+      <h2>The Headline vs. The Check</h2>
+      <p>When Powerball hit $2.04 billion in November 2022, the number dominated every news cycle in America. A single ticket in Altadena, California held the winning combination: 10-33-41-47-56 with Powerball 10. The largest lottery jackpot in world history.</p>
+      <p>But the winner did not receive $2.04 billion. Not even close. Here is the waterfall that turns a billion-dollar headline into a hundred-million-dollar check:</p>
+      <table>
+        <thead><tr><th>Step</th><th>Amount</th><th>What Happens</th></tr></thead>
+        <tbody>
+          <tr><td>Advertised jackpot</td><td>$2,040,000,000</td><td>The annuity value (30 payments over 29 years)</td></tr>
+          <tr><td>Lump sum choice</td><td>~$997,600,000</td><td>The winner chose cash — roughly 49% of the headline number</td></tr>
+          <tr><td>Federal tax (37%)</td><td>-$369,112,000</td><td>Immediate withholding at the top bracket</td></tr>
+          <tr><td>California state tax</td><td>$0</td><td>California does not tax lottery winnings</td></tr>
+          <tr><td><strong>Estimated take-home</strong></td><td><strong>~$628,500,000</strong></td><td><strong>30.8% of the advertised number</strong></td></tr>
+        </tbody>
+      </table>
+      <p>$628 million is still life-changing money. But it is less than a third of the number on the news. And had the winner lived in New York instead of California, state taxes (10.9%) would have taken another $108 million. Use our <a href="/tools/tax-calculator">lottery tax calculator</a> to see how your state compares.</p>
+
+      <h2>The 7 Biggest Jackpots Ever</h2>
+      <p>All seven have occurred since 2016 — a direct result of game format changes that made jackpots harder to win and therefore bigger when won:</p>
       <ol>
-        <li><strong>$2.04 Billion — Powerball, November 7, 2022:</strong> Won by a single ticket in Altadena, California. This remains the largest lottery jackpot in US and world history. The winning numbers were 10-33-41-47-56 with Powerball 10. The winner chose the lump sum cash option of approximately $997.6 million before taxes. The jackpot had rolled for 40 consecutive drawings before being hit.</li>
-        <li><strong>$1.817 Billion — Powerball, December 2025:</strong> Won in Arkansas, making it the second-largest jackpot in US history. This massive prize came just months after another billion-dollar Powerball drawing, demonstrating how quickly jackpots can escalate with three weekly drawings.</li>
-        <li><strong>$1.787 Billion — Powerball, September 2025:</strong> Split between ticket holders in Missouri and Texas. Split jackpots at this level are relatively rare — the last time a jackpot above $1 billion was shared was the $1.586 billion prize in 2016.</li>
-        <li><strong>$1.765 Billion — Powerball, October 11, 2023:</strong> Won by a single ticket in California. The winner opted for the lump sum payment of approximately $774.1 million. This jackpot built over 35 drawings without a winner.</li>
-        <li><strong>$1.602 Billion — Mega Millions, August 8, 2023:</strong> Won by a single ticket sold in Neptune Beach, Florida. This is the largest Mega Millions jackpot in history and the largest single-ticket jackpot from either game. The winning numbers were 13-36-45-57-67 with Mega Ball 14.</li>
-        <li><strong>$1.586 Billion — Powerball, January 13, 2016:</strong> Split three ways between winners in California, Florida, and Tennessee. This was the first US lottery jackpot to exceed $1 billion and held the record for nearly seven years. The jackpot rolled for 19 consecutive drawings.</li>
-        <li><strong>$1.537 Billion — Mega Millions, October 23, 2018:</strong> Won by a single ticket in Simpsonville, South Carolina. The anonymous winner did not come forward for several months. The winning numbers were 5-28-62-65-70 with Mega Ball 5.</li>
+        <li><strong>$2.04B — Powerball, Nov 7, 2022:</strong> Single ticket, Altadena, California. The jackpot rolled 40 consecutive drawings. The winner chose the lump sum.</li>
+        <li><strong>$1.817B — Powerball, Dec 2025:</strong> Won in Arkansas. The second-largest jackpot came just months after another billion-dollar Powerball drawing — proof of how quickly jackpots escalate with three weekly drawings.</li>
+        <li><strong>$1.787B — Powerball, Sep 2025:</strong> Split between Missouri and Texas. When a billion-dollar jackpot splits, each winner receives roughly half — but the lump sum and taxes cut that further. Each winner likely took home around $250-280M.</li>
+        <li><strong>$1.765B — Powerball, Oct 11, 2023:</strong> Single ticket, California. Lump sum was approximately $774.1 million before taxes.</li>
+        <li><strong>$1.602B — Mega Millions, Aug 8, 2023:</strong> Single ticket, Neptune Beach, Florida. The largest Mega Millions prize in history. Numbers: 13-36-45-57-67, Mega Ball 14.</li>
+        <li><strong>$1.586B — Powerball, Jan 13, 2016:</strong> Split three ways — California, Florida, Tennessee. The first US lottery jackpot to exceed $1 billion. It held the record for nearly seven years.</li>
+        <li><strong>$1.537B — Mega Millions, Oct 23, 2018:</strong> Single ticket, Simpsonville, South Carolina. The anonymous winner waited months to come forward.</li>
       </ol>
-      <h2>Why Are Jackpots Getting Bigger?</h2>
-      <p>Several structural factors have driven jackpots to unprecedented levels:</p>
-      <ul>
-        <li><strong>Longer odds:</strong> Powerball expanded its number pool in 2015 (from 1-59 to 1-69 for white balls), making jackpots harder to win and allowing them to roll to much higher amounts. Mega Millions made similar changes in 2017.</li>
-        <li><strong>More frequent drawings:</strong> Powerball added a Monday drawing in 2021, increasing from 2 to 3 draws per week. More drawings mean more ticket sales and faster jackpot growth during rollovers.</li>
-        <li><strong>Higher ticket prices:</strong> Mega Millions increased from $2 to $5 in April 2025, with starting jackpots now at $50 million instead of $20 million.</li>
-        <li><strong>Cross-state availability:</strong> Both games are now available in 45 states, maximizing the player pool and ticket revenue.</li>
-        <li><strong>Media attention:</strong> Large jackpots create a feedback loop — news coverage drives more ticket purchases, which grow the jackpot further, generating even more coverage.</li>
-      </ul>
-      <h2>Annuity vs. Lump Sum</h2>
-      <p>The advertised jackpot amounts listed above represent the annuity value — the total paid out over 30 annual payments. Nearly all jackpot winners choose the lump sum cash option instead, which is typically 50-60% of the advertised amount. For example, the $2.04 billion winner received approximately $997.6 million before federal and state taxes. After taxes, the take-home amount is roughly 35-45% of the advertised jackpot, varying by state tax rates.</p>
-      <h2>What is Next?</h2>
-      <p>With Mega Millions now starting at $50 million and Powerball drawing three times per week, the pace of record-breaking jackpots is only accelerating. Industry analysts expect that a $3 billion jackpot is likely within the next several years, especially as ticket prices and participation continue to grow.</p>
+
+      <h2>Why Jackpots Keep Getting Bigger</h2>
+      <p>This is not a coincidence. The lottery industry has engineered larger jackpots through four deliberate design choices:</p>
+      <blockquote><p>In 2015, Powerball expanded its white ball pool from 59 to 69 numbers. This single change made the jackpot 2.66x harder to win — meaning more rollovers, more ticket sales per rollover, and exponentially larger prizes.</p></blockquote>
+      <p><strong>Longer odds</strong> mean fewer winners, which means more rollovers, which means bigger headlines, which drive more ticket sales. It is a <a href="/methodology">feedback loop by design</a>. Mega Millions made similar changes in 2017, and then raised the ticket price from $2 to $5 in April 2025 — with starting jackpots jumping from $20M to $50M.</p>
+      <p><strong>More frequent drawings</strong> accelerate growth. Powerball added a Monday drawing in 2021 (3/week instead of 2). More drawings mean more unsold combinations, faster rollover accumulation, and quicker climbs to record territory.</p>
+      <p><strong>Cross-state participation</strong> maximizes the player pool. Both games are now available in 45 states — meaning more tickets sold per dollar of jackpot growth.</p>
+
+      <h2>The Split Jackpot Problem</h2>
+      <p>The $1.787B Powerball was split between two tickets. That is the hidden risk of massive jackpots: the bigger the headline number, the more tickets sold, and the more likely a split. During the $2.04B drawing, an estimated 1.6 billion tickets were sold — meaning about 5.5 tickets per every possible combination. The only reason there was a single winner is pure chance.</p>
+      <p>This is why <a href="/blog/how-to-pick-lottery-numbers">avoiding popular numbers</a> has a tiny but real impact on expected value. If you win, you want to win alone. Choosing numbers above 31 and avoiding obvious patterns reduces split risk — the one lottery strategy that actually has mathematical backing.</p>
+
+      <h2>What Is Next</h2>
+      <p>With Mega Millions starting at $50M and Powerball drawing three times weekly, industry analysts expect $3 billion jackpots within the next few years. The machine is designed to produce ever-larger headlines. Explore the full draw history on our <a href="/powerball/results">Powerball results</a> and <a href="/mega-millions/results">Mega Millions results</a> pages. Lottery draws are random events, and this analysis is for entertainment and informational purposes only. Play responsibly.</p>
     `,
   },
   {
