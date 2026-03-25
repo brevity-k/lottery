@@ -46,8 +46,8 @@ export function generateLotteryMetadata(
 }
 
 export function generateHomeMetadata(): Metadata {
-  const title = `What If You Never Missed a Draw? Free Lottery Analysis Tools`;
-  const description = 'Replay every lottery draw with your numbers. Plus hot/cold analysis, frequency stats, and AI-powered number picks for Powerball, Mega Millions & more.';
+  const title = `Latest Lottery Results & Statistics | ${SITE_NAME}`;
+  const description = 'Today\'s winning numbers for Powerball, Mega Millions, NY Lotto & more. Hot/cold analysis, frequency stats, number picks, and a What-If simulator. Updated daily.';
   return {
     title: { absolute: title },
     description,
