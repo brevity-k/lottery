@@ -1,31 +1,32 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 
-const AdsEnabledContext = createContext(true);
-const SetAdsEnabledContext = createContext<(v: boolean) => void>(() => {});
+const AdsContext = createContext({ adsEnabled: true, disableCount: { current: 0 }, setCount: (_n: number) => {} });
 
 export function AdsProvider({ children }: { children: React.ReactNode }) {
-  const [adsEnabled, setAdsEnabled] = useState(true);
-  const set = useCallback((v: boolean) => setAdsEnabled(v), []);
+  const [count, setCount] = useState(0);
+  const disableCount = useRef(0);
 
   return (
-    <SetAdsEnabledContext value={set}>
-      <AdsEnabledContext value={adsEnabled}>
-        {children}
-      </AdsEnabledContext>
-    </SetAdsEnabledContext>
+    <AdsContext value={{ adsEnabled: count === 0, disableCount, setCount }}>
+      {children}
+    </AdsContext>
   );
 }
 
 export function useAdsEnabled() {
-  return useContext(AdsEnabledContext);
+  return useContext(AdsContext).adsEnabled;
 }
 
 export function useDisableAds() {
-  const setAdsEnabled = useContext(SetAdsEnabledContext);
+  const { disableCount, setCount } = useContext(AdsContext);
   useEffect(() => {
-    setAdsEnabled(false);
-    return () => setAdsEnabled(true);
-  }, [setAdsEnabled]);
+    disableCount.current += 1;
+    setCount(disableCount.current);
+    return () => {
+      disableCount.current -= 1;
+      setCount(disableCount.current);
+    };
+  }, [disableCount, setCount]);
 }

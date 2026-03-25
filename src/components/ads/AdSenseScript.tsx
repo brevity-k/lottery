@@ -3,15 +3,7 @@
 import Script from 'next/script';
 import { usePathname } from 'next/navigation';
 import { useAdsEnabled } from './AdSenseContext';
-
-const AD_FREE_PATHS = [
-  '/privacy',
-  '/terms',
-  '/disclaimer',
-  '/contact',
-  '/about',
-  '/methodology',
-];
+import { AD_FREE_PATHS } from '@/lib/utils/constants';
 
 export default function AdSenseScript() {
   const pathname = usePathname();

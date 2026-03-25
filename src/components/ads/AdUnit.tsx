@@ -18,8 +18,10 @@ declare global {
 export default function AdUnit({ slot, format = 'auto', className = '' }: AdUnitProps) {
   const adRef = useRef<HTMLModElement>(null);
   const pushed = useRef(false);
+  const adsEnabled = useAdsEnabled();
 
   useEffect(() => {
+    if (!adsEnabled || !process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID) return;
     if (!pushed.current && adRef.current) {
       try {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
@@ -28,9 +30,7 @@ export default function AdUnit({ slot, format = 'auto', className = '' }: AdUnit
         // AdSense not loaded
       }
     }
-  }, []);
-
-  const adsEnabled = useAdsEnabled();
+  }, [adsEnabled]);
 
   if (!process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || !adsEnabled) {
     return null;
