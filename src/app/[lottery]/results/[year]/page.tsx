@@ -9,6 +9,9 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import ResultsTable from '@/components/lottery/ResultsTable';
 import JsonLd from '@/components/seo/JsonLd';
 import Card from '@/components/ui/Card';
+import yearSummariesData from '@/data/year-summaries.json';
+
+const yearSummaries: Record<string, string> = yearSummariesData;
 
 export function generateStaticParams() {
   const params: { lottery: string; year: string }[] = [];
@@ -80,6 +83,15 @@ export default async function YearResultsPage({ params }: { params: Promise<{ lo
         <p className="text-lg text-gray-600 mb-8">
           All {lottery.name} winning numbers and results from {year}. {yearDraws.length} draws total.
         </p>
+
+        {yearSummaries[`${slug}-${year}`] && (
+          <div className="bg-blue-50 border border-blue-100 rounded-xl p-5 mb-8">
+            <h2 className="text-sm font-semibold text-blue-900 mb-2">Year in Review</h2>
+            <p className="text-sm text-blue-800 leading-relaxed">
+              {yearSummaries[`${slug}-${year}`]}
+            </p>
+          </div>
+        )}
 
         <Card padding={false}>
           <ResultsTable draws={yearDraws} config={lottery} />
