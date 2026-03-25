@@ -401,6 +401,104 @@ const seedPosts: BlogPost[] = [
       <p>That is the most important thing frequency data can teach you: not which numbers to play, but how randomness actually works. Lottery draws are random events, and this analysis is for entertainment and informational purposes only. Play responsibly.</p>
     `,
   },
+  {
+    slug: 'jerry-and-marge-lottery-loophole',
+    title: 'Jerry and Marge Found a Legal Lottery Loophole. They Won $26 Million.',
+    description: 'A retired couple from Michigan discovered that when Winfall jackpots rolled down, the math favored buyers. They legally won $26 million. Here is how.',
+    date: '2026-03-22',
+    category: 'Winner Stories',
+    content: `
+      <h2>The Cereal Box Moment</h2>
+      <p>In 2003, Jerry Selbee was a 68-year-old retired manufacturing worker in Evart, Michigan, population 1,900. He picked up a brochure for a new state lottery game called <strong>Winfall</strong> and started reading the rules while eating breakfast.</p>
+      <p>Most people skim lottery rules. Jerry did the math. And what he found changed his life.</p>
+
+      <h2>The Loophole</h2>
+      <p>Winfall had a unique "roll-down" mechanic. If no one matched all 6 numbers and the jackpot exceeded $5 million, the prize money <strong>rolled down</strong> to lower tiers. Match-5 winners would get $100,000+ instead of the usual few thousand. Match-4 winners got $1,000+. Match-3 winners got $50+.</p>
+      <p>Jerry realized that during a roll-down, the expected value of a $1 ticket exceeded $1. In other words: <strong>on roll-down weeks, buying tickets was a positive-expected-value investment, not a gamble.</strong></p>
+      <blockquote><p>Jerry calculated that for every $1,100 invested during a roll-down, he could expect roughly $1,900 back — a 72% return. Not a "chance." An expected average. The math was unambiguous.</p></blockquote>
+
+      <h2>Scaling Up</h2>
+      <p>Jerry started small — $2,200 on the first roll-down. He won $2,150, almost breaking even. Then he bought $3,400 on the next one. He won $6,300. The math worked.</p>
+      <p>He and Marge formed a corporation called <strong>GS Investment Strategies</strong> and started buying tens of thousands of tickets before each roll-down. They drove to convenience stores across Michigan, hand-filling bubble sheets for hours. At their peak, they were buying <strong>$500,000 to $600,000 worth of tickets</strong> per roll-down event.</p>
+      <p>They also recruited friends, family, and eventually investors. By the time the game ended, their group had collectively wagered over $26 million — and <strong>won it all back plus profit</strong>.</p>
+
+      <h2>Was It Legal?</h2>
+      <p>Completely. Jerry and Marge did not hack anything, bribe anyone, or manipulate the drawing. They bought publicly available tickets at face value and exploited a mathematical feature that the lottery commission itself designed into the game. The Michigan Lottery investigated and confirmed: <strong>no rules were broken</strong>.</p>
+      <p>The lottery commission was aware of high-volume buyers. They actually benefited — Jerry's group generated massive ticket sales revenue. The state got its cut regardless of who won.</p>
+
+      <h2>The Movie</h2>
+      <p>In 2022, Paramount released <em>Jerry &amp; Marge Go Large</em> starring Bryan Cranston and Annette Bening. The movie captures the essence of the story: ordinary retirees who outthought the system, not through luck or fraud, but through basic arithmetic that nobody else bothered to do.</p>
+
+      <h2>What This Means for Today's Games</h2>
+      <p>Modern lotteries have eliminated roll-down mechanics precisely because of Jerry Selbee. Powerball (1 in 292 million odds) and Mega Millions (1 in 290 million) are designed so the expected value of a ticket is <em>always</em> negative — typically around $0.50-0.80 per $2 ticket. There is no edge to find.</p>
+      <p>The Jerry and Marge story is not a blueprint for beating today's lottery. It is a reminder that games have rules, rules create math, and sometimes the math says something the designers did not intend. Explore the <a href="/powerball/statistics">odds and statistics</a> of today's games on our analysis pages — just know that the Winfall-style loophole no longer exists. Lottery draws are random events, and this content is for entertainment and informational purposes only. Play responsibly.</p>
+    `,
+  },
+  {
+    slug: 'stefan-mandel-bought-every-combination',
+    title: 'He Bought Every Lottery Combination. 14 Times. And Won.',
+    description: 'Romanian mathematician Stefan Mandel figured out how to guarantee a lottery win by purchasing every possible combination. He did it 14 times before laws changed.',
+    date: '2026-03-22',
+    category: 'Winner Stories',
+    content: `
+      <h2>The Algorithm</h2>
+      <p>In the 1960s, a Romanian economist named <strong>Stefan Mandel</strong> had an idea that was either brilliant or insane: what if you simply bought <em>every possible combination</em> of lottery numbers?</p>
+      <p>The math was simple. If a lottery had 5 million possible combinations and each ticket cost $1, buying all of them cost $5 million. If the jackpot exceeded $5 million (plus taxes and the cost of buying), you were guaranteed a profit. Not a gamble. A certainty.</p>
+
+      <h2>The First Win</h2>
+      <p>Mandel first tested his theory in Romania in the 1960s, where he won the national lottery. But Romanian jackpots were small and the political environment was dangerous. He emigrated to Australia, became a citizen, and set his sights on bigger prizes.</p>
+      <p>Over the next two decades, Mandel won <strong>12 Australian lotteries</strong> using the same approach: wait for a jackpot to exceed the total cost of all combinations, form an investor group, buy every ticket. He refined the logistics — printing pre-filled tickets in bulk, organizing distribution teams, and managing the massive cash flows.</p>
+
+      <h2>The Virginia Job</h2>
+      <p>In 1992, Mandel executed his most ambitious operation. The Virginia Lottery had a jackpot of <strong>$27 million</strong> with only <strong>7,059,052 possible combinations</strong> at $1 each. The total cost to buy every combination: just over $7 million.</p>
+      <blockquote><p>Mandel raised $7.1 million from 2,524 investors. His team printed all 7,059,052 combinations on pre-filled tickets, shipped them to Virginia in boxes, and fed them through lottery terminals at grocery stores and gas stations around the state.</p></blockquote>
+      <p>He won the $27 million jackpot plus hundreds of thousands in lower-tier prizes. After paying investors, taxes, and operational costs, Mandel and his partners cleared a substantial profit.</p>
+
+      <h2>The Aftermath</h2>
+      <p>The Virginia Lottery, the FBI, the CIA, the IRS, and the Virginia Attorney General all investigated. After years of scrutiny, they concluded: <strong>Mandel broke no laws</strong>. He bought legal tickets at face value through authorized retailers.</p>
+      <p>But the publicity prompted immediate rule changes. Virginia and most other states passed laws preventing bulk ticket purchases and requiring tickets to be filled out individually at authorized terminals. Australia banned syndicate-style mass buying entirely. The "buy every combination" strategy became physically impossible in most jurisdictions.</p>
+
+      <h2>Could It Work Today?</h2>
+      <p>Not with Powerball or Mega Millions. With 292,201,338 possible Powerball combinations at $2 each, buying every ticket would cost <strong>$584.4 million</strong>. Even if the jackpot exceeded that amount (it has, four times), the logistics are impossible — you would need to print and scan 292 million unique tickets through lottery terminals within a few days. There simply are not enough terminals or hours. And the lump-sum tax hit would eat most of the profit. Use our <a href="/tools/tax-calculator">tax calculator</a> to see exactly how much.</p>
+      <p>Smaller state games with fewer combinations are theoretically possible, but anti-bulk-purchase laws now prevent it. Mandel's window closed behind him. Explore the <a href="/tools/odds-calculator">odds calculator</a> to see the combination counts for every game we track. Lottery draws are random events, and this content is for entertainment and informational purposes only. Play responsibly.</p>
+    `,
+  },
+  {
+    slug: 'eddie-tipton-lottery-fraud',
+    title: 'The Lottery Security Director Who Rigged His Own Machines',
+    description: 'Eddie Tipton was the IT security chief at the organization that runs Powerball. He installed code that let him predict winning numbers. Then he got caught.',
+    date: '2026-03-22',
+    category: 'Winner Stories',
+    content: `
+      <h2>The Man Who Controlled the Random</h2>
+      <p>If you have ever wondered whether lottery drawings are truly random, the story of <strong>Eddie Tipton</strong> will both confirm your suspicion and ultimately reassure you — because it shows what happens when someone tries to cheat, and how they get caught.</p>
+      <p>From 2003 to 2014, Tipton was the <strong>information security director at the Multi-State Lottery Association (MUSL)</strong> — the nonprofit organization that operates Powerball, Mega Millions, and several other multi-state games. He had direct access to the random number generators that determined winning numbers.</p>
+
+      <h2>The Code</h2>
+      <p>Tipton installed a self-destructing rootkit on the random number generator computers. The code activated on specific dates — three days a year — and replaced the truly random output with numbers Tipton could predict. After generating the rigged numbers, the code deleted itself, leaving no forensic trace.</p>
+      <p>He was careful. He never bought the winning tickets himself (employees were prohibited from playing). Instead, he gave the predicted numbers to friends and associates who purchased tickets and split the winnings.</p>
+      <blockquote><p>Between 2005 and 2014, Tipton rigged draws in Iowa, Colorado, Wisconsin, Kansas, and Oklahoma, generating an estimated $24 million in fraudulent winnings across multiple games.</p></blockquote>
+
+      <h2>How He Got Caught</h2>
+      <p>The unraveling started with a $16.5 million Hot Lotto jackpot in Iowa in December 2010. The winning ticket went unclaimed for nearly a year — unusual for such a large prize. When someone finally tried to claim it through a lawyer (to remain anonymous), the Iowa Lottery got suspicious and investigated.</p>
+      <p>Security cameras at the convenience store where the ticket was purchased showed a man buying the ticket. That footage was released to the public, and eventually identified as Eddie Tipton. The connection between the MUSL security director and an unclaimed jackpot ticket triggered a full investigation.</p>
+      <p>Investigators discovered a pattern: draws won by Tipton's associates happened on dates when his rootkit was active. The code was reconstructed from backup systems. In 2015, Tipton was arrested. In 2017, he pleaded guilty to fraud charges. He was sentenced to <strong>25 years in prison</strong>.</p>
+
+      <h2>What Changed</h2>
+      <p>The Tipton case triggered massive security reforms at MUSL and state lottery commissions:</p>
+      <ul>
+        <li>Random number generators are now produced by independent vendors with no MUSL employee access</li>
+        <li>Drawing procedures require multiple independent witnesses and auditors</li>
+        <li>All software is regularly audited by third-party security firms</li>
+        <li>Employee background checks and access controls were dramatically expanded</li>
+      </ul>
+      <p>The irony: the Tipton case actually <em>increased</em> public confidence in modern lottery security. The fact that he was caught — through routine investigation, camera footage, and data analysis — demonstrated that the system has real accountability mechanisms.</p>
+
+      <h2>Are Today's Drawings Fair?</h2>
+      <p>The post-Tipton security infrastructure makes another inside job extremely difficult. Modern drawing machines use hardware-based randomness (air-mixed ball machines or certified hardware RNGs), independent oversight, and multi-party verification. The <a href="/methodology">statistical analysis</a> we perform on our site confirms that drawing patterns across thousands of Powerball and Mega Millions draws are consistent with genuine randomness.</p>
+      <p>The Tipton story is a reminder that trust in lottery fairness should be based on evidence and oversight — not blind faith. The system works not because people are honest, but because it is designed to catch dishonesty. Lottery draws are random events, and this content is for entertainment and informational purposes only. Play responsibly.</p>
+    `,
+  },
 ];
 
 function loadGeneratedPosts(): BlogPost[] {
