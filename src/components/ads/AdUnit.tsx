@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useAdsEnabled } from './AdSenseContext';
 
 interface AdUnitProps {
   slot: string;
@@ -29,7 +30,9 @@ export default function AdUnit({ slot, format = 'auto', className = '' }: AdUnit
     }
   }, []);
 
-  if (!process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID) {
+  const adsEnabled = useAdsEnabled();
+
+  if (!process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || !adsEnabled) {
     return null;
   }
 

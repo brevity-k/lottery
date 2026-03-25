@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ScrollToTop from "@/components/ui/ScrollToTop";
+import AdSenseScript from "@/components/ads/AdSenseScript";
+import { AdsProvider } from "@/components/ads/AdSenseContext";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/utils/constants";
 import "./globals.css";
 
@@ -68,21 +70,17 @@ export default function RootLayout({
             gtag('config', 'G-5TW1TM399X');
           `}
         </Script>
-        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
-          <Script
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`}
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-          />
-        )}
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <ScrollToTop />
+        <AdsProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <ScrollToTop />
+          <AdSenseScript />
+        </AdsProvider>
       </body>
     </html>
   );

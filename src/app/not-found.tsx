@@ -1,6 +1,11 @@
+'use client';
+
 import Link from 'next/link';
+import { useDisableAds } from '@/components/ads/AdSenseContext';
 
 export default function NotFound() {
+  useDisableAds();
+
   const links = [
     { href: '/', label: 'Home', description: 'Back to homepage' },
     { href: '/powerball', label: 'Powerball', description: 'Results & statistics' },
