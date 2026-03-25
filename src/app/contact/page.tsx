@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 export default function ContactPage() {
-  const contactEmail = process.env.CONTACT_EMAIL || 'rottery0.kr@gmail.com';
+  const contactEmail = process.env.CONTACT_EMAIL;
 
   return (
     <>
@@ -37,14 +37,16 @@ export default function ContactPage() {
 
         <ContactForm />
 
-        <div className="mt-8 text-center text-sm text-gray-500">
-          <p>
-            You can also reach us directly at{' '}
-            <a href={`mailto:${contactEmail}`} className="text-blue-600 hover:underline">
-              {contactEmail}
-            </a>
-          </p>
-        </div>
+        {contactEmail && (
+          <div className="mt-8 text-center text-sm text-gray-500">
+            <p>
+              You can also reach us directly at{' '}
+              <a href={`mailto:${contactEmail}`} className="text-blue-600 hover:underline">
+                {contactEmail}
+              </a>
+            </p>
+          </div>
+        )}
       </div>
     </>
   );
