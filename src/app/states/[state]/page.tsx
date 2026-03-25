@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { getState, getAllStateSlugs } from '@/lib/states/config';
+import { getStateComparison } from '@/lib/enrichment/stateComparison';
 import { getLottery } from '@/lib/lotteries/config';
 import { loadLotteryData } from '@/lib/data/fetcher';
 import { breadcrumbSchema, faqSchema } from '@/lib/seo/structuredData';
@@ -63,6 +64,7 @@ export default async function StateHubPage({ params }: { params: Promise<{ state
   if (!state) notFound();
 
   const faqs = getStateFaqs(state);
+  const taxComparison = getStateComparison(slug);
 
   // Compute most recent lastUpdated across all available games
   let latestUpdate = '';
@@ -149,6 +151,13 @@ export default async function StateHubPage({ params }: { params: Promise<{ state
             for a detailed breakdown.
           </p>
         </Card>
+
+        {taxComparison && (
+          <div className="bg-green-50 border border-green-100 rounded-xl p-5 mb-6">
+            <h3 className="text-sm font-semibold text-green-900 mb-2">Tax Comparison</h3>
+            <p className="text-sm text-green-800 leading-relaxed">{taxComparison}</p>
+          </div>
+        )}
 
         {/* Available Games */}
         <Card className="mb-8">
