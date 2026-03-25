@@ -119,9 +119,14 @@ export default function DrawCountdown({
 
   // Compact variant
   return (
-    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded whitespace-nowrap">
+    <span className={colorClass
+      ? `text-xs px-2 py-1 rounded whitespace-nowrap ${colorClass}`
+      : 'text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded whitespace-nowrap'
+    }>
       {drawInfo.isTonight ? (
-        <span className="text-green-700 font-medium">Tonight! {formatTimeLeft(timeLeft)}</span>
+        <span className={colorClass ? `font-medium ${colorClass}` : 'text-green-700 font-medium'}>
+          Tonight! {formatTimeLeft(timeLeft)}
+        </span>
       ) : (
         <span>{formatTimeLeft(timeLeft)}</span>
       )}
