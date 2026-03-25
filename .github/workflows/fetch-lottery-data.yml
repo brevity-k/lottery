@@ -37,6 +37,9 @@ jobs:
       - name: Fetch latest lottery data (all 5 games)
         run: npx tsx scripts/update-data.ts
 
+      - name: Generate year summaries
+        run: npx tsx scripts/generate-year-summaries.ts
+
       - name: Check for stale data
         id: stale_check
         run: |
