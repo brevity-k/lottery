@@ -11,7 +11,7 @@ interface ParsedTime {
 }
 
 /** Day name to JS day index (0=Sunday) */
-const DAY_MAP: Record<string, number> = {
+export const DAY_MAP: Record<string, number> = {
   Sunday: 0,
   Monday: 1,
   Tuesday: 2,

@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getAllLotteries } from '@/lib/lotteries/config';
+import { getActiveLotteries } from '@/lib/lotteries/config';
 import { loadLotteryData } from '@/lib/data/fetcher';
 import { softwareAppSchema, breadcrumbSchema } from '@/lib/seo/structuredData';
 import { SITE_NAME, SITE_URL } from '@/lib/utils/constants';
@@ -30,12 +30,11 @@ export const metadata: Metadata = {
 };
 
 export default function SimulatorPage() {
-  const lotteries = getAllLotteries();
+  const lotteries = getActiveLotteries();
 
   // Load ALL draws for each active game — the simulator needs full history
   const drawsByGame: Record<string, DrawResult[]> = {};
   const lotteryConfigs: SimulatorLotteryConfig[] = lotteries
-    .filter(l => !l.retiredDate)
     .map(lottery => {
       try {
         const data = loadLotteryData(lottery.slug);

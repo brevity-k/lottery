@@ -1,27 +1,20 @@
-import { getAllLotteries } from '@/lib/lotteries/config';
+import { getActiveLotteries } from '@/lib/lotteries/config';
+import { DAY_MAP } from '@/lib/utils/drawSchedule';
 import DrawCountdown from './DrawCountdown';
 import Link from 'next/link';
 
-const DAY_ORDER: Record<string, number> = {
-  Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4,
-  Friday: 5, Saturday: 6, Sunday: 7,
-};
-
 function getEarliestDrawDay(drawDays: string[]): number {
-  return Math.min(...drawDays.map(d => DAY_ORDER[d] ?? 8));
+  return Math.min(...drawDays.map(d => DAY_MAP[d] ?? 7));
 }
 
 export default function UpcomingDrawsStrip() {
-  const lotteries = getAllLotteries()
-    .filter(l => !l.retiredDate)
+  const lotteries = getActiveLotteries()
     .sort((a, b) => getEarliestDrawDay(a.drawDays) - getEarliestDrawDay(b.drawDays));
 
   return (
     <section className="bg-gradient-to-r from-gray-900 to-gray-800 py-4">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2 mb-2">
-          <h2 className="text-sm font-medium text-gray-400 whitespace-nowrap">Upcoming Draws</h2>
-        </div>
+        <h2 className="text-sm font-medium text-gray-400 whitespace-nowrap mb-2">Upcoming Draws</h2>
         <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
           {lotteries.map(lottery => (
             <Link
@@ -36,7 +29,6 @@ export default function UpcomingDrawsStrip() {
                 drawDays={lottery.drawDays}
                 drawTime={lottery.drawTime}
                 retiredDate={lottery.retiredDate}
-                variant="compact"
                 colorClass="text-white"
               />
             </Link>

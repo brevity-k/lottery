@@ -90,9 +90,8 @@ export default function DrawCountdown({
 
   if (!drawInfo || !timeLeft) return null;
 
-  const accentColor = colorClass || 'text-blue-600';
-
   if (variant === 'hero') {
+    const accentColor = colorClass || 'text-blue-600';
     return (
       <div className="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 mb-4">
         {drawInfo.isTonight ? (
@@ -124,7 +123,7 @@ export default function DrawCountdown({
       : 'text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded whitespace-nowrap'
     }>
       {drawInfo.isTonight ? (
-        <span className={colorClass ? `font-medium ${colorClass}` : 'text-green-700 font-medium'}>
+        <span className={colorClass ? 'font-medium' : 'text-green-700 font-medium'}>
           Tonight! {formatTimeLeft(timeLeft)}
         </span>
       ) : (

@@ -209,6 +209,10 @@ export function getAllLotteries(): LotteryConfig[] {
   return Object.values(lotteries);
 }
 
+export function getActiveLotteries(): LotteryConfig[] {
+  return Object.values(lotteries).filter(l => !l.retiredDate);
+}
+
 export function getAllLotterySlugs(): string[] {
   return Object.keys(lotteries);
 }
