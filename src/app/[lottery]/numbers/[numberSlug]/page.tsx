@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { getLottery, getAllLotteries } from '@/lib/lotteries/config';
-import { loadLotteryData } from '@/lib/data/fetcher';
+import { loadLotteryData, loadNumberInsight } from '@/lib/data/fetcher';
 import { calculateFrequency } from '@/lib/analysis/frequency';
 import { calculateHotCold } from '@/lib/analysis/hotCold';
 import { calculateGaps } from '@/lib/analysis/gaps';
@@ -124,6 +124,8 @@ export default async function NumberDetailPage({ params }: { params: Promise<{ l
     // Data not available
   }
 
+  const insight = loadNumberInsight(slug, type, number);
+
   const faqs = getNumberDetailFaqs(lottery, number, type);
 
   // Prev/next navigation
@@ -195,6 +197,14 @@ export default async function NumberDetailPage({ params }: { params: Promise<{ l
               <p className="text-xs text-gray-500">avg gap (min {gapData?.minGap ?? 0}, max {gapData?.maxGap ?? 0})</p>
             </Card>
           </div>
+        )}
+
+        {/* AI-Generated Number Analysis */}
+        {insight && (
+          <Card className="mb-8">
+            <h2 className="text-lg font-bold text-gray-900 mb-2">Number Analysis</h2>
+            <p className="text-sm text-gray-700 leading-relaxed">{insight}</p>
+          </Card>
         )}
 
         {/* Common Pairings */}

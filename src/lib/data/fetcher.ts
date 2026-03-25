@@ -66,3 +66,21 @@ export function getTotalDrawCount(): number {
   }
   return total;
 }
+
+let _numberInsightsCache: Record<string, string> | null = null;
+
+/**
+ * Loads a per-number AI-generated insight paragraph.
+ * Uses fs.readFileSync with in-memory cache — NOT static import.
+ */
+export function loadNumberInsight(game: string, type: 'main' | 'bonus', number: number): string | null {
+  if (!_numberInsightsCache) {
+    const filePath = path.join(process.cwd(), 'src', 'data', 'number-insights.json');
+    try {
+      _numberInsightsCache = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    } catch {
+      _numberInsightsCache = {};
+    }
+  }
+  return _numberInsightsCache![`${game}-${type}-${number}`] || null;
+}
