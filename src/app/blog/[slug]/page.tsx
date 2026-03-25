@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { SITE_URL, DISCLAIMER_TEXT } from '@/lib/utils/constants';
+import Byline from '@/components/blog/Byline';
 import { calculateReadingTime } from '@/lib/utils/formatters';
 import { breadcrumbSchema, articleSchema } from '@/lib/seo/structuredData';
 import { getBlogPost, getAllBlogSlugs } from '@/lib/blog';
@@ -45,7 +46,7 @@ function getCategoryStyle(category: string): string {
   return CATEGORY_COLORS[category] || 'bg-gray-50 text-gray-700 border-gray-200';
 }
 
-function formatDate(dateStr: string): string {
+function _formatDate(dateStr: string): string {
   const date = new Date(dateStr + 'T00:00:00');
   return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
@@ -81,7 +82,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${getCategoryStyle(post.category)}`}>
                 {post.category}
               </span>
-              <time className="text-sm text-gray-400" dateTime={post.date}>{formatDate(post.date)} · {calculateReadingTime(post.content)}</time>
+              <Byline date={post.date} />
+              <span className="text-sm text-gray-400">{calculateReadingTime(post.content)}</span>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3 leading-tight">{post.title}</h1>
             <p className="text-lg text-gray-500 leading-relaxed">{post.description}</p>

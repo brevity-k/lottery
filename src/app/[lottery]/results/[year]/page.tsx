@@ -4,11 +4,14 @@ import { loadLotteryData } from '@/lib/data/fetcher';
 import { generateLotteryMetadata } from '@/lib/seo/metadata';
 import { breadcrumbSchema } from '@/lib/seo/structuredData';
 import { SITE_URL, DISCLAIMER_TEXT } from '@/lib/utils/constants';
-import { getYearsRange } from '@/lib/utils/formatters';
+import { getYearsRange, formatLastUpdated } from '@/lib/utils/formatters';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import ResultsTable from '@/components/lottery/ResultsTable';
 import JsonLd from '@/components/seo/JsonLd';
 import Card from '@/components/ui/Card';
+import yearSummariesData from '@/data/year-summaries.json';
+
+const yearSummaries: Record<string, string> = yearSummariesData;
 
 export function generateStaticParams() {
   const params: { lottery: string; year: string }[] = [];
@@ -42,9 +45,11 @@ export default async function YearResultsPage({ params }: { params: Promise<{ lo
   if (isNaN(yearNum)) notFound();
 
   let yearDraws: import('@/lib/lotteries/types').DrawResult[] = [];
+  let lastUpdated = '';
   try {
     const data = loadLotteryData(slug);
     yearDraws = data.draws.filter(d => new Date(d.date).getFullYear() === yearNum);
+    lastUpdated = data.lastUpdated;
   } catch {
     // Data not available
   }
@@ -67,12 +72,26 @@ export default async function YearResultsPage({ params }: { params: Promise<{ lo
           { label: year },
         ]} />
 
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
           {lottery.name} Results {year}
         </h1>
+        {lastUpdated && (
+          <p className="text-sm text-gray-500 mb-2">
+            {formatLastUpdated(lastUpdated)}
+          </p>
+        )}
         <p className="text-lg text-gray-600 mb-8">
           All {lottery.name} winning numbers and results from {year}. {yearDraws.length} draws total.
         </p>
+
+        {yearSummaries[`${slug}-${year}`] && (
+          <div className="bg-blue-50 border border-blue-100 rounded-xl p-5 mb-8">
+            <h2 className="text-sm font-semibold text-blue-900 mb-2">Year in Review</h2>
+            <p className="text-sm text-blue-800 leading-relaxed">
+              {yearSummaries[`${slug}-${year}`]}
+            </p>
+          </div>
+        )}
 
         <Card padding={false}>
           <ResultsTable draws={yearDraws} config={lottery} />

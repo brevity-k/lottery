@@ -5,8 +5,22 @@ import { getYearsRange } from '@/lib/utils/formatters';
 import { getAllBlogPosts } from '@/lib/blog';
 import { getAllStateSlugs } from '@/lib/states/config';
 import { SITE_URL } from '@/lib/utils/constants';
+import fs from 'fs';
+import path from 'path';
 
 export const dynamic = 'force-static';
+
+function getGuideSlugs(): string[] {
+  try {
+    const guidesDir = path.join(process.cwd(), 'content', 'guides');
+    return fs
+      .readdirSync(guidesDir)
+      .filter((f) => f.endsWith('.json'))
+      .map((f) => f.replace('.json', ''));
+  } catch {
+    return [];
+  }
+}
 
 function getDataLastUpdated(slug: string): string {
   try {
@@ -20,6 +34,16 @@ function getDataLastUpdated(slug: string): string {
 export default function sitemap(): MetadataRoute.Sitemap {
   const lotteries = getAllLotteries();
   const currentYear = new Date().getFullYear();
+
+  // Guide pages
+  const guidePages: MetadataRoute.Sitemap = [
+    { url: `${SITE_URL}/guides`, changeFrequency: 'monthly', priority: 0.8 },
+    ...getGuideSlugs().map((slug) => ({
+      url: `${SITE_URL}/guides/${slug}`,
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    })),
+  ];
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
@@ -35,6 +59,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/states`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/methodology`, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/simulator`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${SITE_URL}/responsible-gaming`, changeFrequency: 'monthly', priority: 0.6 },
   ];
 
   // Lottery overview, numbers, results, statistics pages
@@ -104,5 +129,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     return pages;
   });
 
-  return [...staticPages, ...lotteryPages, ...blogPages, ...statePages, ...resultPages, ...numberPages];
+  return [...staticPages, ...lotteryPages, ...blogPages, ...statePages, ...resultPages, ...numberPages, ...guidePages];
 }

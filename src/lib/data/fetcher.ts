@@ -50,3 +50,37 @@ export function loadLotteryData(lotterySlug: string): LotteryData {
 
   return data;
 }
+
+/**
+ * Returns the total number of draws across all lottery data files.
+ */
+export function getTotalDrawCount(): number {
+  const dataDir = path.join(process.cwd(), 'src', 'data');
+  let total = 0;
+  const files = fs.readdirSync(dataDir).filter(f => f.endsWith('.json'));
+  for (const file of files) {
+    try {
+      const data: LotteryData = JSON.parse(fs.readFileSync(path.join(dataDir, file), 'utf-8'));
+      total += data.draws.length;
+    } catch { /* skip non-lottery JSON */ }
+  }
+  return total;
+}
+
+let _numberInsightsCache: Record<string, string> | null = null;
+
+/**
+ * Loads a per-number AI-generated insight paragraph.
+ * Uses fs.readFileSync with in-memory cache — NOT static import.
+ */
+export function loadNumberInsight(game: string, type: 'main' | 'bonus', number: number): string | null {
+  if (!_numberInsightsCache) {
+    const filePath = path.join(process.cwd(), 'src', 'data', 'number-insights.json');
+    try {
+      _numberInsightsCache = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    } catch {
+      _numberInsightsCache = {};
+    }
+  }
+  return _numberInsightsCache![`${game}-${type}-${number}`] || null;
+}

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { getLottery, getAllLotteries } from '@/lib/lotteries/config';
-import { loadLotteryData } from '@/lib/data/fetcher';
+import { loadLotteryData, loadNumberInsight } from '@/lib/data/fetcher';
 import { calculateFrequency } from '@/lib/analysis/frequency';
 import { calculateHotCold } from '@/lib/analysis/hotCold';
 import { calculateGaps } from '@/lib/analysis/gaps';
@@ -9,6 +9,7 @@ import { calculatePairs } from '@/lib/analysis/pairs';
 import { breadcrumbSchema, faqSchema } from '@/lib/seo/structuredData';
 import { getNumberDetailFaqs } from '@/lib/seo/faqContent';
 import { SITE_URL, DISCLAIMER_TEXT } from '@/lib/utils/constants';
+import { formatLastUpdated } from '@/lib/utils/formatters';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import LotteryBall from '@/components/lottery/LotteryBall';
 import JsonLd from '@/components/seo/JsonLd';
@@ -81,9 +82,11 @@ export default async function NumberDetailPage({ params }: { params: Promise<{ l
   let recentDraws: import('@/lib/lotteries/types').DrawResult[] = [];
   let frequencyRank = 0;
   let totalNumbers = 0;
+  let lastUpdated = '';
 
   try {
     const data = loadLotteryData(slug);
+    lastUpdated = data.lastUpdated;
     const maxNum = type === 'main' ? lottery.mainNumbers.max : lottery.bonusNumber.max;
 
     const allFreq = calculateFrequency(data.draws, maxNum, type);
@@ -121,6 +124,8 @@ export default async function NumberDetailPage({ params }: { params: Promise<{ l
     // Data not available
   }
 
+  const insight = loadNumberInsight(slug, type, number);
+
   const faqs = getNumberDetailFaqs(lottery, number, type);
 
   // Prev/next navigation
@@ -153,6 +158,11 @@ export default async function NumberDetailPage({ params }: { params: Promise<{ l
             {lottery.name} {label} #{number}
           </h1>
         </div>
+        {lastUpdated && (
+          <p className="text-sm text-gray-500 mb-2">
+            {formatLastUpdated(lastUpdated)}
+          </p>
+        )}
         <p className="text-lg text-gray-600 mb-8">
           Detailed frequency analysis and historical data for {type === 'bonus' ? lottery.bonusNumber.label.toLowerCase() : 'number'} {number}.
         </p>
@@ -187,6 +197,14 @@ export default async function NumberDetailPage({ params }: { params: Promise<{ l
               <p className="text-xs text-gray-500">avg gap (min {gapData?.minGap ?? 0}, max {gapData?.maxGap ?? 0})</p>
             </Card>
           </div>
+        )}
+
+        {/* AI-Generated Number Analysis */}
+        {insight && (
+          <Card className="mb-8">
+            <h2 className="text-lg font-bold text-gray-900 mb-2">Number Analysis</h2>
+            <p className="text-sm text-gray-700 leading-relaxed">{insight}</p>
+          </Card>
         )}
 
         {/* Common Pairings */}
