@@ -2,8 +2,8 @@ name: Generate Blog Post
 
 on:
   schedule:
-    # Weekly on Monday at 7 AM UTC (2 AM ET), after weekend draws are fetched
-    - cron: '0 7 * * 1'
+    # Daily at 7 AM UTC (2 AM ET), after data fetch completes
+    - cron: '0 7 * * *'
   workflow_dispatch: # Allow manual trigger
 
 concurrency:
@@ -17,7 +17,7 @@ permissions:
 jobs:
   generate-blog:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository
@@ -35,7 +35,7 @@ jobs:
       - name: Fetch latest data before generating
         run: npx tsx scripts/update-data.ts
 
-      - name: Generate weekly blog post
+      - name: Generate daily blog post
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: npx tsx scripts/generate-blog-post.ts
@@ -60,7 +60,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add src/data/ content/blog/ CLAUDE.md
-          git commit -m "chore: generate weekly blog post $(date -u +%Y-%m-%d)"
+          git commit -m "chore: generate daily blog post $(date -u +%Y-%m-%d)"
           git pull --rebase origin main
           git push
 
