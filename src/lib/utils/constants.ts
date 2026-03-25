@@ -17,3 +17,5 @@ export const AD_FREE_PATHS = [
 ];
 
 export const ANALYTICS_ID = 'G-5TW1TM399X';
+
+export const BYLINE_NAME = 'The MyLottoStats Team';
