@@ -35,6 +35,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/states`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/methodology`, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/simulator`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${SITE_URL}/responsible-gaming`, changeFrequency: 'monthly', priority: 0.6 },
   ];
 
   // Lottery overview, numbers, results, statistics pages
