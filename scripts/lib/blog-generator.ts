@@ -381,25 +381,25 @@ ${gameSections}
 === EXISTING TITLES (avoid duplicating) ===
 ${existingTitles.slice(-30).map((t) => `- ${t}`).join('\n') || '(none yet)'}
 
-Respond with ONLY valid JSON:
-{
-  "title": "SEO-optimized title under 60 chars that avoids existing titles",
-  "angle": "The unique angle/hook in 1-2 sentences",
-  "outline": "Detailed section-by-section outline with bullet points for each h2/h3",
-  "keyDataPoints": ["specific data point 1 from the lottery data to cite", "data point 2", "data point 3"]
-}`;
+Respond with ONLY valid JSON (no markdown fences, no extra text). Keep the outline concise — section titles only, no bullets:
+{"title": "SEO title under 60 chars", "angle": "Unique hook in 1 sentence", "outline": "Section 1: topic | Section 2: topic | Section 3: topic", "keyDataPoints": ["data point 1", "data point 2", "data point 3"]}`;
 
   const result = await withRetry(
     async () => {
       const message = await client.messages.create({
         model: CLAUDE_MODEL,
-        max_tokens: 1024,
+        max_tokens: 2048,
         messages: [{ role: 'user', content: prompt }],
       });
 
       const textBlock = message.content.find((b) => b.type === 'text');
       if (!textBlock || textBlock.type !== 'text') {
         throw new Error('Claude response contains no text block');
+      }
+
+      // Check for truncation (stop_reason !== 'end_turn' means content was cut off)
+      if (message.stop_reason !== 'end_turn') {
+        throw new Error(`Outline response truncated (stop_reason: ${message.stop_reason})`);
       }
 
       return parseJsonResponse<Outline>(textBlock.text);
@@ -517,20 +517,16 @@ CHECK ALL OF THE FOLLOWING:
 6. Title is under 60 characters
 7. No claims that patterns predict future outcomes
 
-If there are factual errors with numbers, fix them using the raw data and include the corrected content.
-
-Respond with ONLY valid JSON:
-{
-  "approved": true/false,
-  "corrections": ["list of issues found, empty array if none"],
-  "correctedContent": "full corrected HTML content string, or null if no corrections needed"
-}`;
+Respond with ONLY valid JSON (no markdown fences). Keep corrections BRIEF — one short sentence per issue, max 3 issues. Do NOT include corrected content.
+{"approved": true, "corrections": []}
+or
+{"approved": false, "corrections": ["issue 1", "issue 2"]}`;
 
   const result = await withRetry(
     async () => {
       const message = await client.messages.create({
         model: CLAUDE_MODEL,
-        max_tokens: Math.min(category.maxWords * 5 + 1000, 8192),
+        max_tokens: 512,
         messages: [{ role: 'user', content: prompt }],
       });
 
@@ -559,17 +555,42 @@ Respond with ONLY valid JSON:
  * Parse a JSON response from Claude, handling markdown fences and malformed output.
  */
 function parseJsonResponse<T>(text: string): T {
+  // Helper: fix literal newlines inside JSON string values
+  function fixNewlinesInStrings(json: string): string {
+    // Replace literal newlines inside quoted strings with \\n
+    let result = '';
+    let inString = false;
+    let escape = false;
+    for (let i = 0; i < json.length; i++) {
+      const ch = json[i];
+      if (escape) { result += ch; escape = false; continue; }
+      if (ch === '\\') { result += ch; escape = true; continue; }
+      if (ch === '"') { result += ch; inString = !inString; continue; }
+      if (inString && ch === '\n') { result += '\\n'; continue; }
+      if (inString && ch === '\r') { result += '\\r'; continue; }
+      if (inString && ch === '\t') { result += '\\t'; continue; }
+      result += ch;
+    }
+    return result;
+  }
+
+  function tryParse(raw: string): T | null {
+    // Try as-is first
+    try { return JSON.parse(raw); } catch { /* fall through */ }
+    // Try with newline fix
+    try { return JSON.parse(fixNewlinesInStrings(raw)); } catch { /* fall through */ }
+    return null;
+  }
+
   // 1. Try direct parse
-  try {
-    return JSON.parse(text);
-  } catch { /* fall through */ }
+  const direct = tryParse(text);
+  if (direct) return direct;
 
   // 2. Strip markdown fences and try again
   const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
   if (fenced) {
-    try {
-      return JSON.parse(fenced[1].trim());
-    } catch { /* fall through */ }
+    const result = tryParse(fenced[1].trim());
+    if (result) return result;
   }
 
   // 3. Extract the outermost JSON object
@@ -578,11 +599,10 @@ function parseJsonResponse<T>(text: string): T {
     throw new Error(`No JSON object found in response: ${text.slice(0, 200)}`);
   }
 
-  try {
-    return JSON.parse(braceMatch[0]);
-  } catch {
-    throw new Error(`Failed to parse JSON from response: ${braceMatch[0].slice(0, 300)}`);
-  }
+  const result = tryParse(braceMatch[0]);
+  if (result) return result;
+
+  throw new Error(`Failed to parse JSON from response: ${braceMatch[0].slice(0, 300)}`);
 }
 
 /**

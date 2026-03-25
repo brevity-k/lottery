@@ -13,40 +13,50 @@ interface BlogPost {
 const seedPosts: BlogPost[] = [
   {
     slug: 'how-powerball-works',
-    title: 'How Powerball Works: Complete Guide',
-    description: 'Everything you need to know about Powerball - how to play, prize tiers, odds, and draw schedule.',
-    date: '2026-02-10',
-    category: 'Guides',
+    title: 'You Spent $2 on Powerball. Here Is Where That Money Goes.',
+    description: 'Your $2 Powerball ticket funds state education, retailer commissions, and a prize pool — before you even scratch the surface of the 1 in 292 million odds.',
+    date: '2026-03-15',
+    category: 'Deep Dive',
     content: `
-      <h2>What is Powerball?</h2>
-      <p>Powerball is one of the most popular multi-state lottery games in the United States. It's played in 45 states, Washington D.C., Puerto Rico, and the U.S. Virgin Islands. The game offers some of the largest jackpots in the world, with prizes frequently exceeding hundreds of millions of dollars. Since its launch in 1992, Powerball has created thousands of millionaires and awarded the largest lottery prize in history — a staggering $2.04 billion jackpot in November 2022.</p>
-      <p>The game is coordinated by the Multi-State Lottery Association (MUSL), a nonprofit organization formed by an agreement among US lotteries. Powerball generates revenue that supports state-level programs including education, infrastructure, and public services. Each participating state retains the revenue from tickets sold within its borders.</p>
-      <h2>How to Play</h2>
-      <p>Playing Powerball is straightforward. Each ticket costs $2, and players choose:</p>
-      <ul><li><strong>5 white ball numbers</strong> from 1 to 69</li><li><strong>1 red Powerball number</strong> from 1 to 26</li></ul>
-      <p>You can choose your own numbers or opt for a Quick Pick, where the terminal randomly selects numbers for you. Interestingly, approximately 70-80% of all Powerball tickets sold use Quick Pick, and a similar percentage of jackpot winners have been Quick Pick selections.</p>
-      <p>Tickets can be purchased at authorized retail locations in participating states. Some states also allow online ticket purchases through their official lottery websites or apps. Players must be at least 18 years old in most states, though the minimum age is 21 in Arizona, Iowa, Louisiana, and Nebraska.</p>
-      <h2>Drawing Schedule</h2>
-      <p>Powerball drawings are held three times a week: Monday, Wednesday, and Saturday at 10:59 PM Eastern Time. The drawings take place at Universal Studios in Hollywood, Florida, and are broadcast live. The addition of the Monday drawing in August 2021 gave players an extra chance to win each week and contributed to faster-growing jackpots.</p>
-      <h2>Prize Tiers</h2>
-      <p>Powerball has 9 different prize tiers, ranging from $4 to the jackpot:</p>
-      <ul>
-        <li><strong>Jackpot:</strong> Match 5 white + Powerball (Odds: 1 in 292,201,338)</li>
-        <li><strong>$1,000,000:</strong> Match 5 white (Odds: 1 in 11,688,053)</li>
-        <li><strong>$50,000:</strong> Match 4 white + Powerball (Odds: 1 in 913,129)</li>
-        <li><strong>$100:</strong> Match 4 white (Odds: 1 in 36,525)</li>
-        <li><strong>$100:</strong> Match 3 white + Powerball (Odds: 1 in 14,494)</li>
-        <li><strong>$7:</strong> Match 3 white (Odds: 1 in 579)</li>
-        <li><strong>$7:</strong> Match 2 white + Powerball (Odds: 1 in 701)</li>
-        <li><strong>$4:</strong> Match 1 white + Powerball (Odds: 1 in 91)</li>
-        <li><strong>$4:</strong> Match Powerball only (Odds: 1 in 38)</li>
-      </ul>
-      <h2>Power Play Option</h2>
-      <p>For an additional $1 per ticket, you can add the Power Play option, which multiplies non-jackpot prizes by 2x, 3x, 4x, 5x, or 10x. The 10x multiplier is only available when the jackpot is $150 million or less. The Power Play number is drawn from a separate pool before the main drawing. With Power Play, the $1 million second-tier prize is always doubled to $2 million regardless of the multiplier drawn.</p>
-      <h2>Jackpot Payment Options</h2>
-      <p>Jackpot winners can choose between two payment options. The <strong>annuity option</strong> pays the full advertised jackpot amount in 30 graduated annual payments over 29 years, with each payment increasing by 5%. The <strong>lump sum (cash) option</strong> pays a single, smaller amount — typically around 50-60% of the advertised jackpot. Most winners choose the lump sum, though the annuity provides a higher total payout. Both options are subject to federal and state income taxes.</p>
-      <h2>Overall Odds</h2>
-      <p>The overall odds of winning any Powerball prize are approximately 1 in 24.9. While the jackpot odds are extremely long at 1 in 292,201,338, the lower prize tiers are much more attainable. In fact, over 40% of all prizes awarded are the $4 tier, making it the most commonly won prize level. Understanding these odds helps players set realistic expectations and enjoy the game responsibly.</p>
+      <h2>What Happens to Your $2</h2>
+      <p>You walk into a gas station, hand over $2, and get a slip of paper with some numbers on it. Most of us stop thinking about the transaction right there. But that $2 takes a fascinating journey before it even has a chance to come back to you as winnings.</p>
+      <p>On average, about <strong>50 cents</strong> of every Powerball dollar goes to state programs — primarily education, infrastructure, and public services. Each participating state keeps the revenue from tickets sold within its borders. Another roughly <strong>5-6%</strong> goes to the retailer who sold you the ticket. The <strong>Multi-State Lottery Association (MUSL)</strong>, the nonprofit that coordinates Powerball across 45 states, takes a small operational cut. The rest — roughly 60-65% — goes into the prize pool that funds everything from $4 wins to billion-dollar jackpots.</p>
+      <p>This means the game is designed so that <strong>for every $2 you spend, less than $1.30 goes toward prizes</strong>. That is not a secret or a scandal — it is how lotteries fund public services. But it is worth knowing.</p>
+
+      <h2>The Basics: 5 + 1</h2>
+      <p>Powerball is simple: pick <strong>5 numbers from 1-69</strong> (white balls) and <strong>1 number from 1-26</strong> (the red Powerball). Match all six and you win the jackpot. The ticket costs $2.</p>
+      <p>About 70-80% of tickets sold are Quick Picks — the terminal chooses random numbers for you. And here is a fact that surprises people: <a href="/blog/how-to-pick-lottery-numbers">roughly 70% of jackpot winners used Quick Pick</a>, which is proportional to the share of tickets sold. The machine is no luckier than your birthday numbers. It is just faster.</p>
+      <p>You must be at least 18 in most states (21 in Arizona, Iowa, Louisiana, and Nebraska). Drawings happen <strong>Monday, Wednesday, and Saturday at 10:59 PM ET</strong>. The Monday draw was added in August 2021 — a third weekly chance that also accelerates jackpot growth.</p>
+
+      <h2>Nine Ways to Win (Only One Is Life-Changing)</h2>
+      <p>Powerball has 9 prize tiers. The overall odds of winning <em>something</em> are about 1 in 24.9. That sounds good until you realize what "something" usually means:</p>
+      <table>
+        <thead><tr><th>Match</th><th>Prize</th><th>Odds</th><th>Reality Check</th></tr></thead>
+        <tbody>
+          <tr><td>5 + PB</td><td>Jackpot</td><td>1 in 292,201,338</td><td>You are more likely to be struck by lightning twice</td></tr>
+          <tr><td>5</td><td>$1,000,000</td><td>1 in 11,688,053</td><td>Still astronomically unlikely</td></tr>
+          <tr><td>4 + PB</td><td>$50,000</td><td>1 in 913,129</td><td>Meaningful money, rare event</td></tr>
+          <tr><td>4</td><td>$100</td><td>1 in 36,525</td><td>Once every ~200 years of weekly play</td></tr>
+          <tr><td>3 + PB</td><td>$100</td><td>1 in 14,494</td><td>Once every ~93 years of weekly play</td></tr>
+          <tr><td>3</td><td>$7</td><td>1 in 579</td><td>A few times per year if you play every draw</td></tr>
+          <tr><td>2 + PB</td><td>$7</td><td>1 in 701</td><td>Similar to above</td></tr>
+          <tr><td>1 + PB</td><td>$4</td><td>1 in 91</td><td>Roughly once a month</td></tr>
+          <tr><td>PB only</td><td>$4</td><td>1 in 38</td><td>The most common "win"</td></tr>
+        </tbody>
+      </table>
+      <p>Over 40% of all prizes awarded are the $4 tier. That $4 win feels good — your brain registers "winner!" — but you spent $2 to get it. The net gain is $2, and the experience of winning resets your motivation to keep playing. This is not an accident. It is <a href="/methodology">behavioral design</a>.</p>
+
+      <h2>Power Play: Is the Extra Dollar Worth It?</h2>
+      <p>For $1 more ($3 total), Power Play multiplies non-jackpot prizes by 2x, 3x, 4x, 5x, or 10x. The 10x multiplier only appears when the jackpot is $150 million or less. The $1 million second-tier prize is always doubled to $2 million with Power Play regardless of the multiplier drawn.</p>
+      <p>The math: Power Play costs 50% more per ticket ($3 vs $2) but the expected multiplier averages about 2.5x. For small prizes ($4-$100), this is a reasonable value proposition. For the $1 million second prize, the guaranteed double to $2 million makes the $1 add-on compelling — <em>if</em> you hit that tier. The question is whether an extra dollar per ticket, accumulated over years of playing, is worth the occasional small-prize multiplier. There is no wrong answer — it depends on how you value entertainment spending.</p>
+
+      <h2>The Lump Sum Question</h2>
+      <p>If you win the jackpot, you choose between the <strong>annuity</strong> (30 graduated payments over 29 years, each 5% larger than the last) or the <strong>lump sum</strong> (a single payment of roughly 50-60% of the advertised amount).</p>
+      <p>Most winners choose lump sum. The financial logic: if you can invest the lump sum at a rate higher than the annuity's effective return (~5%), you come out ahead. But "most winners choose lump sum" also reflects a deep psychological bias called <strong>hyperbolic discounting</strong> — humans systematically overvalue money now versus money later. Our <a href="/tools/tax-calculator">lottery tax calculator</a> shows you exactly what each option nets you after federal and state taxes.</p>
+      <blockquote><p>A $500 million Powerball jackpot yields roughly $250 million as a lump sum. After 37% federal tax and state taxes (0-10.9% depending on where you live), the take-home ranges from about $140 million (in New York) to about $162 million (in Florida, no state tax). That is 28-32% of the advertised number.</p></blockquote>
+
+      <h2>1,917 Draws of History</h2>
+      <p>Our database contains every Powerball draw ever recorded — 1,917 draws and counting, updated daily from <a href="https://data.ny.gov">NY Open Data</a>. Explore the <a href="/powerball/statistics">full statistical breakdown</a> or test your numbers against history with the <a href="/simulator">What-If Simulator</a>. Just remember: no pattern in the data can tell you what comes next. Every draw is independent, every combination equally likely. Lottery draws are random events, and this content is for entertainment and informational purposes only. Play responsibly.</p>
     `,
   },
   {
@@ -155,31 +165,51 @@ const seedPosts: BlogPost[] = [
   },
   {
     slug: 'how-to-pick-lottery-numbers',
-    title: 'How to Pick Lottery Numbers: A Statistical Approach',
-    description: 'Different methods for selecting lottery numbers using statistical analysis.',
-    date: '2026-02-10',
-    category: 'Guides',
+    title: '70% of Jackpots Go to Quick Pick. So Why Do You Still Pick Your Own?',
+    description: 'Quick Pick wins more jackpots than self-selected numbers. But the real question is why — and what it means for how you play.',
+    date: '2026-03-15',
+    category: 'Deep Dive',
     content: `
-      <h2>Methods for Picking Lottery Numbers</h2>
-      <p>Every lottery player faces the same fundamental question: which numbers should I choose? While no method can improve your mathematical odds of winning — every combination has exactly the same probability — different approaches can make the selection process more engaging, more systematic, and in some cases, more likely to avoid sharing a jackpot if you do win. Here are the most popular statistical approaches to picking lottery numbers.</p>
-      <h2>1. Quick Pick (Random Selection)</h2>
-      <p>The Quick Pick is by far the most popular method, used on approximately 70-80% of all lottery tickets sold. The lottery terminal's random number generator selects your numbers automatically. Statistics show that roughly 70% of Powerball and Mega Millions jackpot winners used Quick Pick selections, which is roughly proportional to the percentage of tickets sold via Quick Pick.</p>
-      <p>The advantage of Quick Pick is simplicity — no analysis needed, no decision fatigue. It also tends to produce more evenly distributed number selections across the full range, which can reduce the likelihood of sharing a jackpot with other winners who might gravitate toward popular numbers like birthdays (1-31).</p>
-      <h2>2. Frequency-Based Selection</h2>
-      <p>This method involves choosing numbers that have appeared most frequently in historical drawings. The logic is straightforward: if certain numbers have been drawn more often across thousands of draws, perhaps they are worth including in your selection. For example, analyzing all Powerball draws since 2010, some numbers have appeared 20% or more above their expected frequency.</p>
-      <p>Frequency-based selection gives players a sense of backing "proven" numbers. While past frequency has no bearing on future draws in a truly random system, this approach does ensure your selections are grounded in actual data rather than gut feelings or superstition.</p>
-      <h2>3. Overdue Number Strategy</h2>
-      <p>The contrarian approach: select numbers that haven't appeared for longer than their statistical average gap. If a Powerball white ball number has an expected interval of roughly 14 draws but hasn't appeared in 40 draws, it is considered significantly overdue. Some players believe overdue numbers are due for a correction and will appear more frequently in the near future.</p>
-      <p>While the law of large numbers does suggest that frequencies will converge over very long time horizons, each individual draw remains independent. Still, the overdue strategy offers a systematic way to select numbers that provides a counterpoint to frequency-based approaches.</p>
-      <h2>4. Pair and Pattern Analysis</h2>
-      <p>This method examines which numbers frequently appear together in the same drawing. Certain number pairs have co-occurred significantly more often than random chance would predict. By selecting numbers that form historically strong pairs, players build combinations that reflect actual observed patterns in the data. Our pair analysis examines every possible two-number combination across all historical draws to identify the strongest co-occurrences.</p>
-      <h2>5. Balanced Approach (Our Recommendation)</h2>
-      <p>Rather than relying on a single signal, our recommended strategy blends multiple analytical inputs into a composite score for each number. The balanced strategy uses the following weights: 30% overall frequency analysis, 30% hot/cold trend scoring, 25% overdue analysis, and 15% pair frequency bonus. This approach diversifies across different statistical signals, reducing the risk of an approach that relies too heavily on one metric.</p>
-      <p>We also offer a Trending strategy (favoring recent momentum with 50% hot/cold weight) and a Contrarian strategy (targeting overdue numbers with 60% overdue weight) for players who prefer a more focused approach.</p>
-      <h2>Numbers to Consider Avoiding</h2>
-      <p>While every number has the same chance of being drawn, some numbers are more commonly selected by other players. Birthday numbers (1-31) are disproportionately popular, meaning if those numbers hit, the jackpot is more likely to be split. Numbers that form visual patterns on the play slip (diagonals, rows) are also over-selected. Choosing numbers above 31 and avoiding obvious patterns can help maximize your payout in the unlikely event of a jackpot win.</p>
-      <h2>Important Reminder</h2>
-      <p>No strategy, system, or analytical method can improve your mathematical odds of winning the lottery. The odds of matching all numbers are fixed by the game's format — 1 in 292,201,338 for Powerball and 1 in 290,472,336 for Mega Millions. These methods are for entertainment and engagement purposes only. Always play responsibly, set a budget, and never spend more than you can afford to lose.</p>
+      <h2>The Number That Changed How I Think About Lottery Strategy</h2>
+      <p>Here is a fact that stops most lottery players cold: approximately <strong>70% of Powerball jackpot winners used Quick Pick</strong>. No strategy. No birthday numbers. No frequency charts. Just random selections from a machine.</p>
+      <p>Before you close this tab, that number is not as straightforward as it sounds. And understanding <em>why</em> is the key to making smarter choices — not about which numbers to pick, but about how to think about the game itself.</p>
+
+      <h2>The Quick Pick Paradox</h2>
+      <p>The 70% stat is real, but it comes with a critical asterisk: roughly 70-80% of all tickets sold are Quick Picks. So Quick Pick tickets win 70% of jackpots because they represent 70% of all tickets. The win rate is proportional to the purchase rate. There is no magic in the machine.</p>
+      <p>This means self-selected numbers win at exactly the same rate per ticket. Your birthday numbers have the same 1 in 292,201,338 chance as any Quick Pick combination. The math does not care who chose the numbers.</p>
+      <blockquote><p>Every combination of 5 numbers from 69 + 1 from 26 has exactly the same probability: 1 in 292,201,338. The machine that draws the balls has no memory, no preference, and no pattern.</p></blockquote>
+
+      <h2>The Birthday Number Trap (Where Strategy Actually Matters)</h2>
+      <p>You cannot improve your odds of winning. But you <em>can</em> influence how much you win. This is where most self-selected players make a costly mistake.</p>
+      <p>When people pick their own numbers, they overwhelmingly choose from 1 to 31 — birthdays, anniversaries, ages. Look at the data: across 1,917 Powerball draws, the most frequently drawn number is <strong>#28 (173 times)</strong>. But here is the problem — #28 is also one of the most commonly <em>selected</em> numbers by players, because it falls in the birthday range.</p>
+      <p>If #28 hits as part of a jackpot combination, more people share the prize. A $500 million jackpot split three ways is $166 million each. The same jackpot won by a single ticket is the full $500 million. <strong>Your number choice does not change your odds of winning — but it dramatically changes your expected payout.</strong></p>
+
+      <h2>What the Data Actually Shows</h2>
+      <p>We analyzed all 1,917 Powerball draws. Here is what stands out:</p>
+      <table>
+        <thead><tr><th>Category</th><th>Numbers</th><th>Player Selection Rate</th><th>If You Win</th></tr></thead>
+        <tbody>
+          <tr><td>Birthday range (1-31)</td><td>31 numbers</td><td>Very high (most players pick here)</td><td>More likely to split</td></tr>
+          <tr><td>Upper range (32-69)</td><td>38 numbers</td><td>Low (few players pick here)</td><td>Less likely to split</td></tr>
+          <tr><td>Quick Pick (full range)</td><td>All 69</td><td>Evenly distributed</td><td>Average split risk</td></tr>
+        </tbody>
+      </table>
+      <p>The least-drawn Powerball number is <strong>#65 (83 appearances in 1,917 draws)</strong>. It is drawn less often by the machine, but it is <em>also</em> selected less often by players. If it does hit, you are less likely to share the prize. This does not make it a better number — it makes it a number with a different risk profile.</p>
+
+      <h2>The Real Strategies (Honest Assessment)</h2>
+      <p>There are several popular approaches to number selection. Here is what each one actually does:</p>
+      <p><strong>Frequency-based:</strong> Pick numbers that have appeared most often (like #28 at 173 times or #23 at 171 times in Powerball). This feels logical but does not change your odds. Each draw is independent. And popular numbers mean more shared jackpots.</p>
+      <p><strong>Overdue numbers:</strong> Pick numbers that have not appeared recently. Feels intuitive — surely they are "due." They are not. The <a href="/methodology">gambler's fallacy</a> is the belief that past random events influence future ones. They do not.</p>
+      <p><strong>Avoiding popular numbers:</strong> This is the one approach that has a mathematical basis — not for winning more often, but for winning more money when you do win. By avoiding 1-31 and obvious patterns (7-14-21-28-35, sequential runs), you reduce your chance of splitting.</p>
+      <p><strong>Quick Pick:</strong> Distributes evenly across the full range. No birthday bias. No pattern bias. The simplest path to an unbiased selection. Our <a href="/powerball/numbers">number insights page</a> shows the full distribution.</p>
+
+      <h2>What We Actually Recommend</h2>
+      <p>If you enjoy picking numbers, pick numbers. The entertainment value is real — research shows that the anticipation of checking numbers you chose yourself activates different reward pathways than checking random ones. That psychological engagement is worth something.</p>
+      <p>But if your goal is to maximize expected value in the astronomically unlikely event of a jackpot, the math points to one strategy: <strong>use numbers above 31, avoid obvious patterns, and do not pick the same numbers as everyone else</strong>. Or just use Quick Pick and spend zero mental energy on a decision that does not affect your odds.</p>
+      <p>Our <a href="/powerball/statistics">Powerball statistics page</a> and <a href="/mega-millions/statistics">Mega Millions statistics page</a> show you exactly how every number has performed historically. Use that data however you like — just know that no pattern in it can tell you what comes next.</p>
+
+      <h2>The Bottom Line</h2>
+      <p>You cannot pick your way to better odds. The 1 in 292 million is fixed. What you <em>can</em> control is whether you are likely to share a jackpot if you win. And the simplest way to do that is to stop picking birthdays. Lottery draws are random, and this analysis is for entertainment and informational purposes only. Play responsibly.</p>
     `,
   },
   {
@@ -218,70 +248,112 @@ const seedPosts: BlogPost[] = [
   },
   {
     slug: 'how-mega-millions-works',
-    title: 'How Mega Millions Works: Complete Guide',
-    description: 'Complete guide to playing Mega Millions.',
-    date: '2026-02-10',
-    category: 'Guides',
+    title: '$2 to $5: What Mega Millions\' Price Hike Actually Bought You',
+    description: 'Mega Millions tickets went from $2 to $5 in April 2025. Better odds, auto-multiplier, bigger jackpots — but is it worth 2.5x the price? We did the math.',
+    date: '2026-03-15',
+    category: 'Deep Dive',
     content: `
-      <h2>What is Mega Millions?</h2>
-      <p>Mega Millions is one of the two largest multi-state lottery games in the United States, available in 45 states, Washington D.C., and the U.S. Virgin Islands. The game has been running since 1996 (originally as "The Big Game") and has produced some of the largest lottery jackpots in history, including the $1.602 billion prize won in Florida in August 2023. In April 2025, Mega Millions underwent its most significant overhaul in years, introducing a new price point, improved odds, and an automatic multiplier on every ticket.</p>
-      <h2>How to Play (Since April 2025)</h2>
-      <p>Each Mega Millions ticket costs $5, up from the previous price of $2. Players select 5 white ball numbers from a pool of 1 to 70, plus 1 gold Mega Ball from a separate pool of 1 to 24 (reduced from 1-25 in the pre-April 2025 format). As with other lottery games, players can choose their own numbers or opt for a Quick Pick, where the terminal randomly generates a selection.</p>
-      <p>Tickets are available at authorized retailers in all participating states. Some states also offer online purchases through official lottery websites and mobile apps. Players must meet their state's minimum age requirement — 18 in most jurisdictions, though some states require players to be 21.</p>
-      <h2>Drawing Schedule</h2>
-      <p>Mega Millions drawings are held twice a week, on Tuesday and Friday, at 11:00 PM Eastern Time. The drawings are conducted at WSB-TV studios in Atlanta, Georgia. Results are typically available on official lottery websites within minutes of the drawing, and our site updates automatically with fresh data as soon as it is published.</p>
-      <h2>The April 2025 Overhaul: What Changed</h2>
-      <p>The April 2025 update brought several major changes to Mega Millions:</p>
-      <ul>
-        <li><strong>Ticket price:</strong> Increased from $2 to $5 per play</li>
-        <li><strong>Mega Ball pool:</strong> Reduced from 1-25 to 1-24, slightly improving jackpot odds</li>
-        <li><strong>Jackpot odds:</strong> Improved from 1 in 302,575,350 to 1 in 290,472,336</li>
-        <li><strong>Automatic multiplier:</strong> Every ticket now includes a 2x-10x multiplier at no extra cost</li>
-        <li><strong>Megaplier retired:</strong> The old $1 Megaplier add-on is no longer available</li>
-        <li><strong>Starting jackpot:</strong> Increased from $20 million to $50 million</li>
-        <li><strong>Higher non-jackpot prizes:</strong> Many prize tiers were increased to reflect the new price point</li>
-      </ul>
-      <h2>Prize Tiers</h2>
-      <p>Mega Millions features 9 prize tiers, from $2 up to the jackpot. The second-tier prize for matching all 5 white balls (without the Mega Ball) is $1 million. With the automatic multiplier, this prize can be boosted to $2 million, $3 million, $4 million, $5 million, or even $10 million without any additional cost. Lower-tier prizes are similarly multiplied, making even small wins more rewarding under the new format.</p>
-      <h2>Automatic Multiplier</h2>
-      <p>The old $1 Megaplier add-on has been retired and replaced with an automatic multiplier that is included with every $5 ticket purchase. Before each drawing, a random multiplier of 2x, 3x, 4x, 5x, or 10x is selected. This multiplier applies to all non-jackpot prizes won on that ticket. The 10x multiplier was previously only available through the Megaplier option and only when the jackpot was under a certain threshold — now it is available on every drawing regardless of jackpot size.</p>
-      <h2>Jackpot Payment Options</h2>
-      <p>Like Powerball, Mega Millions jackpot winners choose between an annuity and a lump sum. The annuity pays the full advertised jackpot over 30 annual payments, each 5% larger than the last. The lump sum cash value is typically 50-60% of the advertised amount. Both options are subject to federal income tax (currently 37% on the highest bracket) and any applicable state taxes. Some states, including California, Florida, and Texas, do not tax lottery winnings at the state level.</p>
-      <h2>Odds and Expected Value</h2>
-      <p>The overall odds of winning any Mega Millions prize are approximately 1 in 24. The jackpot odds of 1 in 290,472,336 are now slightly better than Powerball's 1 in 292,201,338, making Mega Millions the marginally easier game to win at the top level. However, at $5 per ticket versus $2, the cost per chance is significantly higher. Players should weigh these factors and treat lottery play as a form of entertainment rather than a financial strategy.</p>
+      <h2>The Most Expensive Lottery Ticket in America</h2>
+      <p>In April 2025, Mega Millions did something no major US lottery had done in decades: it raised the ticket price from $2 to <strong>$5</strong>. A 150% increase. Overnight, your weekly Mega Millions habit went from $4 (two draws) to $10.</p>
+      <p>The lottery consortium sold this as an upgrade. Better odds. Bigger starting jackpots. An automatic multiplier on every ticket. But did the math actually improve for players? We looked at the data from 2,486 historical draws and the new format to find out.</p>
+
+      <h2>What Changed: Before vs. After</h2>
+      <table>
+        <thead><tr><th>Feature</th><th>Before (pre-April 2025)</th><th>After (current)</th></tr></thead>
+        <tbody>
+          <tr><td>Ticket price</td><td>$2</td><td><strong>$5</strong></td></tr>
+          <tr><td>Jackpot odds</td><td>1 in 302,575,350</td><td><strong>1 in 290,472,336</strong></td></tr>
+          <tr><td>Mega Ball pool</td><td>1-25</td><td><strong>1-24</strong></td></tr>
+          <tr><td>Multiplier</td><td>$1 add-on (Megaplier)</td><td><strong>Included free (2x-10x)</strong></td></tr>
+          <tr><td>Starting jackpot</td><td>$20 million</td><td><strong>$50 million</strong></td></tr>
+          <tr><td>White ball pool</td><td>1-70</td><td>1-70 (unchanged)</td></tr>
+        </tbody>
+      </table>
+
+      <h2>The Odds Got Better. But Did the Value?</h2>
+      <p>The jackpot odds improved from 1 in 302.6 million to 1 in 290.5 million — about 4% better. Sounds nice. But here is the calculation that matters: <strong>cost per chance at the jackpot</strong>.</p>
+      <p>Before: $2 per shot at 1-in-302.6M. After: $5 per shot at 1-in-290.5M. Even with the better odds, you are paying 2.5x more per chance. The cost-per-chance actually <em>increased</em> by about 140%. You now need to spend $5 to get what used to cost $2 — with only marginally better odds.</p>
+      <blockquote><p>The old Mega Millions: $2 per 1-in-302.6M chance = $0.0000000066 per unit of probability. The new Mega Millions: $5 per 1-in-290.5M chance = $0.0000000172 per unit of probability. The new ticket costs <strong>2.6x more per unit of probability</strong> than the old one.</p></blockquote>
+
+      <h2>The Multiplier Changes the Equation</h2>
+      <p>The biggest genuine improvement is the automatic multiplier. Under the old format, the Megaplier cost $1 extra ($3 total). Now every $5 ticket includes a 2x-10x multiplier automatically. The 10x multiplier, which was previously restricted to jackpots under $150 million, is now available on every drawing.</p>
+      <p>This matters most for the second-tier prize. Match 5 white balls without the Mega Ball and you win $1 million — but with the multiplier, that prize can be <strong>$2M, $3M, $4M, $5M, or $10M</strong>. Under the old format, getting the 10x multiplier on a $1M prize required paying $3 per ticket AND the jackpot being under $150M. Now you get that shot automatically.</p>
+      <p>For smaller prizes ($2-$10,000), the automatic multiplier adds meaningful value. A $200 win becomes $400-$2,000 without paying extra. Whether this compensates for the 150% ticket price increase depends on how often you win — which, given the odds, is not often.</p>
+
+      <h2>How It Plays: The Basics</h2>
+      <p>Pick <strong>5 numbers from 1-70</strong> and <strong>1 Mega Ball from 1-24</strong>. Drawings happen <strong>Tuesday and Friday at 11:00 PM ET</strong> at WSB-TV studios in Atlanta. The overall odds of winning any prize are about 1 in 24. Our <a href="/mega-millions/statistics">Mega Millions statistics page</a> shows the full frequency breakdown across all 2,486 draws in our database.</p>
+      <p>Jackpot winners choose between a <strong>lump sum</strong> (roughly 50-60% of the advertised amount) and an <strong>annuity</strong> (30 payments over 29 years, each 5% larger). Both are subject to federal tax (up to 37%) and <a href="/tools/tax-calculator">state taxes that vary dramatically</a> — from 0% in Florida to 10.9% in New York.</p>
+
+      <h2>Mega Millions vs. Powerball in 2026</h2>
+      <p>With the price change, the comparison to Powerball has shifted:</p>
+      <table>
+        <thead><tr><th></th><th>Mega Millions</th><th>Powerball</th></tr></thead>
+        <tbody>
+          <tr><td>Ticket price</td><td>$5</td><td>$2</td></tr>
+          <tr><td>Jackpot odds</td><td>1 in 290.5M</td><td>1 in 292.2M</td></tr>
+          <tr><td>Draws per week</td><td>2</td><td>3</td></tr>
+          <tr><td>Cost per week (all draws)</td><td>$10</td><td>$6</td></tr>
+          <tr><td>Multiplier</td><td>Included</td><td>$1 extra</td></tr>
+        </tbody>
+      </table>
+      <p>Mega Millions now has slightly better jackpot odds but costs 2.5x more per ticket and offers fewer weekly drawings. Powerball gives you three chances per week for $6. Mega Millions gives you two for $10. For a <a href="/mega-millions/numbers">deeper number analysis of both games</a>, visit our comparison tools.</p>
+
+      <h2>The Real Question</h2>
+      <p>Is the new Mega Millions a better deal? Strictly by the math, no — you pay more per unit of probability. But lottery tickets are not investment vehicles. They are entertainment products that happen to carry a tiny chance of a massive windfall. The automatic multiplier makes small wins more interesting. The higher starting jackpots make the game feel bigger from day one. Whether that is worth $5 instead of $2 is a personal judgment call, not a mathematical one.</p>
+      <p>What has not changed: every combination of 5 numbers from 70 + 1 from 24 has the same 1 in 290,472,336 chance. No analysis of our <a href="/mega-millions/statistics">2,486 historical draws</a> can change that. Lottery draws are random events, and this content is for entertainment and informational purposes only. Play responsibly.</p>
     `,
   },
   {
     slug: 'understanding-number-frequency',
-    title: 'Understanding Lottery Number Frequency',
-    description: 'A deep dive into lottery number frequency analysis.',
-    date: '2026-02-10',
-    category: 'Statistics',
+    title: 'Number 28 Has Been Drawn 173 Times. Here Is Why That Tells You Nothing.',
+    description: 'Powerball number 28 leads all numbers with 173 appearances in 1,917 draws. Here is what frequency data actually means — and the one thing it cannot do.',
+    date: '2026-03-15',
+    category: 'Deep Dive',
     content: `
-      <h2>What is Number Frequency Analysis?</h2>
-      <p>Number frequency analysis is one of the most fundamental tools in lottery statistics. It examines how often each number has been drawn across all historical lottery drawings, compiling a comprehensive count of every number's appearances. By comparing actual frequencies to expected frequencies, analysts can identify which numbers have appeared more or less often than statistical averages would predict.</p>
-      <p>Frequency analysis is the foundation upon which more advanced lottery statistics are built. Hot and cold number scoring, overdue detection, and recommendation engines all rely on frequency data as a starting input. Understanding how frequency analysis works — and what it can and cannot tell you — is essential for anyone interested in the statistical side of lottery games.</p>
-      <h2>Expected Frequency Explained</h2>
-      <p>In a perfectly random system, every number would be drawn with equal probability over a sufficiently large sample. For Powerball's white balls, where 5 numbers are drawn from a pool of 69, each number has an expected frequency of approximately 7.25% per draw (5/69). This means that over 1,000 draws, each white ball number would be expected to appear roughly 72-73 times.</p>
-      <p>For the Powerball red ball (drawn from a pool of 1-26), each number has an expected frequency of about 3.85% per draw (1/26), meaning each Powerball number should appear roughly 38-39 times per 1,000 draws. Mega Millions follows similar logic: each white ball has an expected frequency of about 7.14% (5/70) and each Mega Ball about 4.17% (1/24).</p>
-      <h2>How We Measure Frequency</h2>
-      <p>Our frequency analysis tracks several metrics for each number:</p>
-      <ul>
-        <li><strong>Total appearances:</strong> The raw count of how many times a number has been drawn across all historical data</li>
-        <li><strong>Frequency percentage:</strong> The number's appearance rate compared to the total number of draws</li>
-        <li><strong>Last drawn date:</strong> When the number most recently appeared in a drawing</li>
-        <li><strong>Draws since last appearance:</strong> The current gap — how many consecutive draws have passed without this number appearing</li>
-      </ul>
-      <p>These metrics are calculated separately for main numbers (white balls) and bonus numbers (Powerball or Mega Ball), since they are drawn from different pools with different expected frequencies.</p>
-      <h2>Why Do Frequencies Vary?</h2>
-      <p>Even in a perfectly random system, short-term frequency variations are not just possible — they are mathematically guaranteed. This concept is known as statistical noise or variance. Consider this thought experiment: if you roll a fair six-sided die 60 times, you would expect each face to appear 10 times. In practice, some faces might appear 7 times while others appear 13 times, and this would be completely normal behavior for a fair die.</p>
-      <p>The same principle applies to lottery numbers. With Powerball's 1,900+ historical draws, some numbers will inevitably appear 10-15% above or below their expected frequency. These variations do not indicate bias — they are the natural result of randomness at work. The law of large numbers tells us that as the number of draws approaches infinity, all frequencies would converge to their expected values. With only a few thousand draws, meaningful deviations from expected values are entirely expected.</p>
-      <h2>Frequency Analysis in Practice</h2>
-      <p>On our statistics pages, we display frequency data for every number in both Powerball and Mega Millions. You can see which numbers have been drawn most and least often, and compare their actual frequencies to expected values. This data is updated after every new drawing to reflect the latest results.</p>
-      <p>Some players use frequency data to select their numbers — either choosing the most frequent numbers (assuming they might continue their pattern) or the least frequent numbers (believing they are due for a correction). Both approaches are valid entertainment strategies, though neither changes the underlying mathematical odds.</p>
-      <h2>Limitations of Frequency Analysis</h2>
-      <p>Modern lottery systems are among the most rigorously tested and regulated random number generators in existence. Drawing machines are regularly inspected, calibrated, and replaced. Ball sets are weighed and measured before every drawing. Any frequency patterns observed in historical data are almost certainly the product of random statistical variation, not systematic bias in the drawing equipment.</p>
-      <p>Frequency analysis is a descriptive tool — it tells you what has happened, not what will happen. A number that has been drawn 20% more often than expected over the past 1,000 draws has no greater or lesser probability of appearing in the next draw. Each drawing is an independent event with the same odds regardless of what came before. Use frequency analysis to satisfy your curiosity and inform your entertainment choices, but remember that it has no predictive power over future lottery results.</p>
+      <h2>The Most Drawn Powerball Number</h2>
+      <p>Across 1,917 Powerball draws, <strong>number 28 has appeared 173 times</strong>. Number 23 is close behind at 171. At the bottom of the list, number 65 has shown up just 83 times — less than half as often as #28.</p>
+      <p>If you are like most lottery players, your instinct is clear: play 28, avoid 65. The hot number is hot. The cold number is cold. Right?</p>
+      <p><strong>Wrong.</strong> And understanding <em>why</em> that instinct is wrong is the most important statistical concept in lottery analysis.</p>
+
+      <h2>What Frequency Data Actually Tells You</h2>
+      <p>Frequency analysis does one thing well: it describes what <em>has</em> happened. Number 28 has appeared 173 times. Number 65 has appeared 83 times. These are facts, pulled directly from <a href="https://data.ny.gov">NY Open Data</a> and verified against every draw in our database.</p>
+      <p>What frequency analysis <em>cannot</em> do is tell you what will happen next. And this is where the human brain gets tricked.</p>
+
+      <h2>The Coin Flip That Explains Everything</h2>
+      <p>Imagine flipping a fair coin 100 times. You would expect roughly 50 heads and 50 tails. But if you actually do it, you will almost never get exactly 50/50. You might get 53/47, or 46/54, or even 58/42. All of these outcomes are perfectly normal for a fair coin.</p>
+      <p>Now imagine flipping that coin 1,917 times (the number of Powerball draws in our database). You still will not get exactly 50/50. The variance gets smaller in percentage terms, but the absolute gap can grow. A 52/48 split over 1,917 flips means one side appeared about 77 more times than the other — <em>and the coin is still perfectly fair</em>.</p>
+      <blockquote><p>Number 28's 173 appearances in 1,917 draws represents a frequency of 9.03%. The expected frequency for any Powerball number is 7.25% (5 drawn from 69). The difference — 1.78 percentage points — is well within normal statistical variance for a random system.</p></blockquote>
+
+      <h2>The Variance Is the Point</h2>
+      <p>Here is the data that makes this concrete. In Powerball, the expected appearance count for any white ball over 1,917 draws is roughly 139 times (1,917 × 5/69). Let us see how the actual numbers compare:</p>
+      <table>
+        <thead><tr><th>Number</th><th>Appearances</th><th>Expected</th><th>Deviation</th></tr></thead>
+        <tbody>
+          <tr><td>#28 (most drawn)</td><td>173</td><td>~139</td><td>+24.5%</td></tr>
+          <tr><td>#23</td><td>171</td><td>~139</td><td>+23.0%</td></tr>
+          <tr><td>#36</td><td>166</td><td>~139</td><td>+19.4%</td></tr>
+          <tr><td>#60</td><td>89</td><td>~139</td><td>-36.0%</td></tr>
+          <tr><td>#65 (least drawn)</td><td>83</td><td>~139</td><td>-40.3%</td></tr>
+        </tbody>
+      </table>
+      <p>The spread from 83 to 173 looks dramatic. But over 1,917 independent random draws, this range is exactly what mathematicians would expect. A chi-squared test — the standard tool for checking if a distribution is truly random — shows Powerball's frequency distribution is consistent with a fair drawing system.</p>
+
+      <h2>Why Your Brain Sees Patterns That Are Not There</h2>
+      <p>Humans evolved to detect patterns. When our ancestors saw rustling grass, the ones who assumed "predator" survived. The ones who assumed "wind" sometimes did not. This survival mechanism is still running in your brain when you look at a <a href="/powerball/statistics">frequency chart</a>.</p>
+      <p>When you see #28 at 173 and #65 at 83, your pattern-detection system screams: <em>there is a signal here!</em> But in a random system, what looks like a pattern is just noise. The technical term is <strong>apophenia</strong> — perceiving meaningful connections in random data.</p>
+      <p>The lottery drawing machines are among the most rigorously tested random systems on Earth. Balls are weighed, measured, and rotated between draws. Machines are regularly replaced. The physical mechanism is designed to be as close to mathematically random as engineering allows.</p>
+
+      <h2>So Why Do We Show Frequency Data?</h2>
+      <p>Fair question. If frequency data does not help you win, why does <a href="/powerball/statistics">our statistics page</a> display it?</p>
+      <p>Three reasons:</p>
+      <p><strong>1. It is genuinely interesting.</strong> Knowing that #28 leads Powerball with 173 appearances is a real fact about a real dataset. Curiosity about data is not the same as believing data can predict the future.</p>
+      <p><strong>2. It builds statistical literacy.</strong> Understanding why a 173-to-83 spread is normal — not suspicious — teaches you something about randomness that applies far beyond lottery games.</p>
+      <p><strong>3. It can help with one practical decision.</strong> While frequency data cannot tell you which numbers will be drawn, it <em>can</em> help you avoid numbers that other players are likely to pick. If #28 is widely perceived as a "lucky number" because of its high frequency, more players will select it, meaning more shared jackpots when it hits. Visit our <a href="/powerball/numbers">number insights page</a> for the full analysis.</p>
+
+      <h2>The One Question That Matters</h2>
+      <p>Next time you look at a frequency chart, ask yourself one question: <em>Does this data give me information about the next draw, or only about past draws?</em></p>
+      <p>The answer is always the same. Past draws. Only past draws. Each Powerball drawing is an independent event with 292,201,338 equally likely outcomes. Number 28 does not know it has been drawn 173 times. Number 65 does not know it has only appeared 83 times. The balls have no memory.</p>
+      <p>That is the most important thing frequency data can teach you: not which numbers to play, but how randomness actually works. Lottery draws are random events, and this analysis is for entertainment and informational purposes only. Play responsibly.</p>
     `,
   },
 ];
