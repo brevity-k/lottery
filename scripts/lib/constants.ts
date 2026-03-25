@@ -137,6 +137,51 @@ export const TARGET_KEYWORDS: string[] = [
   'closest lottery near miss stories',
 ];
 
+export interface BlogQueueItem {
+  category: string;  // matches slug in content/categories/*.md
+  topic: string;
+  targetKeyword: string;
+}
+
+/**
+ * Pre-seeded blog topic queue. Generator picks from this first,
+ * falls back to category rotation when all topics are consumed.
+ */
+export const BLOG_QUEUE: BlogQueueItem[] = [
+  // Deep Dive Guides (AdSense-approval anchors)
+  { category: 'deep-dive-guide', topic: 'Complete guide to how lottery prizes are claimed — process by prize tier, time limits, and state-specific rules', targetKeyword: 'how to claim lottery prizes' },
+  { category: 'deep-dive-guide', topic: 'Lump sum vs annuity: walk through the real math with specific dollar examples at different jackpot levels and tax brackets', targetKeyword: 'lump sum vs annuity lottery' },
+  { category: 'deep-dive-guide', topic: 'How lottery odds actually work — explain combinatorics visually, why order matters for bonus balls, expected value per ticket', targetKeyword: 'how lottery odds work' },
+  { category: 'deep-dive-guide', topic: 'The complete history of Powerball format changes and how each one affected jackpot sizes and odds', targetKeyword: 'powerball format changes history' },
+  { category: 'deep-dive-guide', topic: 'The Mega Millions $5 overhaul: what changed in April 2025, why, and how it compares to the old format', targetKeyword: 'mega millions 2025 changes' },
+  // Data Stories (traffic drivers)
+  { category: 'data-story', topic: 'Simulate buying 10,000 lottery tickets using our data — how many winners, total spent vs won, best and worst outcomes', targetKeyword: 'lottery simulation results' },
+  { category: 'data-story', topic: 'Find the number that went cold the longest then came back — tell the story of its disappearance and return with actual dates', targetKeyword: 'lottery number cold streak' },
+  { category: 'data-story', topic: 'The 5 most common number pairs across all games — do they keep showing up or is it just noise?', targetKeyword: 'most common lottery number pairs' },
+  { category: 'data-story', topic: 'What if you had played every Wednesday Powerball since 2020 with the same numbers? Run the What-If Simulator scenario.', targetKeyword: 'what if same lottery numbers every draw' },
+  // Myth Busters (engagement)
+  { category: 'myth-buster', topic: '5 things lottery experts and YouTube channels say that are mathematically wrong — debunk each with actual data', targetKeyword: 'lottery myths debunked' },
+  { category: 'myth-buster', topic: 'Does Quick Pick really win more often? Pull the actual stats and do the math vs self-selected numbers', targetKeyword: 'does quick pick win more often' },
+  { category: 'myth-buster', topic: 'The birthday number trap — why most players pick from 1-31 and why that costs them money if they win', targetKeyword: 'birthday numbers lottery strategy' },
+  { category: 'myth-buster', topic: 'Hot numbers dont exist — explain why with actual statistical tests, but show what patterns DO appear in the data', targetKeyword: 'do hot lottery numbers work' },
+  // Tax & Money (high-value queries)
+  { category: 'tax-and-money', topic: 'Compare take-home on a $100M jackpot across California, Texas, Florida, New York, and New Jersey with exact dollar breakdowns', targetKeyword: 'best states for lottery winners taxes' },
+  { category: 'tax-and-money', topic: 'The hidden tax bracket jump nobody warns lottery winners about — how a single win pushes you into the 37% bracket', targetKeyword: 'lottery winner tax bracket' },
+  { category: 'tax-and-money', topic: 'Every states lottery tax rate ranked from best to worst with dollar examples on a $10M prize', targetKeyword: 'state lottery tax rates ranked' },
+  // Game Comparisons
+  { category: 'game-comparison', topic: 'Dollar-for-dollar value comparison of all 6 games we track — cost per chance, odds tiers, expected payout', targetKeyword: 'best lottery game to play' },
+  { category: 'game-comparison', topic: 'Powerball vs Mega Millions 2026 update — odds, cost, jackpot growth rate, and which gives more bang for your buck', targetKeyword: 'powerball vs mega millions 2026' },
+  // What-If Scenarios
+  { category: 'what-if-scenario', topic: 'What happens in the first 48 hours after you win a $500M jackpot — taxes, lawyers, anonymity, and the lump sum decision', targetKeyword: 'what to do if you win the lottery' },
+  { category: 'what-if-scenario', topic: 'Near-miss stories from the What-If Simulator — find cases where someone was one number away and show the data', targetKeyword: 'lottery near miss stories' },
+  // Winner Stories
+  { category: 'winner-stories', topic: 'The biggest lottery winners who went broke — what went wrong and what every winner should know', targetKeyword: 'lottery winners who went broke' },
+  { category: 'winner-stories', topic: 'Biggest Powerball winners by state — the luckiest states in America based on jackpot history', targetKeyword: 'biggest lottery winners by state' },
+  // Lottery News
+  { category: 'lottery-news', topic: 'Millionaire for Life launches as Cash4Life replacement — everything players need to know about the new game', targetKeyword: 'millionaire for life lottery new game' },
+  { category: 'lottery-news', topic: 'How the April 2025 Mega Millions changes affected jackpot growth — early data from the first year', targetKeyword: 'mega millions format change results' },
+];
+
 // ---------------------------------------------------------------------------
 // Build validation constants (shared between validate-build.ts & seo-health-check.ts)
 // ---------------------------------------------------------------------------
@@ -164,4 +209,4 @@ export const DATA_STALENESS_DAYS = 7;
 export const BLOG_FORBIDDEN_TERMS = ['prediction', 'guaranteed', 'winning strategy', 'sure win', 'proven method'];
 
 /** Minimum word count for auto-generated blog posts. */
-export const BLOG_MIN_WORDS = 400;
+export const BLOG_MIN_WORDS = 600;
