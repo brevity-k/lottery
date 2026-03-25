@@ -20,7 +20,6 @@ import {
   KNOWN_DATASETS,
   isGameRetired,
   RETRY_PRESETS,
-  BlogQueueItem,
 } from './constants';
 
 // ---------------------------------------------------------------------------

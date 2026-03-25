@@ -85,7 +85,7 @@ function buildSummary(
   displayName: string,
   year: number,
   draws: DrawResult[],
-  hasBonus: boolean,
+  _hasBonus: boolean,
 ): string {
   const total = draws.length;
 
