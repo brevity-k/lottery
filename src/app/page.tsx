@@ -4,6 +4,7 @@ import { generateHomeMetadata } from '@/lib/seo/metadata';
 import { websiteSchema } from '@/lib/seo/structuredData';
 import { DISCLAIMER_TEXT } from '@/lib/utils/constants';
 import LotteryCard from '@/components/lottery/LotteryCard';
+import UpcomingDrawsStrip from '@/components/lottery/UpcomingDrawsStrip';
 import JsonLd from '@/components/seo/JsonLd';
 import Link from 'next/link';
 
@@ -16,22 +17,47 @@ export default function HomePage() {
     <>
       <JsonLd data={websiteSchema()} />
 
-      {/* Hero — Simulator CTA */}
-      <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-16 md:py-24">
+      {/* Upcoming Draws Strip */}
+      <UpcomingDrawsStrip />
+
+      {/* Latest Results Grid */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex items-center gap-3 mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">Latest Results</h1>
+          <span className="text-xs font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded-full">Updated daily</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {lotteries.map(lottery => {
+            let latestDraw;
+            try {
+              const data = loadLotteryData(lottery.slug);
+              latestDraw = data.draws[0];
+            } catch {
+              // Data not yet available
+            }
+            return (
+              <LotteryCard key={lottery.slug} lottery={lottery} latestDraw={latestDraw} />
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Simulator Banner */}
+      <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-8 md:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
+          <h2 className="text-2xl md:text-3xl font-bold mb-2">
             What If You Never Missed a Draw?
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto mb-8">
+          </h2>
+          <p className="text-gray-300 max-w-xl mx-auto mb-5">
             Pick your lucky numbers. We&apos;ll replay every historical draw and show you what would have happened.
           </p>
-          <Link href="/simulator" className="inline-block bg-white text-gray-900 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl">
+          <Link href="/simulator" className="inline-block bg-white text-gray-900 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl">
             Try the Simulator
           </Link>
         </div>
       </section>
 
-      {/* Sub-hero — Existing tools */}
+      {/* Quick Links */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-wrap justify-center gap-3">
           <Link href="/powerball/numbers" className="px-5 py-2.5 rounded-full text-sm font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">
@@ -49,26 +75,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Lottery Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">US Lotteries</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {lotteries.map(lottery => {
-            let latestDraw;
-            try {
-              const data = loadLotteryData(lottery.slug);
-              latestDraw = data.draws[0];
-            } catch {
-              // Data not yet available
-            }
-            return (
-              <LotteryCard key={lottery.slug} lottery={lottery} latestDraw={latestDraw} />
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Features */}
+      {/* How It Works */}
       <section className="bg-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-bold text-gray-900 text-center mb-12">How It Works</h2>
