@@ -1,0 +1,85 @@
+name: Content Backfill (One-Time)
+
+on:
+  workflow_dispatch:
+    inputs:
+      blog_count:
+        description: 'Number of blog posts to generate'
+        required: false
+        default: '15'
+      run_number_insights:
+        description: 'Generate per-number insights (~473 paragraphs)'
+        required: false
+        type: boolean
+        default: true
+      run_guides:
+        description: 'Generate remaining guide pages'
+        required: false
+        type: boolean
+        default: true
+
+concurrency:
+  group: content-backfill
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      BLOG_COUNT: ${{ github.event.inputs.blog_count }}
+      RUN_GUIDES: ${{ github.event.inputs.run_guides }}
+      RUN_INSIGHTS: ${{ github.event.inputs.run_number_insights }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Fetch latest data
+        run: npx tsx scripts/update-data.ts
+
+      - name: Generate year summaries
+        run: npx tsx scripts/generate-year-summaries.ts
+
+      - name: Backfill blog posts
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: npx tsx scripts/backfill-blog.ts --count "$BLOG_COUNT"
+
+      - name: Generate guide pages
+        if: env.RUN_GUIDES == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: npx tsx scripts/generate-guides.ts
+
+      - name: Generate number insights
+        if: env.RUN_INSIGHTS == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: npx tsx scripts/generate-number-insights.ts
+
+      - name: Verify build
+        run: npm run build
+
+      - name: Commit and push
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add content/ src/data/
+          git diff --cached --quiet || {
+            git commit -m "feat: content backfill — blog posts, guides, number insights $(date -u +%Y-%m-%d)"
+            git pull --rebase origin main
+            git push
+          }
