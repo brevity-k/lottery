@@ -4,6 +4,9 @@ import { getLottery, getAllLotterySlugs } from '@/lib/lotteries/config';
 import { loadLotteryData } from '@/lib/data/fetcher';
 import { generateLotteryMetadata } from '@/lib/seo/metadata';
 import { breadcrumbSchema, faqSchema, lotteryFaqs, datasetSchema } from '@/lib/seo/structuredData';
+import { PRIZE_TIERS } from '@/data/prize-tiers';
+import { GAME_GUIDES } from '@/data/game-guides';
+import { NOTABLE_JACKPOTS } from '@/data/notable-jackpots';
 import { SITE_URL, DISCLAIMER_TEXT } from '@/lib/utils/constants';
 import { formatLastUpdated } from '@/lib/utils/formatters';
 import { getRelatedPosts } from '@/lib/blog-links';
@@ -121,6 +124,50 @@ export default async function LotteryPage({ params }: { params: Promise<{ lotter
             </div>
           </div>
         </Card>
+
+        {/* Prize Tiers */}
+        {PRIZE_TIERS[slug] && PRIZE_TIERS[slug].length > 0 && (
+          <Card className="mb-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Prize Tiers & Odds</h2>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead><tr className="border-b border-gray-200">
+                  <th className="text-left py-2 font-semibold text-gray-900">Match</th>
+                  <th className="text-left py-2 font-semibold text-gray-900">Prize</th>
+                  <th className="text-left py-2 font-semibold text-gray-900">Odds</th>
+                </tr></thead>
+                <tbody>{PRIZE_TIERS[slug].map((tier, i) => (
+                  <tr key={i} className="border-b border-gray-100 last:border-0">
+                    <td className="py-2 text-gray-700">{tier.match}</td>
+                    <td className="py-2 font-semibold text-gray-900">{tier.prize}</td>
+                    <td className="py-2 text-gray-500">{tier.odds}</td>
+                  </tr>
+                ))}</tbody>
+              </table>
+            </div>
+          </Card>
+        )}
+
+        {/* How to Play */}
+        {GAME_GUIDES[slug] && (
+          <Card className="mb-8">
+            <div className="prose prose-gray prose-sm max-w-none prose-h3:text-lg prose-h3:font-bold prose-h3:text-gray-900 prose-p:text-gray-600 prose-p:leading-relaxed prose-li:text-gray-600 prose-strong:text-gray-900"
+              dangerouslySetInnerHTML={{ __html: GAME_GUIDES[slug] }} />
+          </Card>
+        )}
+
+        {/* Notable Jackpots */}
+        {NOTABLE_JACKPOTS[slug] && NOTABLE_JACKPOTS[slug].length > 0 && (
+          <Card className="mb-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Notable Jackpots</h2>
+            <div className="space-y-3">{NOTABLE_JACKPOTS[slug].map((jp, i) => (
+              <div key={i} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                <div><span className="font-bold text-gray-900">{jp.amount}</span><span className="text-gray-500 text-sm ml-2">{jp.date}</span></div>
+                <div className="text-sm text-gray-500">{jp.state} · {jp.status}</div>
+              </div>
+            ))}</div>
+          </Card>
+        )}
 
         {/* Latest Results */}
         {draws.length > 0 && (
