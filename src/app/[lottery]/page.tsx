@@ -16,6 +16,8 @@ import JsonLd from '@/components/seo/JsonLd';
 import DrawCountdown from '@/components/lottery/DrawCountdown';
 import Card from '@/components/ui/Card';
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return getAllLotterySlugs().map(slug => ({ lottery: slug }));
 }

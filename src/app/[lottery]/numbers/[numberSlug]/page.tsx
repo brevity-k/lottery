@@ -23,6 +23,8 @@ function parseNumberSlug(slug: string): { type: 'main' | 'bonus'; number: number
   return { type: match[1] as 'main' | 'bonus', number: parseInt(match[2], 10) };
 }
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   const allLotteries = getAllLotteries();
   const params: { lottery: string; numberSlug: string }[] = [];

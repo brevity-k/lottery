@@ -13,6 +13,8 @@ import yearSummariesData from '@/data/year-summaries.json';
 
 const yearSummaries: Record<string, string> = yearSummariesData;
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   const params: { lottery: string; year: string }[] = [];
   for (const slug of getAllLotterySlugs()) {

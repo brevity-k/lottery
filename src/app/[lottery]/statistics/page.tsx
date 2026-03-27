@@ -21,6 +21,8 @@ import JsonLd from '@/components/seo/JsonLd';
 import FAQSection from '@/components/seo/FAQSection';
 import Card from '@/components/ui/Card';
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return getAllLotterySlugs().map(slug => ({ lottery: slug }));
 }

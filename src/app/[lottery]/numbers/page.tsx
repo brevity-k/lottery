@@ -16,6 +16,8 @@ import FAQSection from '@/components/seo/FAQSection';
 import Card from '@/components/ui/Card';
 import Link from 'next/link';
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return getAllLotterySlugs().map(slug => ({ lottery: slug }));
 }

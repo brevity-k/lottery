@@ -9,6 +9,8 @@ import { getBlogPost, getAllBlogSlugs } from '@/lib/blog';
 import JsonLd from '@/components/seo/JsonLd';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return getAllBlogSlugs().map(slug => ({ slug }));
 }
