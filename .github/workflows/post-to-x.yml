@@ -40,13 +40,21 @@ jobs:
           X_API_ACCESS_TOKEN_SECRET: ${{ secrets.X_API_ACCESS_TOKEN_SECRET }}
         run: npx tsx scripts/post-to-x.ts
 
+      - name: Post to Bluesky
+        if: always()
+        continue-on-error: true
+        env:
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+        run: npx tsx scripts/post-to-bluesky.ts
+
       - name: Commit posted tracker
-        if: success()
+        if: always()
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add .posted-to-x
-          git diff --cached --quiet || (git commit -m "chore: update X posted tracker" && git pull --rebase origin main && git push)
+          git add .posted-to-x .posted-to-bluesky
+          git diff --cached --quiet || (git commit -m "chore: update social posted tracker" && git pull --rebase origin main && git push)
 
       - name: Notify on failure
         if: failure()
