@@ -33,7 +33,7 @@ export default function HotColdChart({ data, limit = 30 }: HotColdChartProps) {
           <YAxis tick={{ fontSize: 11 }} />
           <Tooltip
             contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb' }}
-            formatter={(value) => [typeof value === 'number' ? value.toFixed(1) : String(value ?? ''), 'Score']}
+            formatter={(value) => [typeof value === 'number' ? value.toFixed(1) : String(value ?? ''), 'Score'] as const}
           />
           <Bar dataKey="score" radius={[4, 4, 0, 0]}>
             {chartData.map((entry, index) => (
