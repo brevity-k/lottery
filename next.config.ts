@@ -1,28 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  redirects: async () => [
-    {
-      source: '/index.html',
-      destination: '/',
-      permanent: true,
-    },
-    {
-      source: '/tools/ticket-checker',
-      destination: '/simulator',
-      permanent: true,
-    },
-    {
-      source: '/tools/number-generator',
-      destination: '/powerball/numbers',
-      permanent: true,
-    },
-    {
-      source: '/my-numbers',
-      destination: '/simulator',
-      permanent: true,
-    },
-  ],
+  output: 'export',
+  poweredByHeader: false,
+  // Redirects and headers moved to vercel.json (not supported with output: 'export')
 };
 
 export default nextConfig;

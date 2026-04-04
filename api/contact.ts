@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
 
 const OWNER_EMAIL = process.env.CONTACT_EMAIL || 'rottery0.kr@gmail.com';
@@ -17,45 +17,36 @@ function escapeHtml(str: string): string {
     .replace(/'/g, '&#039;');
 }
 
-export async function POST(request: Request) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   try {
-    if (!process.env.RESEND_API_KEY) {
-      return NextResponse.json(
-        { error: 'Email service is not configured.' },
-        { status: 503 }
-      );
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey || !apiKey.startsWith('re_')) {
+      return res.status(503).json({ error: 'Email service is not configured.' });
     }
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    const body = await request.json();
-    const { name, email, message } = body as {
+    const resend = new Resend(apiKey);
+    const { name, email, message } = req.body as {
       name: string;
       email: string;
       message: string;
     };
 
     if (!name?.trim() || !email?.trim() || !message?.trim()) {
-      return NextResponse.json(
-        { error: 'Please fill in all fields.' },
-        { status: 400 }
-      );
+      return res.status(400).json({ error: 'Please fill in all fields.' });
     }
 
     if (!isValidEmail(email)) {
-      return NextResponse.json(
-        { error: 'Please enter a valid email address.' },
-        { status: 400 }
-      );
+      return res.status(400).json({ error: 'Please enter a valid email address.' });
     }
 
     if (name.length > 200 || email.length > 320 || message.length > 5000) {
-      return NextResponse.json(
-        { error: 'Input exceeds maximum allowed length.' },
-        { status: 400 }
-      );
+      return res.status(400).json({ error: 'Input exceeds maximum allowed length.' });
     }
 
-    // Send notification to site owner
     await resend.emails.send({
       from: FROM_EMAIL,
       to: OWNER_EMAIL,
@@ -85,7 +76,6 @@ export async function POST(request: Request) {
       `,
     });
 
-    // Send auto-reply to the sender
     await resend.emails.send({
       from: FROM_EMAIL,
       to: email,
@@ -116,12 +106,9 @@ export async function POST(request: Request) {
       `,
     });
 
-    return NextResponse.json({ success: true });
+    return res.status(200).json({ success: true });
   } catch (error) {
     console.error('Contact form error:', error);
-    return NextResponse.json(
-      { error: 'Failed to send email. Please try again later.' },
-      { status: 500 }
-    );
+    return res.status(500).json({ error: 'Failed to send email. Please try again later.' });
   }
 }
