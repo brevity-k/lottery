@@ -26,7 +26,7 @@ Free, SEO-optimized lottery statistics website for US lotteries. Hybrid renderin
 | Data source | NY Open Data SODA API (free, no key) — 6 games |
 | Data storage | JSON files in `src/data/` |
 | Blog | Claude Haiku via Anthropic API (daily, 14-topic rotation) |
-| Social | twitter-api-v2 (daily auto-post to X) |
+| Social | twitter-api-v2 + @atproto/api (daily auto-post to X & Bluesky) |
 
 ## Lottery Games
 
@@ -107,6 +107,7 @@ npm run dev / build / start / lint
 npx tsx scripts/update-data.ts              # Fetch 6 games from SODA API
 npx tsx scripts/generate-blog-post.ts       # Daily blog (needs ANTHROPIC_API_KEY)
 npx tsx scripts/post-to-x.ts               # Post to X (needs X API keys)
+npx tsx scripts/post-to-bluesky.ts         # Post to Bluesky (needs BLUESKY_* keys)
 npx tsx scripts/check-new-datasets.ts       # Scan for new SODA datasets
 npx tsx scripts/update-tax-rates.ts         # Quarterly tax update (needs ANTHROPIC_API_KEY)
 npx tsx scripts/validate-build.ts           # Post-build validation
@@ -125,6 +126,8 @@ npx tsx scripts/sync-claude-md.ts           # Sync stats after build
 | `X_SECRET_KEY` | No | GitHub Secrets | X API OAuth 1.0a |
 | `X_API_ACCESS_TOKEN` | No | GitHub Secrets | X API OAuth 1.0a |
 | `X_API_ACCESS_TOKEN_SECRET` | No | GitHub Secrets | X API OAuth 1.0a |
+| `BLUESKY_HANDLE` | No | GitHub Secrets | Bluesky handle (fortune0-us.bsky.social) |
+| `BLUESKY_APP_PASSWORD` | No | GitHub Secrets | Bluesky app password |
 | `NEXT_PUBLIC_ADSENSE_CLIENT_ID` | No | Vercel | AdSense (pub-7561681382580308) |
 | `GITHUB_TOKEN` | Auto | GitHub Actions | Issue creation |
 
@@ -132,7 +135,7 @@ npx tsx scripts/sync-claude-md.ts           # Sync stats after build
 
 The site runs itself with zero manual intervention:
 
-- **Daily:** Fetch lottery data → generate blog → post to X (chained GitHub Actions)
+- **Daily:** Fetch lottery data → generate blog → post to X & Bluesky (chained GitHub Actions)
 - **Weekly:** Scan SODA catalog for new datasets, security audit, SEO health check
 - **Quarterly:** Auto-update state tax rates via Claude API (sanity bounds: reject >15% or >3pp change)
 - **All scripts** use `withRetry()` from `scripts/lib/retry.ts` for exponential backoff
