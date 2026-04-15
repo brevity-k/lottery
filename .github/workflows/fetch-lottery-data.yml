@@ -50,7 +50,7 @@ jobs:
 
       - name: Notify on stale data
         if: steps.stale_check.outputs.stale == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');
@@ -104,7 +104,7 @@ jobs:
 
       - name: Notify on failure
         if: failure()
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const title = '[Auto] fetch-lottery-data failed';

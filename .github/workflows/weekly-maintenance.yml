@@ -42,7 +42,7 @@ jobs:
 
       - name: Notify on failure
         if: failure()
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const title = '[Auto] check-new-datasets failed';
@@ -118,7 +118,7 @@ jobs:
 
       - name: Create issue for vulnerabilities
         if: steps.audit.outputs.found == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const title = '[Auto] npm security vulnerabilities detected';
@@ -170,7 +170,7 @@ jobs:
 
       - name: Notify on SEO issues
         if: failure()
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const title = '[Auto] SEO health check failed';
@@ -267,7 +267,7 @@ jobs:
 
       - name: Notify on failure
         if: failure()
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const title = '[Auto] quarterly-tax-update failed';
@@ -364,7 +364,7 @@ jobs:
 
       - name: Notify on failure
         if: failure()
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const title = '[Auto] quarterly-state-refresh failed';
