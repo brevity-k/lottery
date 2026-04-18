@@ -43,6 +43,9 @@ export function generateStaticParams() {
   return params;
 }
 
+/** Minimum draw history required for a number page to be indexed by search engines. */
+const MIN_DRAWS_FOR_INDEXING = 100;
+
 export async function generateMetadata({ params }: { params: Promise<{ lottery: string; numberSlug: string }> }): Promise<Metadata> {
   const { lottery: slug, numberSlug } = await params;
   const lottery = getLottery(slug);
@@ -54,11 +57,22 @@ export async function generateMetadata({ params }: { params: Promise<{ lottery: 
   const description = `How often does ${lottery.name} ${label.toLowerCase()} ${parsed.number} get drawn? See its frequency rank, hot/cold status, gap history, and best pairings. Updated daily.`;
   const url = `${SITE_URL}/${lottery.slug}/numbers/${numberSlug}`;
 
+  // Games with too little draw history don't have enough data to warrant a
+  // dedicated per-number page in Google's index (prevents "thin content" flags).
+  let drawCount = Infinity;
+  try {
+    drawCount = loadLotteryData(slug).draws.length;
+  } catch {
+    drawCount = 0;
+  }
+  const shouldIndex = drawCount >= MIN_DRAWS_FOR_INDEXING;
+
   return {
     title: { absolute: title },
     description,
     openGraph: { title, description, url },
     alternates: { canonical: url },
+    robots: shouldIndex ? undefined : { index: false, follow: true },
   };
 }
 
