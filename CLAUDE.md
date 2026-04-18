@@ -181,30 +181,6 @@ Every results/analysis page must include:
 6. **Centralized constants** — `scripts/lib/constants.ts` for all automation thresholds and config
 7. **Blog: seed + auto-generated** — `src/lib/blog.ts` (seed), `content/blog/` (daily JSON)
 
-## Pending Roadmap
+## Roadmap & Facts Reference
 
-**Phase 2 P3 — Content Depth:**
-- [ ] 20+ manual quality blog posts for long-tail keywords
-- [ ] Jackpot tracker/history page with progression charts
-- [ ] Enhanced disclaimer page
-
-**Phase 2 P4 — SEO Optimization:**
-- [ ] Intent-first title tags on all pages
-- [ ] "Last updated" timestamps on results/statistics pages
-- [ ] "Verify with official lottery" links on results tables
-- [ ] Increase internal linking
-- [ ] Apply for Google AdSense
-
-**Phase 3 — Full Coverage & Monetization (target: 1000+ pages):**
-- [ ] All 50 state hubs (currently 48)
-- [ ] Pick 3/Pick 4/daily games
-- [x] Millionaire for Life (onboarded — SODA dataset `a4w9-a3tp`)
-- [ ] Monthly archive pages
-- [ ] Enhanced analysis (streaks, bell curves)
-- [ ] Email newsletter / jackpot alerts
-
-**Phase 4 — Growth:** A/B ad testing, PWA, post-draw triggers, Spanish, Mediavine at 50K sessions/mo
-
-## Verified Facts Reference
-
-See `docs/verified-facts.md` for the full fact-check report (Powerball, Mega Millions, Cash4Life, NY Lotto, Take 5, biggest jackpots). Last verified: February 2026. Next check: May 2026.
+Roadmap phases (P3-P4) and verified facts are in `docs/`. See `docs/verified-facts.md` for fact-check report (last verified: February 2026).
