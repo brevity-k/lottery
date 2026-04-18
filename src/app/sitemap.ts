@@ -104,9 +104,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
   });
 
-  // Per-number analysis pages
+  // Per-number analysis pages — skip games with too little draw history
+  // (those pages are also marked noindex in generateMetadata).
+  const MIN_DRAWS_FOR_SITEMAP = 100;
   const numberPages: MetadataRoute.Sitemap = lotteries.flatMap(lottery => {
-    const lastMod = getDataLastUpdated(lottery.slug);
+    let drawCount = 0;
+    let lastMod = new Date().toISOString();
+    try {
+      const data = loadLotteryData(lottery.slug);
+      drawCount = data.draws.length;
+      lastMod = data.lastUpdated || lastMod;
+    } catch {
+      return [];
+    }
+    if (drawCount < MIN_DRAWS_FOR_SITEMAP) return [];
+
     const pages: MetadataRoute.Sitemap = [];
     for (let n = 1; n <= lottery.mainNumbers.max; n++) {
       pages.push({
