@@ -276,24 +276,35 @@ function getWeekOfYear(date: Date): number {
 }
 
 /**
+ * Normalize a target keyword into slug form so we can match against post slugs.
+ * "How to Claim Lottery Prizes" → "how-to-claim-lottery-prizes"
+ */
+function keywordToSlugPrefix(keyword: string): string {
+  return keyword
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+/**
  * Select the next blog topic. Priority:
- * 1. First unconsumed item from BLOG_QUEUE
+ * 1. First unconsumed item from BLOG_QUEUE (dedup by targetKeyword slug prefix)
  * 2. Category rotation fallback using week-of-year mod
+ *
+ * A queue item is considered consumed when an existing slug contains the
+ * normalized targetKeyword — this prevents repeatedly picking the same
+ * topic just because Claude generated different phrasing each time.
  */
 export function selectTopic(
   existingSlugs: string[],
-  existingTitles: string[],
 ): { category: CategoryConfig; topic: string; targetKeyword: string } {
-  // Lowercase existing slugs and titles for matching
   const slugsLower = existingSlugs.map((s) => s.toLowerCase());
-  const titlesLower = existingTitles.map((t) => t.toLowerCase());
 
   // 1. Check BLOG_QUEUE for unconsumed topics
   for (const item of BLOG_QUEUE) {
-    const topicPrefix = item.topic.slice(0, 30).toLowerCase();
-    const isConsumed =
-      slugsLower.some((s) => s.includes(topicPrefix.slice(0, 20).replace(/[^a-z0-9]/g, '-'))) ||
-      titlesLower.some((t) => t.includes(topicPrefix));
+    const keywordSlug = keywordToSlugPrefix(item.targetKeyword);
+    const isConsumed = keywordSlug.length > 0 && slugsLower.some((s) => s.includes(keywordSlug));
 
     if (!isConsumed) {
       try {

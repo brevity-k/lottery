@@ -57,7 +57,7 @@ async function main() {
 
   const existingSlugs = getExistingSlugs();
   const existingTitles = getExistingTitles();
-  const { category, topic, targetKeyword } = selectTopic(existingSlugs, existingTitles);
+  const { category, topic, targetKeyword } = selectTopic(existingSlugs);
 
   console.log(`Generating: category="${category.name}", topic="${topic.slice(0, 60)}..."`);
 
