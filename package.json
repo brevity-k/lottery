@@ -9,7 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.91.1",
+    "@anthropic-ai/sdk": "^0.92.0",
     "@atproto/api": "^0.19.11",
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
