@@ -66,8 +66,9 @@ src/
 │   ├── states/                       # 46 state hub pages
 │   ├── tools/                        # tax-calculator, number-generator, odds-calculator, ticket-checker
 │   ├── blog/[slug]/                  # Blog articles
-│   ├── api/contact/route.ts          # Serverless email (Resend)
 │   └── about, privacy, terms, disclaimer, methodology, contact
+api/
+└── contact.ts                        # Root-level Vercel serverless function (Resend email)
 ├── components/
 │   ├── layout/   Header, Footer, Breadcrumbs
 │   ├── lottery/  LotteryCard, LotteryBall, ResultsTable
