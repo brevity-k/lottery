@@ -1,7 +1,19 @@
 {
   "lottery": "ny-lotto",
-  "lastUpdated": "2026-05-23T09:01:28.004Z",
+  "lastUpdated": "2026-05-25T09:57:33.728Z",
   "draws": [
+    {
+      "date": "2026-05-23",
+      "numbers": [
+        7,
+        13,
+        30,
+        31,
+        36,
+        51
+      ],
+      "bonusNumber": 21
+    },
     {
       "date": "2026-05-20",
       "numbers": [
