@@ -1,7 +1,31 @@
 {
   "lottery": "take5",
-  "lastUpdated": "2026-06-07T08:50:10.618Z",
+  "lastUpdated": "2026-06-08T10:28:54.516Z",
   "draws": [
+    {
+      "date": "2026-06-07",
+      "numbers": [
+        10,
+        18,
+        21,
+        28,
+        39
+      ],
+      "bonusNumber": null,
+      "drawTime": "midday"
+    },
+    {
+      "date": "2026-06-07",
+      "numbers": [
+        9,
+        12,
+        15,
+        17,
+        18
+      ],
+      "bonusNumber": null,
+      "drawTime": "evening"
+    },
     {
       "date": "2026-06-06",
       "numbers": [
