@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useAdsEnabled } from './AdSenseContext';
+import { ADSENSE_CLIENT_ID } from '@/lib/utils/constants';
 
 interface AdUnitProps {
   slot: string;
@@ -21,7 +22,7 @@ export default function AdUnit({ slot, format = 'auto', className = '' }: AdUnit
   const adsEnabled = useAdsEnabled();
 
   useEffect(() => {
-    if (!adsEnabled || !process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID) return;
+    if (!adsEnabled || !ADSENSE_CLIENT_ID) return;
     if (!pushed.current && adRef.current) {
       try {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
@@ -32,7 +33,7 @@ export default function AdUnit({ slot, format = 'auto', className = '' }: AdUnit
     }
   }, [adsEnabled]);
 
-  if (!process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || !adsEnabled) {
+  if (!ADSENSE_CLIENT_ID || !adsEnabled) {
     return null;
   }
 
@@ -42,7 +43,7 @@ export default function AdUnit({ slot, format = 'auto', className = '' }: AdUnit
         ref={adRef}
         className="adsbygoogle"
         style={{ display: 'block' }}
-        data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}
+        data-ad-client={ADSENSE_CLIENT_ID}
         data-ad-slot={slot}
         data-ad-format={format}
         data-full-width-responsive="true"

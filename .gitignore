@@ -43,3 +43,7 @@ next-env.d.ts
 
 # automation markers
 src/data/.stale-warning
+
+# local agent config (keep local — never commit)
+.claude/
+.omc/

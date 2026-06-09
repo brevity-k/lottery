@@ -19,4 +19,10 @@ export const AD_FREE_PATHS = [
 
 export const ANALYTICS_ID = 'G-5TW1TM399X';
 
+// AdSense publisher id. Accept either env var spelling so the build inlines a
+// value whichever name the Vercel project has set (historically both
+// NEXT_PUBLIC_ADSENSE_CLIENT_ID and NEXT_PUBLIC_ADSENSE_CLIENT were used).
+export const ADSENSE_CLIENT_ID =
+  process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
+
 export const BYLINE_NAME = 'The MyLottoStats Team';
