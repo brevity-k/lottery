@@ -1,7 +1,18 @@
 {
   "lottery": "millionaire-for-life",
-  "lastUpdated": "2026-06-17T10:47:17.702Z",
+  "lastUpdated": "2026-06-18T10:14:23.120Z",
   "draws": [
+    {
+      "date": "2026-06-17",
+      "numbers": [
+        2,
+        4,
+        7,
+        16,
+        21
+      ],
+      "bonusNumber": 3
+    },
     {
       "date": "2026-06-16",
       "numbers": [
