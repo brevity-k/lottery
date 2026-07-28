@@ -47,10 +47,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Input exceeds maximum allowed length.' });
     }
 
+    const safeSubjectName = name.replace(/[\r\n]/g, '').slice(0, 200);
+
     await resend.emails.send({
       from: FROM_EMAIL,
       to: OWNER_EMAIL,
-      subject: `My Lotto Stats Contact: ${name}`,
+      subject: `My Lotto Stats Contact: ${safeSubjectName}`,
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
           <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 12px;">
@@ -72,36 +74,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             <p style="margin: 0 0 8px; font-weight: bold; color: #555;">Message</p>
             <p style="margin: 0; white-space: pre-wrap; line-height: 1.6;">${escapeHtml(message)}</p>
           </div>
-        </div>
-      `,
-    });
-
-    await resend.emails.send({
-      from: FROM_EMAIL,
-      to: email,
-      subject: 'Thank you for contacting My Lotto Stats',
-      html: `
-        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-          <div style="text-align: center; padding: 20px 0;">
-            <span style="font-size: 48px;">🎰</span>
-          </div>
-          <h2 style="color: #2563eb; text-align: center; margin-bottom: 24px;">
-            We received your message!
-          </h2>
-          <p style="color: #333; line-height: 1.8;">
-            Hi <strong>${escapeHtml(name)}</strong>,<br><br>
-            Thank you for reaching out to My Lotto Stats.<br>
-            We will review your message and get back to you within <strong>1-2 business days</strong>.
-          </p>
-          <div style="margin: 24px 0; padding: 16px; background: #f0f5ff; border-radius: 8px;">
-            <p style="margin: 0 0 8px; font-weight: bold; color: #888; font-size: 13px;">Your message</p>
-            <p style="margin: 0; color: #555; white-space: pre-wrap; line-height: 1.6;">${escapeHtml(message)}</p>
-          </div>
-          <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
-          <p style="color: #999; font-size: 13px; text-align: center;">
-            This is an automated reply.<br>
-            <a href="https://mylottostats.com" style="color: #2563eb;">mylottostats.com</a>
-          </p>
         </div>
       `,
     });
