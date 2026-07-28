@@ -48,11 +48,6 @@ function getCategoryStyle(category: string): string {
   return CATEGORY_COLORS[category] || 'bg-gray-50 text-gray-700 border-gray-200';
 }
 
-function _formatDate(dateStr: string): string {
-  const date = new Date(dateStr + 'T00:00:00');
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-}
-
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post = getBlogPost(slug);

@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { SITE_NAME, SITE_URL } from '@/lib/utils/constants';
+import { SITE_URL } from '@/lib/utils/constants';
 import { calculateReadingTime } from '@/lib/utils/formatters';
 import { breadcrumbSchema } from '@/lib/seo/structuredData';
 import { getAllBlogPosts } from '@/lib/blog';

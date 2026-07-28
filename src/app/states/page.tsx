@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { getAllStates } from '@/lib/states/config';
 import { breadcrumbSchema } from '@/lib/seo/structuredData';
-import { SITE_NAME, SITE_URL } from '@/lib/utils/constants';
+import { SITE_URL } from '@/lib/utils/constants';
 import JsonLd from '@/components/seo/JsonLd';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import Card from '@/components/ui/Card';
