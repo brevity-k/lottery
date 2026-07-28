@@ -46,7 +46,7 @@ jobs:
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
-        run: npx tsx scripts/post-to-bluesky.ts
+        run: npx tsx scripts/post-to-bluesky.mts
 
       - name: Commit posted tracker
         if: always()

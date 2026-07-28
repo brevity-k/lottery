@@ -108,7 +108,7 @@ npm run dev / build / start / lint
 npx tsx scripts/update-data.ts              # Fetch 6 games from SODA API
 npx tsx scripts/generate-blog-post.ts       # Daily blog (needs ANTHROPIC_API_KEY)
 npx tsx scripts/post-to-x.ts               # Post to X (needs X API keys)
-npx tsx scripts/post-to-bluesky.ts         # Post to Bluesky (needs BLUESKY_* keys)
+npx tsx scripts/post-to-bluesky.mts        # Post to Bluesky (needs BLUESKY_* keys)
 npx tsx scripts/check-new-datasets.ts       # Scan for new SODA datasets
 npx tsx scripts/update-tax-rates.ts         # Quarterly tax update (needs ANTHROPIC_API_KEY)
 npx tsx scripts/validate-build.ts           # Post-build validation
