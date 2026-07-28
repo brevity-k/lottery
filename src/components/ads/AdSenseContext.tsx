@@ -2,14 +2,14 @@
 
 import { createContext, useContext, useState, useEffect, useRef } from 'react';
 
-const AdsContext = createContext({ adsEnabled: true, disableCount: { current: 0 }, setCount: (_n: number) => {} });
+const AdsContext = createContext({ adsEnabled: true, disableCountRef: { current: 0 }, setCount: (n: number) => { void n; } });
 
 export function AdsProvider({ children }: { children: React.ReactNode }) {
   const [count, setCount] = useState(0);
-  const disableCount = useRef(0);
+  const disableCountRef = useRef(0);
 
   return (
-    <AdsContext value={{ adsEnabled: count === 0, disableCount, setCount }}>
+    <AdsContext value={{ adsEnabled: count === 0, disableCountRef, setCount }}>
       {children}
     </AdsContext>
   );
@@ -20,13 +20,13 @@ export function useAdsEnabled() {
 }
 
 export function useDisableAds() {
-  const { disableCount, setCount } = useContext(AdsContext);
+  const { disableCountRef, setCount } = useContext(AdsContext);
   useEffect(() => {
-    disableCount.current += 1;
-    setCount(disableCount.current);
+    disableCountRef.current += 1;
+    setCount(disableCountRef.current);
     return () => {
-      disableCount.current -= 1;
-      setCount(disableCount.current);
+      disableCountRef.current -= 1;
+      setCount(disableCountRef.current);
     };
-  }, [disableCount, setCount]);
+  }, [disableCountRef, setCount]);
 }
