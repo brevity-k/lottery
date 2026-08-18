@@ -9,20 +9,20 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.115.0",
-    "@atproto/api": "^0.20.34",
+    "@anthropic-ai/sdk": "^0.116.0",
+    "@atproto/api": "^0.20.39",
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
-    "@next/mdx": "^16.2.12",
+    "@next/mdx": "^16.3.0",
     "@tailwindcss/typography": "^0.5.20",
     "date-fns": "^4.4.0",
     "gray-matter": "^4.0.3",
-    "next": "^16.2.12",
+    "next": "^16.3.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "recharts": "^3.10.1",
-    "resend": "^6.18.0",
-    "twitter-api-v2": "^1.29.0"
+    "resend": "^6.19.0",
+    "twitter-api-v2": "^1.29.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -31,9 +31,9 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.2.12",
+    "eslint-config-next": "16.3.0",
     "tailwindcss": "^4",
-    "tsx": "^4.23.1",
+    "tsx": "^4.23.12",
     "typescript": "^6"
   },
   "overrides": {
