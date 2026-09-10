@@ -1,7 +1,19 @@
 {
   "lottery": "powerball",
-  "lastUpdated": "2026-09-09T10:39:55.685Z",
+  "lastUpdated": "2026-09-10T10:28:11.015Z",
   "draws": [
+    {
+      "date": "2026-09-09",
+      "numbers": [
+        9,
+        40,
+        42,
+        55,
+        65
+      ],
+      "bonusNumber": 23,
+      "multiplier": 2
+    },
     {
       "date": "2026-09-07",
       "numbers": [
