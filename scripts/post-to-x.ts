@@ -9,11 +9,12 @@
  *   - Required env vars are not set
  *   - No blog posts exist in content/blog/
  *   - Latest blog post was already posted (tracked in .posted-to-x)
+ *   - X API returns 402 (account has no API credits — X API is pay-per-use)
  */
 
 import fs from 'fs';
 import path from 'path';
-import { TwitterApi } from 'twitter-api-v2';
+import { ApiResponseError, TwitterApi } from 'twitter-api-v2';
 import { withRetry } from './lib/retry';
 import { RETRY_PRESETS } from './lib/constants';
 
@@ -144,10 +145,19 @@ async function main(): Promise<void> {
     accessSecret: process.env.X_API_ACCESS_TOKEN_SECRET!,
   });
 
-  const result = await withRetry(
-    () => client.v2.tweet(tweet),
-    { ...RETRY_PRESETS.X_API, label: 'X API tweet' },
-  );
+  let result;
+  try {
+    result = await withRetry(
+      () => client.v2.tweet(tweet),
+      { ...RETRY_PRESETS.X_API, label: 'X API tweet' },
+    );
+  } catch (err) {
+    if (err instanceof ApiResponseError && err.code === 402) {
+      console.warn('Skipping X post: X API returned 402 Payment Required (no API credits on this account)');
+      return;
+    }
+    throw err;
+  }
 
   const tweetId = result.data.id;
   markAsPosted(post.slug);
