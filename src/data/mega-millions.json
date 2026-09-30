@@ -1,7 +1,18 @@
 {
   "lottery": "mega-millions",
-  "lastUpdated": "2026-09-29T12:00:59.286Z",
+  "lastUpdated": "2026-09-30T11:49:18.341Z",
   "draws": [
+    {
+      "date": "2026-09-29",
+      "numbers": [
+        10,
+        15,
+        16,
+        27,
+        64
+      ],
+      "bonusNumber": 23
+    },
     {
       "date": "2026-09-25",
       "numbers": [
