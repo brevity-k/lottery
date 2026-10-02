@@ -1,6 +1,6 @@
 {
   "lottery": "mega-millions",
-  "lastUpdated": "2026-09-30T11:49:18.341Z",
+  "lastUpdated": "2026-10-02T11:46:51.598Z",
   "draws": [
     {
       "date": "2026-09-29",
@@ -16060,6 +16060,18 @@
       "multiplier": 5
     },
     {
+      "date": "2013-10-18",
+      "numbers": [
+        5,
+        20,
+        45,
+        48,
+        56
+      ],
+      "bonusNumber": 1,
+      "multiplier": 4
+    },
+    {
       "date": "2013-10-15",
       "numbers": [
         4,
@@ -20714,6 +20726,17 @@
       "bonusNumber": 3
     },
     {
+      "date": "2009-12-25",
+      "numbers": [
+        4,
+        16,
+        44,
+        52,
+        54
+      ],
+      "bonusNumber": 20
+    },
+    {
       "date": "2009-12-22",
       "numbers": [
         3,
@@ -23000,6 +23023,17 @@
         54
       ],
       "bonusNumber": 25
+    },
+    {
+      "date": "2007-12-25",
+      "numbers": [
+        19,
+        36,
+        37,
+        48,
+        52
+      ],
+      "bonusNumber": 8
     },
     {
       "date": "2007-12-21",
