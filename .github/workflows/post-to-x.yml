@@ -40,9 +40,10 @@ jobs:
           X_API_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
         run: npx tsx scripts/post-to-x.ts
 
+      # No continue-on-error: a Bluesky failure should fail the job and open
+      # an issue via "Notify on failure". The tracker commit still runs.
       - name: Post to Bluesky
         if: always()
-        continue-on-error: true
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
