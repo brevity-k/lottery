@@ -1,8 +1,19 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
 
 const OWNER_EMAIL = process.env.CONTACT_EMAIL || 'rottery0.kr@gmail.com';
 const FROM_EMAIL = 'My Lotto Stats <onboarding@resend.dev>';
+
+// Minimal shapes of the request/response helpers Vercel's Node runtime
+// provides (avoids depending on @vercel/node just for types).
+interface VercelRequest {
+  method?: string;
+  body?: unknown;
+}
+
+interface VercelResponse {
+  status(code: number): VercelResponse;
+  json(body: unknown): VercelResponse;
+}
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -29,13 +40,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const resend = new Resend(apiKey);
-    const { name, email, message } = req.body as {
-      name: string;
-      email: string;
-      message: string;
-    };
+    const { name, email, message } = (req.body ?? {}) as Record<string, unknown>;
 
-    if (!name?.trim() || !email?.trim() || !message?.trim()) {
+    if (
+      typeof name !== 'string' || typeof email !== 'string' || typeof message !== 'string' ||
+      !name.trim() || !email.trim() || !message.trim()
+    ) {
       return res.status(400).json({ error: 'Please fill in all fields.' });
     }
 
