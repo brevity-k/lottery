@@ -63,6 +63,20 @@ export const IGNORED_DATASET_IDS = new Set([
   'bycu-cw7c', // Lottery Pick 10 (pick-10, not yet supported)
 ]);
 
+/**
+ * npm audit advisories reviewed and accepted as non-exploitable here.
+ * These are ignored by check-audit.ts so the weekly audit doesn't reopen issues
+ * for findings with no available fix.
+ *
+ * Only add an advisory when no patched version exists AND it can't reach
+ * production code. Remove it once a fix ships.
+ */
+export const IGNORED_AUDIT_ADVISORIES = new Set([
+  // braces: deeply-nested-pattern DoS, no patched release. Dev-only via
+  // eslint-config-next > fast-glob > micromatch; patterns are never user input.
+  'GHSA-vfj7-8cjw-p6xm',
+]);
+
 /** Check if a game is retired as of the given date. */
 export function isGameRetired(gameKey: string, asOf: Date = new Date()): boolean {
   const game = KNOWN_DATASETS[gameKey];
