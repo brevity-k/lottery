@@ -153,7 +153,8 @@ async function main(): Promise<void> {
     );
   } catch (err) {
     if (err instanceof ApiResponseError && err.code === 402) {
-      console.warn('Skipping X post: X API returned 402 Payment Required (no API credits on this account)');
+      // ::warning:: shows as an annotation on the run so the skip isn't silent
+      console.warn('::warning::Skipping X post: X API returned 402 Payment Required (no API credits on this account)');
       return;
     }
     throw err;
