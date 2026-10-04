@@ -91,52 +91,6 @@ export const RETRY_PRESETS = {
 // Blog generation constants
 // ---------------------------------------------------------------------------
 
-/**
- * Seasonal topic overrides — keyed by month number (1-12).
- * These are injected into the topic rotation (every 3rd day) instead of
- * replacing the entire month, to prevent near-duplicate daily posts.
- */
-export const SEASONAL_OVERRIDES: Record<number, string> = {
-  1: 'New Year, new numbers — did last year\'s hot numbers stay hot? A look back at what changed.',
-  3: 'Tax season is here. If you won anything last year, here\'s exactly what you owe (and how to keep more).',
-  4: 'Spring cleaning your lottery strategy — what the first quarter data tells us about the rest of the year.',
-  11: 'The Thanksgiving jackpot rush is real — why November draws are historically the biggest of the year.',
-  12: 'Year in review: the wildest lottery moments, biggest near-misses, and what the data says about next year.',
-};
-
-/**
- * One-time special topics — keyed by YYYY-MM date prefix.
- * Same as seasonal overrides: injected every 3rd day, not every day.
- */
-export const SPECIAL_TOPICS: Record<string, string> = {};
-
-/**
- * Blog topic rotation — 8 topics cycling weekly, paired 1:1 with TARGET_KEYWORDS.
- * Each topic is a reader question or curiosity hook, not a data dump.
- */
-export const TOPICS: string[] = [
-  'What would happen if you played the same numbers every draw for 10 years? Use our What-If Simulator data to tell a story about one hypothetical player.',
-  'The luckiest and unluckiest numbers this month — which numbers are on a hot streak and which have gone cold? Tell it as a narrative with personality.',
-  'You just won $500M — now what? Walk through the first 48 hours after winning, including taxes, lawyers, and the lump sum vs annuity decision.',
-  'The weirdest statistical coincidences in recent lottery draws — surprising patterns, rare repeats, or near-misses that actually happened in the data.',
-  'Powerball vs Mega Millions in 2026: which game gives you more bang for your buck after the Mega Millions price change? An honest comparison.',
-  'How much does your state really take from lottery winners? Rank the best and worst states with specific dollar examples on a $100M jackpot.',
-  'The most overdue numbers right now and what "overdue" actually means statistically — debunk the gambler\'s fallacy while making it interesting.',
-  'Near-miss stories from the What-If Simulator — what does it feel like to be one number away from millions? Use real data to paint the picture.',
-];
-
-/** SEO target keywords to weave into blog posts, rotated alongside TOPICS. */
-export const TARGET_KEYWORDS: string[] = [
-  'what if i played the same lottery numbers',
-  'hot and cold lottery numbers this week',
-  'what to do if you win the lottery',
-  'lottery number patterns and coincidences',
-  'powerball vs mega millions which is better',
-  'best states for lottery winners taxes',
-  'overdue lottery numbers meaning',
-  'closest lottery near miss stories',
-];
-
 export interface BlogQueueItem {
   category: string;  // matches slug in content/categories/*.md
   topic: string;

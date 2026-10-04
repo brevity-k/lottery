@@ -65,15 +65,3 @@ export const stateTaxData: StateTaxInfo[] = [
   { name: 'Wyoming', abbreviation: 'WY', slug: 'wyoming', hasLottery: true, taxRate: 0, notes: 'No state income tax' },
   { name: 'District of Columbia', abbreviation: 'DC', slug: 'district-of-columbia', hasLottery: true, taxRate: 0.1075 },
 ];
-
-export function getStateBySlug(slug: string): StateTaxInfo | undefined {
-  return stateTaxData.find(s => s.slug === slug);
-}
-
-export function getStateByAbbreviation(abbr: string): StateTaxInfo | undefined {
-  return stateTaxData.find(s => s.abbreviation === abbr);
-}
-
-export function getStatesWithLottery(): StateTaxInfo[] {
-  return stateTaxData.filter(s => s.hasLottery);
-}

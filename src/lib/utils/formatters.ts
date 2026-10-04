@@ -28,35 +28,11 @@ export function formatDate(dateStr: string): string {
 }
 
 /**
- * Pads a number to 2 digits with a leading zero.
- * Example: 5 -> "05", 12 -> "12"
- */
-export function formatNumber(num: number): string {
-  return String(num).padStart(2, '0');
-}
-
-/**
- * Formats a number as US currency.
- * Example: 1234567 -> "$1,234,567"
- */
-export function formatCurrency(amount: number): string {
-  return '$' + amount.toLocaleString('en-US');
-}
-
-/**
  * Formats a decimal value as a percentage string.
  * Example: 0.1234 with decimals=2 -> "12.34%"
  */
 export function formatPercentage(value: number, decimals: number = 2): string {
   return value.toFixed(decimals) + '%';
-}
-
-/**
- * Returns the odds string as-is.
- * This is a pass-through for consistent formatting usage.
- */
-export function formatOdds(odds: string): string {
-  return odds;
 }
 
 /**

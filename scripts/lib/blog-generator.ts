@@ -134,7 +134,7 @@ export function loadCategory(slug: string): CategoryConfig {
   };
 }
 
-export function loadAllCategories(): CategoryConfig[] {
+function loadAllCategories(): CategoryConfig[] {
   const dir = path.join(process.cwd(), 'content', 'categories');
   if (!fs.existsSync(dir)) return [];
   return fs

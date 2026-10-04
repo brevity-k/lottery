@@ -49,11 +49,3 @@ function countOccurrences(draws: DrawResult[], number: number, type: 'main' | 'b
     return nums.includes(number);
   }).length;
 }
-
-export function getHotNumbers(hotCold: HotColdNumber[], count: number): HotColdNumber[] {
-  return hotCold.filter(n => n.classification === 'hot').slice(0, count);
-}
-
-export function getColdNumbers(hotCold: HotColdNumber[], count: number): HotColdNumber[] {
-  return [...hotCold].reverse().filter(n => n.classification === 'cold').slice(0, count);
-}

@@ -6,7 +6,7 @@ import Footer from "@/components/layout/Footer";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import AdSenseScript from "@/components/ads/AdSenseScript";
 import { AdsProvider } from "@/components/ads/AdSenseContext";
-import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/utils/constants";
+import { SITE_NAME, SITE_DESCRIPTION, SITE_URL, ANALYTICS_ID } from "@/lib/utils/constants";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -59,7 +59,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://data.ny.gov" />
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-5TW1TM399X"
+          src={`https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_ID}`}
           strategy="afterInteractive"
         />
         <Script id="google-analytics" strategy="afterInteractive">
@@ -67,7 +67,7 @@ export default function RootLayout({
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-5TW1TM399X');
+            gtag('config', '${ANALYTICS_ID}');
           `}
         </Script>
       </head>

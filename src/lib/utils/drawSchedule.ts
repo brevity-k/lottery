@@ -25,7 +25,7 @@ export const DAY_MAP: Record<string, number> = {
  * Parse draw time string into hour/minute pairs.
  * Handles "10:59 PM ET" and "2:30 PM & 10:30 PM ET" formats.
  */
-export function parseDrawTime(drawTime: string): ParsedTime[] {
+function parseDrawTime(drawTime: string): ParsedTime[] {
   const cleaned = drawTime.replace(/\s*ET\s*$/, '');
   const parts = cleaned.split('&').map(s => s.trim());
 
