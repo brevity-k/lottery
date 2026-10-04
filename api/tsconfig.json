@@ -1,0 +1,17 @@
+// Vercel compiles api/*.ts with the nearest tsconfig. The root one uses
+// "module": "esnext" for Next.js, which made Vercel emit ESM into a .js file
+// in a non-"type": "module" package, so the function crashed on load
+// (FUNCTION_INVOCATION_FAILED). nodenext emits CommonJS here.
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "types": ["node"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": ["*.ts"]
+}
