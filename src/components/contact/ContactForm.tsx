@@ -49,7 +49,6 @@ export default function ContactForm() {
           Your message has been sent!
         </h3>
         <p className="text-gray-600 leading-relaxed mb-6">
-          We&apos;ve sent a confirmation email to your inbox.<br />
           We&apos;ll get back to you within 1-2 business days.
         </p>
         <button
