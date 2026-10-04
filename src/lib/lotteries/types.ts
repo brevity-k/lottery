@@ -131,17 +131,6 @@ export interface StrategyConfig {
 
 export type LotterySlug = 'powerball' | 'mega-millions' | 'cash4life' | 'ny-lotto' | 'take5' | 'millionaire-for-life';
 
-export interface NumberSet {
-  id: string;
-  name: string;
-  game: LotterySlug;
-  numbers: number[];
-  bonusNumber?: number;
-  customNote?: string;
-  startDate?: string;
-  createdAt: string;
-}
-
 export interface WhatIfResult {
   totalWinnings: number;
   totalDrawsChecked: number;
@@ -157,30 +146,4 @@ export interface PrizeTierResult {
   prize: number | string;
   count: number;
   totalWon: number;
-}
-
-export interface PatternAnalysis {
-  sum: number;
-  avgWinningSum: number;
-  oddCount: number;
-  evenCount: number;
-  highCount: number;
-  lowCount: number;
-  primeCount: number;
-  primes: number[];
-  hasConsecutive: boolean;
-  consecutivePairs: [number, number][];
-  spread: number;
-  min: number;
-  max: number;
-  hotColdOverlap: { hot: number[]; cold: number[] };
-}
-
-export interface CrossGameResult {
-  game: LotterySlug;
-  gameName: string;
-  totalWinnings: number;
-  totalDraws: number;
-  compatible: boolean;
-  incompatibleReason?: string;
 }
