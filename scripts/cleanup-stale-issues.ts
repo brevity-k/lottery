@@ -20,6 +20,7 @@ const LABEL = 'automation-failure';
 const WORKFLOW_MAP: Record<string, string> = {
   'fetch-lottery-data failed': 'fetch-lottery-data.yml',
   'generate-blog failed': 'generate-blog.yml',
+  'post-to-x failed': 'post-to-x.yml',
   'Stale lottery data detected': 'fetch-lottery-data.yml',
   'check-new-datasets failed': 'weekly-maintenance.yml',
   'quarterly-tax-update failed': 'weekly-maintenance.yml',

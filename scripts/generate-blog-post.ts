@@ -23,6 +23,7 @@ import {
   validatePost,
   getExistingSlugs,
   getExistingTitles,
+  ensureKeywordInSlug,
   BlogPost,
 } from './lib/blog-generator';
 
@@ -127,6 +128,8 @@ async function main() {
   }
 
   if (!post) return;
+
+  post.slug = ensureKeywordInSlug(post.slug, targetKeyword);
 
   // Ensure slug contains date for uniqueness
   if (!post.slug.includes(today)) {

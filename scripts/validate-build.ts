@@ -66,6 +66,8 @@ for (const [filename, minCount] of Object.entries(MIN_DRAWS)) {
 
 console.log('\n=== Validating blog posts ===');
 
+const UNSAFE_HTML = /<\s*(script|iframe|object|embed)\b|<[^>]+\son[a-z]+\s*=|javascript:/i;
+
 if (fs.existsSync(BLOG_DIR)) {
   const blogFiles = fs.readdirSync(BLOG_DIR).filter(f => f.endsWith('.json'));
   let blogErrors = 0;
@@ -80,6 +82,11 @@ if (fs.existsSync(BLOG_DIR)) {
           fail(`${file} missing required field "${field}"`);
           blogErrors++;
         }
+      }
+      // Post content is AI-generated HTML rendered with dangerouslySetInnerHTML
+      if (typeof post.content === 'string' && UNSAFE_HTML.test(post.content)) {
+        fail(`${file} content contains script/embed tags, inline event handlers, or javascript: URLs`);
+        blogErrors++;
       }
     } catch (e) {
       fail(`${file} is not valid JSON: ${e}`);

@@ -21,6 +21,8 @@ import {
   getExistingSlugs,
   getExistingTitles,
   loadCategory,
+  ensureKeywordInSlug,
+  isQueueItemConsumed,
   BlogPost,
 } from './lib/blog-generator';
 import { BLOG_QUEUE } from './lib/constants';
@@ -51,25 +53,6 @@ function parseArgs(): { count: number; dryRun: boolean } {
   }
 
   return { count, dryRun };
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Determine whether a queue topic has already been consumed.
- * Mirrors the logic in selectTopic() from blog-generator.ts.
- */
-function isTopicConsumed(topic: string, existingSlugs: string[], existingTitles: string[]): boolean {
-  const topicPrefix = topic.slice(0, 30).toLowerCase();
-  const slugsLower = existingSlugs.map((s) => s.toLowerCase());
-  const titlesLower = existingTitles.map((t) => t.toLowerCase());
-
-  return (
-    slugsLower.some((s) => s.includes(topicPrefix.slice(0, 20).replace(/[^a-z0-9]/g, '-'))) ||
-    titlesLower.some((t) => t.includes(topicPrefix))
-  );
 }
 
 // ---------------------------------------------------------------------------
@@ -170,7 +153,7 @@ async function main() {
 
   // Filter BLOG_QUEUE to unconsumed topics
   const unconsumedTopics = BLOG_QUEUE.filter(
-    (item) => !isTopicConsumed(item.topic, existingSlugs, existingTitles),
+    (item) => !isQueueItemConsumed(item.targetKeyword, existingSlugs),
   );
 
   if (unconsumedTopics.length === 0) {
@@ -234,6 +217,8 @@ async function main() {
       console.log('  Failed after max retries — skipping.');
       skipped++;
     } else {
+      post.slug = ensureKeywordInSlug(post.slug, item.targetKeyword);
+
       // Ensure slug contains a date suffix for uniqueness
       const today = new Date().toISOString().split('T')[0];
       if (!post.slug.includes(today)) {

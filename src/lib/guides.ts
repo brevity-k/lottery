@@ -9,7 +9,7 @@ export interface GuidePost {
   lastReviewed: string;
 }
 
-export const GUIDES_DIR = path.join(process.cwd(), 'content', 'guides');
+const GUIDES_DIR = path.join(process.cwd(), 'content', 'guides');
 
 export function getAllGuides(): GuidePost[] {
   try {
@@ -33,16 +33,5 @@ export function getGuide(slug: string): GuidePost | null {
     return JSON.parse(raw) as GuidePost;
   } catch {
     return null;
-  }
-}
-
-export function getAllGuideSlugs(): string[] {
-  try {
-    return fs
-      .readdirSync(GUIDES_DIR)
-      .filter((f) => f.endsWith('.json'))
-      .map((f) => f.replace('.json', ''));
-  } catch {
-    return [];
   }
 }

@@ -57,7 +57,7 @@ async function main() {
 Here are the current rates in our database:
 ${currentRates.map(s => `${s.name} (${s.abbreviation}): ${(s.rate * 100).toFixed(4)}%`).join('\n')}
 
-Please check if any of these rates are incorrect or outdated for the current year (2026).
+Please check if any of these rates are incorrect or outdated for the current year (${new Date().getFullYear()}).
 
 IMPORTANT RULES:
 - Only report CONFIRMED changes. Do not guess.
@@ -137,37 +137,20 @@ If no changes are needed, return {"updates": [], "noChanges": true, "notes": "Al
       continue;
     }
 
-    // Line-based editing: find the state block, then update its taxRate line
-    let stateLineIdx = -1;
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].includes(`abbreviation: '${update.abbreviation}'`)) {
-        stateLineIdx = i;
-        break;
-      }
-    }
-
-    if (stateLineIdx === -1) {
+    // Each state is a single line: { name: ..., abbreviation: 'XX', ..., taxRate: 0.05, ... }
+    const lineIdx = lines.findIndex(l => l.includes(`abbreviation: '${update.abbreviation}'`));
+    if (lineIdx === -1) {
       console.log(`    WARNING: Could not find abbreviation '${update.abbreviation}' in file`);
       continue;
     }
 
-    // Search forward from the abbreviation line for the taxRate line (within the same block)
-    let found = false;
-    for (let j = stateLineIdx; j < Math.min(stateLineIdx + 15, lines.length); j++) {
-      const taxRateMatch = lines[j].match(/^(\s*taxRate:\s*)[\d.]+(.*)$/);
-      if (taxRateMatch) {
-        lines[j] = `${taxRateMatch[1]}${update.suggestedRate}${taxRateMatch[2]}`;
-        changesApplied++;
-        found = true;
-        break;
-      }
-      // Stop if we hit the next state block (closing brace followed by opening brace or another abbreviation)
-      if (j > stateLineIdx && lines[j].includes('abbreviation:')) break;
+    const taxRatePattern = /(taxRate:\s*)[\d.]+/;
+    if (!taxRatePattern.test(lines[lineIdx])) {
+      console.log(`    WARNING: Could not find taxRate for ${update.abbreviation}`);
+      continue;
     }
-
-    if (!found) {
-      console.log(`    WARNING: Could not find taxRate line for ${update.abbreviation}`);
-    }
+    lines[lineIdx] = lines[lineIdx].replace(taxRatePattern, `$1${update.suggestedRate}`);
+    changesApplied++;
   }
 
   if (changesApplied > 0) {

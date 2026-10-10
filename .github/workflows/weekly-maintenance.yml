@@ -230,8 +230,10 @@ jobs:
 
       - name: Verify Claude API key
         if: steps.check_quarter.outputs.run == 'true' || github.event_name == 'workflow_dispatch'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          if [ -z "${{ secrets.ANTHROPIC_API_KEY }}" ]; then
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
             echo "::warning::ANTHROPIC_API_KEY is not set — quarterly tax update will be skipped"
           fi
 
@@ -327,8 +329,10 @@ jobs:
 
       - name: Verify Claude API key
         if: steps.check_quarter.outputs.run == 'true' || github.event_name == 'workflow_dispatch'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          if [ -z "${{ secrets.ANTHROPIC_API_KEY }}" ]; then
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
             echo "::warning::ANTHROPIC_API_KEY is not set — quarterly state refresh will be skipped"
           fi
 

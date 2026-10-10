@@ -134,7 +134,7 @@ export function loadCategory(slug: string): CategoryConfig {
   };
 }
 
-export function loadAllCategories(): CategoryConfig[] {
+function loadAllCategories(): CategoryConfig[] {
   const dir = path.join(process.cwd(), 'content', 'categories');
   if (!fs.existsSync(dir)) return [];
   return fs
@@ -287,6 +287,24 @@ function keywordToSlugPrefix(keyword: string): string {
     .replace(/^-|-$/g, '');
 }
 
+/** A BLOG_QUEUE item is consumed once an existing slug contains its keyword. */
+export function isQueueItemConsumed(targetKeyword: string, existingSlugs: string[]): boolean {
+  const keywordSlug = keywordToSlugPrefix(targetKeyword);
+  return keywordSlug.length > 0 && existingSlugs.some((s) => s.toLowerCase().includes(keywordSlug));
+}
+
+/**
+ * Make sure a generated slug contains the normalized target keyword.
+ * selectTopic() treats a BLOG_QUEUE item as consumed only when some slug
+ * contains its keyword, so a slug without it makes the same topic get
+ * picked again on every run.
+ */
+export function ensureKeywordInSlug(slug: string, targetKeyword: string): string {
+  const keywordSlug = keywordToSlugPrefix(targetKeyword);
+  if (!keywordSlug || slug.toLowerCase().includes(keywordSlug)) return slug;
+  return keywordSlug;
+}
+
 /**
  * Select the next blog topic. Priority:
  * 1. First unconsumed item from BLOG_QUEUE (dedup by targetKeyword slug prefix)
@@ -299,14 +317,9 @@ function keywordToSlugPrefix(keyword: string): string {
 export function selectTopic(
   existingSlugs: string[],
 ): { category: CategoryConfig; topic: string; targetKeyword: string } {
-  const slugsLower = existingSlugs.map((s) => s.toLowerCase());
-
   // 1. Check BLOG_QUEUE for unconsumed topics
   for (const item of BLOG_QUEUE) {
-    const keywordSlug = keywordToSlugPrefix(item.targetKeyword);
-    const isConsumed = keywordSlug.length > 0 && slugsLower.some((s) => s.includes(keywordSlug));
-
-    if (!isConsumed) {
+    if (!isQueueItemConsumed(item.targetKeyword, existingSlugs)) {
       try {
         const category = loadCategory(item.category);
         return { category, topic: item.topic, targetKeyword: item.targetKeyword };

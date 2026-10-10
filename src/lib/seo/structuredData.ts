@@ -13,7 +13,7 @@ export function websiteSchema() {
   };
 }
 
-export function organizationSchema() {
+function organizationSchema() {
   return {
     '@type': 'Organization',
     name: SITE_NAME,
