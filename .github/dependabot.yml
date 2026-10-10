@@ -10,6 +10,13 @@ updates:
     groups:
       minor-and-patch:
         update-types: ["minor", "patch"]
+    ignore:
+      # Majors that break `npm run lint` until eslint-config-next catches up:
+      # eslint 10 crashes eslint-plugin-react; typescript-eslint rejects TS 7
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

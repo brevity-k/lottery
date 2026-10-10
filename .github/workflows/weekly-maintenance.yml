@@ -113,7 +113,7 @@ jobs:
       - name: Run npm audit
         id: audit
         run: |
-          npm audit --audit-level=high > audit-output.txt 2>&1 && echo "found=false" >> "$GITHUB_OUTPUT" || echo "found=true" >> "$GITHUB_OUTPUT"
+          npx tsx scripts/check-audit.ts > audit-output.txt 2>&1 && echo "found=false" >> "$GITHUB_OUTPUT" || echo "found=true" >> "$GITHUB_OUTPUT"
           cat audit-output.txt
 
       - name: Create issue for vulnerabilities
@@ -139,7 +139,7 @@ jobs:
               await github.rest.issues.create({
                 ...context.repo,
                 title,
-                body: `\`npm audit --audit-level=high\` found vulnerabilities.\n\nRun \`npm audit\` locally for details.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                body: `\`scripts/check-audit.ts\` found high/critical vulnerabilities.\n\nRun \`npm audit\` locally for details.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 labels: [label],
               });
             }
