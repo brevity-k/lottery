@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { getAllLotteries } from '@/lib/lotteries/config';
 import { loadLotteryData } from '@/lib/data/fetcher';
 import { getYearsRange } from '@/lib/utils/formatters';
-import { getAllBlogPosts } from '@/lib/blog';
+import { getIndexableBlogPosts } from '@/lib/blog';
 import { getAllStateSlugs } from '@/lib/states/config';
 import { SITE_URL } from '@/lib/utils/constants';
 import fs from 'fs';
@@ -74,7 +74,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   });
 
   // Blog posts
-  const blogPages: MetadataRoute.Sitemap = getAllBlogPosts().map(post => ({
+  const blogPages: MetadataRoute.Sitemap = getIndexableBlogPosts().map(post => ({
     url: `${SITE_URL}/blog/${post.slug}`,
     lastModified: new Date(post.date).toISOString(),
     changeFrequency: 'monthly' as const,

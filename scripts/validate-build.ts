@@ -83,6 +83,10 @@ if (fs.existsSync(BLOG_DIR)) {
           blogErrors++;
         }
       }
+      if ('noindex' in post && typeof post.noindex !== 'boolean') {
+        fail(`${file} "noindex" must be a boolean`);
+        blogErrors++;
+      }
       // Post content is AI-generated HTML rendered with dangerouslySetInnerHTML
       if (typeof post.content === 'string' && UNSAFE_HTML.test(post.content)) {
         fail(`${file} content contains script/embed tags, inline event handlers, or javascript: URLs`);

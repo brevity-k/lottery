@@ -44,6 +44,8 @@ export interface BlogPost {
   date: string;
   category: string;
   content: string;
+  /** Optional; new posts omit it and are indexed by default. */
+  noindex?: boolean;
 }
 
 interface Outline {

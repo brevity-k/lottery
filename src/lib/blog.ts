@@ -8,6 +8,12 @@ interface BlogPost {
   date: string;
   category: string;
   content: string;
+  /**
+   * When true, the post still renders at its URL but is marked
+   * `noindex, follow` and excluded from the sitemap, the blog index and
+   * related-post suggestions. Used for near-duplicate posts. Omitted = indexed.
+   */
+  noindex?: boolean;
 }
 
 const seedPosts: BlogPost[] = [
@@ -542,6 +548,7 @@ export function getAllBlogSlugs(): string[] {
   return getAllPosts().map(p => p.slug);
 }
 
-export function getAllBlogPosts(): BlogPost[] {
-  return getAllPosts();
+/** Posts that should be discoverable: sitemap, blog index, related posts. */
+export function getIndexableBlogPosts(): BlogPost[] {
+  return getAllPosts().filter(p => p.noindex !== true);
 }

@@ -29,7 +29,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: 'article',
       publishedTime: post.date,
     },
-    alternates: { canonical: `${SITE_URL}/blog/${slug}` },
+    // Near-duplicate posts stay reachable but are kept out of the index.
+    // No canonical on those: a canonical alongside noindex sends mixed signals.
+    ...(post.noindex
+      ? { robots: { index: false, follow: true } }
+      : { alternates: { canonical: `${SITE_URL}/blog/${slug}` } }),
   };
 }
 

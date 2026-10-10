@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { SITE_URL } from '@/lib/utils/constants';
 import { calculateReadingTime } from '@/lib/utils/formatters';
 import { breadcrumbSchema } from '@/lib/seo/structuredData';
-import { getAllBlogPosts } from '@/lib/blog';
+import { getIndexableBlogPosts } from '@/lib/blog';
 import JsonLd from '@/components/seo/JsonLd';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 
@@ -39,7 +39,7 @@ function getCategoryStyle(category: string): string {
 }
 
 export default function BlogPage() {
-  const blogPosts = getAllBlogPosts();
+  const blogPosts = getIndexableBlogPosts();
   const [featured, ...rest] = blogPosts;
 
   return (

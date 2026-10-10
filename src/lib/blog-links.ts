@@ -1,4 +1,4 @@
-import { getAllBlogPosts } from '@/lib/blog';
+import { getIndexableBlogPosts } from '@/lib/blog';
 
 interface BlogPostSummary {
   slug: string;
@@ -12,7 +12,7 @@ interface BlogPostSummary {
  * Matches by game name or slug appearing in the title or content.
  */
 export function getRelatedPosts(gameSlug: string, gameName: string, limit: number = 3): BlogPostSummary[] {
-  const allPosts = getAllBlogPosts();
+  const allPosts = getIndexableBlogPosts();
   const searchTerms = [gameSlug.toLowerCase(), gameName.toLowerCase()];
 
   // Also match generic terms for broader articles
