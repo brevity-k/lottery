@@ -75,6 +75,12 @@ export const IGNORED_AUDIT_ADVISORIES = new Set([
   // braces: deeply-nested-pattern DoS, no patched release. Dev-only via
   // eslint-config-next > fast-glob > micromatch; patterns are never user input.
   'GHSA-vfj7-8cjw-p6xm',
+  // zod: memory exhaustion on oversized constrained collections, patched only
+  // in 4.6.6+. The zod 4 consumers are pinned to ^4.6.6 via package.json
+  // overrides; the remaining copies are zod 3.25.76 (no patched 3.x) pinned by
+  // @atproto/api, which is only used by scripts/post-to-bluesky.mts (CI cron,
+  // never bundled into the site). Remove once @atproto moves to zod >=4.6.6.
+  'GHSA-mrhx-c7xc-m3w5',
 ]);
 
 /** Check if a game is retired as of the given date. */
