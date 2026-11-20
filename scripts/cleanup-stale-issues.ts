@@ -27,6 +27,7 @@ const WORKFLOW_MAP: Record<string, string> = {
   'quarterly-state-refresh failed': 'weekly-maintenance.yml',
   'SEO health check failed': 'weekly-maintenance.yml',
   'npm security vulnerabilities': 'weekly-maintenance.yml',
+  'mylottostats.com is down': 'site-uptime.yml',
 };
 
 interface GitHubIssue {

@@ -32,7 +32,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Don't post links to a site that's down. continue-on-error keeps the job
+      # green — the Site Uptime workflow owns alerting for outages.
+      - name: Check live site
+        id: site
+        continue-on-error: true
+        run: npx tsx scripts/check-site-up.ts
+
       - name: Post latest blog to X
+        if: steps.site.outcome == 'success'
         env:
           X_CONSUMER_KEY: ${{ secrets.X_CONSUMER_KEY }}
           X_SECRET_KEY: ${{ secrets.X_SECRET_KEY }}
@@ -43,7 +51,7 @@ jobs:
       # No continue-on-error: a Bluesky failure should fail the job and open
       # an issue via "Notify on failure". The tracker commit still runs.
       - name: Post to Bluesky
-        if: always()
+        if: always() && steps.site.outcome == 'success'
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}

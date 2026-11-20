@@ -99,7 +99,20 @@ export const RETRY_PRESETS = {
   GITHUB_API: { maxAttempts: 2, baseDelayMs: 2000 } satisfies RetryOptions,
   /** X API calls: 2 attempts with moderate delay for rate limits. */
   X_API: { maxAttempts: 2, baseDelayMs: 2000 } satisfies RetryOptions,
+  /** Live-site uptime checks: 3 attempts to ride out transient CDN blips. */
+  SITE_UPTIME: { maxAttempts: 3, baseDelayMs: 5000 } satisfies RetryOptions,
 } as const;
+
+// ---------------------------------------------------------------------------
+// Live-site uptime check
+// ---------------------------------------------------------------------------
+
+/** Production URLs that must return 200 (homepage + a data-driven page + a static asset). */
+export const SITE_UPTIME_URLS = [
+  'https://mylottostats.com/',
+  'https://mylottostats.com/powerball/results',
+  'https://mylottostats.com/ads.txt',
+] as const;
 
 // ---------------------------------------------------------------------------
 // Blog generation constants
