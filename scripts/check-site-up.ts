@@ -4,8 +4,8 @@
  * Run: npx tsx scripts/check-site-up.ts
  *
  * Requests a few representative production URLs and exits 1 if any of them
- * does not return HTTP 200. Used by site-uptime.yml (daily alert) and by
- * post-to-x.yml (skip social posting while the site is down).
+ * does not return HTTP 200. Used by site-uptime.yml (6-hourly alert) and by
+ * post-to-bluesky.yml (skip social posting while the site is down).
  */
 
 import { withRetry } from './lib/retry';
