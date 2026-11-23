@@ -20,6 +20,7 @@ import {
   KNOWN_DATASETS,
   isGameRetired,
   RETRY_PRESETS,
+  NEAR_DUPLICATE_THRESHOLD,
 } from './constants';
 
 // ---------------------------------------------------------------------------
@@ -271,10 +272,48 @@ export function buildAllGameAnalysis(): string {
 // Topic Selection
 // ---------------------------------------------------------------------------
 
-function getWeekOfYear(date: Date): number {
-  const startOfYear = new Date(date.getFullYear(), 0, 1);
-  const dayOfYear = Math.floor((date.getTime() - startOfYear.getTime()) / 86400000) + 1;
-  return Math.ceil(dayOfYear / 7);
+function getDayOfYear(date: Date): number {
+  const startOfYear = Date.UTC(date.getUTCFullYear(), 0, 1);
+  return Math.floor((date.getTime() - startOfYear) / 86400000) + 1;
+}
+
+// ---------------------------------------------------------------------------
+// Near-duplicate detection
+// ---------------------------------------------------------------------------
+
+/** Words too common across this site's titles to signal topic identity. */
+const TITLE_STOPWORDS = new Set(
+  ('a an the and or of in on for to is are was were it its your you what how why when who which with from ' +
+    'by at as do does did vs this that these those than then after before into about real really every all ' +
+    'lottery lotto numbers number').split(' '),
+);
+
+function titleTokens(title: string): Set<string> {
+  return new Set(
+    title
+      .toLowerCase()
+      .split(/[^a-z]+/)
+      .filter((w) => w.length > 2 && !TITLE_STOPWORDS.has(w)),
+  );
+}
+
+/**
+ * Return the first existing title whose topic-word overlap (Jaccard) with
+ * `title` meets NEAR_DUPLICATE_THRESHOLD, or null if the title is novel.
+ * Catches rewordings like "Same Lottery Numbers Every Draw: 338 Wednesdays
+ * Exposed" vs "...: The 338-Week Truth" that exact-slug checks miss.
+ */
+export function findNearDuplicate(title: string, existingTitles: string[]): string | null {
+  const a = titleTokens(title);
+  if (a.size === 0) return null;
+  for (const existing of existingTitles) {
+    const b = titleTokens(existing);
+    let shared = 0;
+    a.forEach((w) => { if (b.has(w)) shared++; });
+    const union = a.size + b.size - shared;
+    if (union > 0 && shared / union >= NEAR_DUPLICATE_THRESHOLD) return existing;
+  }
+  return null;
 }
 
 /**
@@ -307,24 +346,31 @@ export function ensureKeywordInSlug(slug: string, targetKeyword: string): string
   return keywordSlug;
 }
 
+export type TopicSelection =
+  | { source: 'queue'; category: CategoryConfig; topic: string; targetKeyword: string }
+  | { source: 'generated'; category: CategoryConfig };
+
 /**
  * Select the next blog topic. Priority:
  * 1. First unconsumed item from BLOG_QUEUE (dedup by targetKeyword slug prefix)
- * 2. Category rotation fallback using week-of-year mod
+ * 2. Once the queue is exhausted: rotate the category daily and let the caller
+ *    generate a fresh topic with generateFreshTopic().
  *
  * A queue item is considered consumed when an existing slug contains the
  * normalized targetKeyword — this prevents repeatedly picking the same
  * topic just because Claude generated different phrasing each time.
+ *
+ * The fallback used to be a fixed topic per category chosen by week-of-year,
+ * which republished the same post for 7 days straight and cycled the same
+ * 8 topics forever.
  */
-export function selectTopic(
-  existingSlugs: string[],
-): { category: CategoryConfig; topic: string; targetKeyword: string } {
+export function selectTopic(existingSlugs: string[], now: Date = new Date()): TopicSelection {
   // 1. Check BLOG_QUEUE for unconsumed topics
   for (const item of BLOG_QUEUE) {
     if (!isQueueItemConsumed(item.targetKeyword, existingSlugs)) {
       try {
         const category = loadCategory(item.category);
-        return { category, topic: item.topic, targetKeyword: item.targetKeyword };
+        return { source: 'queue', category, topic: item.topic, targetKeyword: item.targetKeyword };
       } catch (err) {
         console.warn(`Failed to load category "${item.category}" for queue item, skipping:`, err);
         continue;
@@ -332,44 +378,62 @@ export function selectTopic(
     }
   }
 
-  // 2. Fallback: category rotation using week-of-year mod
-  console.log('BLOG_QUEUE exhausted — falling back to category rotation.');
+  // 2. Fallback: daily category rotation + generated topic
+  console.log('BLOG_QUEUE exhausted — rotating category daily with a generated topic.');
   const allCategories = loadAllCategories();
   if (allCategories.length === 0) {
     throw new Error('No category templates found in content/categories/');
   }
 
-  const weekOfYear = getWeekOfYear(new Date());
-  const category = allCategories[weekOfYear % allCategories.length];
+  const category = allCategories[getDayOfYear(now) % allCategories.length];
+  return { source: 'generated', category };
+}
 
-  // Generate a generic topic for the selected category
-  const fallbackTopics: Record<string, string> = {
-    'deep-dive-guide': 'A deep dive into the latest lottery statistics and what they reveal about number distribution patterns',
-    'data-story': 'The most surprising patterns in this week\'s lottery draws — what the data shows that most people miss',
-    'myth-buster': 'Common lottery misconceptions that the actual draw data disproves — the math behind the myths',
-    'tax-and-money': 'Updated state-by-state lottery tax comparison — what winners actually take home right now',
-    'game-comparison': 'How do all the lottery games we track compare right now in terms of odds, cost, and expected value?',
-    'what-if-scenario': 'What if you had played the same numbers in every draw this year? A data-driven thought experiment',
-    'winner-stories': 'Lessons from the biggest lottery winners in American history — what happened after they won',
-    'lottery-news': 'This week in lottery news — notable draws, jackpot updates, and statistical milestones',
-  };
+/**
+ * Ask Claude for a new topic in `category` that doesn't overlap any title in
+ * `avoidTitles`. Used once BLOG_QUEUE is exhausted so the site keeps
+ * publishing distinct posts without manual queue curation.
+ */
+export async function generateFreshTopic(
+  client: Anthropic,
+  category: CategoryConfig,
+  avoidTitles: string[],
+): Promise<{ topic: string; targetKeyword: string }> {
+  const prompt = `You are choosing the next blog post topic for MyLottoStats.com, a US lottery statistics site (Powerball, Mega Millions, NY Lotto, Take 5, Millionaire for Life, Cash4Life history, state lottery taxes).
 
-  const fallbackKeywords: Record<string, string> = {
-    'deep-dive-guide': 'lottery statistics analysis',
-    'data-story': 'lottery number patterns',
-    'myth-buster': 'lottery myths debunked',
-    'tax-and-money': 'lottery tax by state',
-    'game-comparison': 'best lottery game odds',
-    'what-if-scenario': 'what if lottery numbers',
-    'winner-stories': 'biggest lottery winners',
-    'lottery-news': 'lottery news today',
-  };
+CATEGORY: ${category.name}
+CATEGORY VOICE: ${category.voice}
 
-  return {
-    category,
-    topic: fallbackTopics[category.slug] || `Analysis of current ${category.name.toLowerCase()} trends in lottery data`,
-    targetKeyword: fallbackKeywords[category.slug] || `lottery ${category.name.toLowerCase()}`,
-  };
+Every title below is already published. Pick a topic on a clearly DIFFERENT subject — not a rewording, new angle on, or update of any of them:
+${avoidTitles.map((t) => `- ${t}`).join('\n') || '(none yet)'}
+
+Rules:
+- Must be answerable from historical draw data, published odds, or state tax rules
+- No predictions, "winning strategies", or guarantees
+- targetKeyword: a 3-6 word search phrase a real person would type, lowercase
+
+Respond with ONLY valid JSON (no markdown fences):
+{"topic": "One-sentence description of the post", "targetKeyword": "search phrase"}`;
+
+  return withRetry(
+    async () => {
+      const message = await client.messages.create({
+        model: CLAUDE_MODEL,
+        max_tokens: 512,
+        messages: [{ role: 'user', content: prompt }],
+      });
+      const textBlock = message.content.find((b) => b.type === 'text');
+      if (!textBlock || textBlock.type !== 'text') {
+        throw new Error('Claude response contains no text block');
+      }
+      const parsed = parseJsonResponse<{ topic: string; targetKeyword: string }>(textBlock.text);
+      if (!parsed.topic?.trim() || !parsed.targetKeyword?.trim()) {
+        throw new Error('Fresh topic response missing topic or targetKeyword');
+      }
+      return { topic: parsed.topic.trim(), targetKeyword: parsed.targetKeyword.trim().toLowerCase() };
+    },
+    { ...RETRY_PRESETS.CLAUDE_API, label: 'Fresh topic' },
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -692,16 +756,20 @@ export function getExistingSlugs(): string[] {
   }
 }
 
+/**
+ * Unique post titles, oldest → newest by post date, so `.slice(-n)` yields
+ * the most recent. (Previously returned in filename order, which made the
+ * "recent titles" list alphabetical and full of one topic's rewordings.)
+ */
 export function getExistingTitles(): string[] {
   const blogDir = path.join(process.cwd(), 'content', 'blog');
   try {
-    return fs
+    const posts = fs
       .readdirSync(blogDir)
       .filter((f) => f.endsWith('.json'))
-      .map((f) => {
-        const raw = fs.readFileSync(path.join(blogDir, f), 'utf-8');
-        return (JSON.parse(raw) as BlogPost).title;
-      });
+      .map((f) => JSON.parse(fs.readFileSync(path.join(blogDir, f), 'utf-8')) as BlogPost)
+      .sort((a, b) => (a.date ?? '').localeCompare(b.date ?? ''));
+    return [...new Set(posts.map((p) => p.title))];
   } catch {
     return [];
   }

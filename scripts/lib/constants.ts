@@ -178,3 +178,11 @@ export const BLOG_FORBIDDEN_TERMS = ['prediction', 'guaranteed', 'winning strate
 
 /** Minimum word count for auto-generated blog posts. */
 export const BLOG_MIN_WORDS = 600;
+
+/**
+ * Title topic-word overlap (Jaccard, stopwords removed) at or above which a new
+ * post is rejected as a rewrite of an existing one. Calibrated on the live
+ * archive: 0.4 groups every rewording of the same topic while keeping
+ * genuinely different posts apart.
+ */
+export const NEAR_DUPLICATE_THRESHOLD = 0.4;
