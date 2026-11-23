@@ -20,13 +20,14 @@ const LABEL = 'automation-failure';
 const WORKFLOW_MAP: Record<string, string> = {
   'fetch-lottery-data failed': 'fetch-lottery-data.yml',
   'generate-blog failed': 'generate-blog.yml',
-  'post-to-x failed': 'post-to-x.yml',
+  'post-to-bluesky failed': 'post-to-bluesky.yml',
   'Stale lottery data detected': 'fetch-lottery-data.yml',
   'check-new-datasets failed': 'weekly-maintenance.yml',
   'quarterly-tax-update failed': 'weekly-maintenance.yml',
   'quarterly-state-refresh failed': 'weekly-maintenance.yml',
   'SEO health check failed': 'weekly-maintenance.yml',
   'npm security vulnerabilities': 'weekly-maintenance.yml',
+  'mylottostats.com is down': 'site-uptime.yml',
 };
 
 interface GitHubIssue {

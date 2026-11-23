@@ -132,7 +132,7 @@ async function main(): Promise<void> {
       identifier: process.env.BLUESKY_HANDLE!,
       password: process.env.BLUESKY_APP_PASSWORD!,
     }),
-    { ...RETRY_PRESETS.X_API, label: 'Bluesky login' },
+    { ...RETRY_PRESETS.BLUESKY_API, label: 'Bluesky login' },
   );
 
   const rt = new RichText({ text });
@@ -144,7 +144,7 @@ async function main(): Promise<void> {
       facets: rt.facets,
       createdAt: new Date().toISOString(),
     }),
-    { ...RETRY_PRESETS.X_API, label: 'Bluesky post' },
+    { ...RETRY_PRESETS.BLUESKY_API, label: 'Bluesky post' },
   );
 
   markAsPosted(post.slug);

@@ -75,6 +75,12 @@ export const IGNORED_AUDIT_ADVISORIES = new Set([
   // braces: deeply-nested-pattern DoS, no patched release. Dev-only via
   // eslint-config-next > fast-glob > micromatch; patterns are never user input.
   'GHSA-vfj7-8cjw-p6xm',
+  // zod: memory exhaustion on oversized constrained collections, patched only
+  // in 4.6.6+. The zod 4 consumers are pinned to ^4.6.6 via package.json
+  // overrides; the remaining copies are zod 3.25.76 (no patched 3.x) pinned by
+  // @atproto/api, which is only used by scripts/post-to-bluesky.mts (CI cron,
+  // never bundled into the site). Remove once @atproto moves to zod >=4.6.6.
+  'GHSA-mrhx-c7xc-m3w5',
 ]);
 
 /** Check if a game is retired as of the given date. */
@@ -97,9 +103,22 @@ export const RETRY_PRESETS = {
   CLAUDE_API: { maxAttempts: 2, baseDelayMs: 3000 } satisfies RetryOptions,
   /** GitHub API calls: 2 attempts with moderate delay. */
   GITHUB_API: { maxAttempts: 2, baseDelayMs: 2000 } satisfies RetryOptions,
-  /** X API calls: 2 attempts with moderate delay for rate limits. */
-  X_API: { maxAttempts: 2, baseDelayMs: 2000 } satisfies RetryOptions,
+  /** Bluesky API calls: 2 attempts with moderate delay for rate limits. */
+  BLUESKY_API: { maxAttempts: 2, baseDelayMs: 2000 } satisfies RetryOptions,
+  /** Live-site uptime checks: 3 attempts to ride out transient CDN blips. */
+  SITE_UPTIME: { maxAttempts: 3, baseDelayMs: 5000 } satisfies RetryOptions,
 } as const;
+
+// ---------------------------------------------------------------------------
+// Live-site uptime check
+// ---------------------------------------------------------------------------
+
+/** Production URLs that must return 200 (homepage + a data-driven page + a static asset). */
+export const SITE_UPTIME_URLS = [
+  'https://mylottostats.com/',
+  'https://mylottostats.com/powerball/results',
+  'https://mylottostats.com/ads.txt',
+] as const;
 
 // ---------------------------------------------------------------------------
 // Blog generation constants

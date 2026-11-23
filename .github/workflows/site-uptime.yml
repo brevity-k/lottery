@@ -1,0 +1,64 @@
+name: Site Uptime
+
+on:
+  schedule:
+    # Every 6 hours — catches outages (e.g. Vercel deployment disabled) within a day
+    - cron: '30 */6 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+concurrency:
+  group: site-uptime
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check-site:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check live site
+        run: npx tsx scripts/check-site-up.ts
+
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const title = '[Auto] mylottostats.com is down';
+            const label = 'automation-failure';
+            const { data: issues } = await github.rest.issues.listForRepo({
+              ...context.repo,
+              state: 'open',
+              labels: label,
+            });
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: existing.number,
+                body: `Still down on ${new Date().toISOString()}.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                ...context.repo,
+                title,
+                body: `The live site is not returning HTTP 200. Check the Vercel dashboard (billing / deployment status) and the run log for the status code.\n\nSocial posting is skipped automatically while the site is down.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                labels: [label],
+              });
+            }

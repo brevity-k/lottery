@@ -1,4 +1,4 @@
-name: Post to X
+name: Post to Bluesky
 
 on:
   workflow_run:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch: # Allow manual trigger
 
 concurrency:
-  group: post-to-x
+  group: post-to-bluesky
   cancel-in-progress: false
 
 permissions:
@@ -15,7 +15,7 @@ permissions:
   issues: write
 
 jobs:
-  post-to-x:
+  post-to-bluesky:
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -32,18 +32,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Post latest blog to X
-        env:
-          X_CONSUMER_KEY: ${{ secrets.X_CONSUMER_KEY }}
-          X_SECRET_KEY: ${{ secrets.X_SECRET_KEY }}
-          X_API_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
-          X_API_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
-        run: npx tsx scripts/post-to-x.ts
+      # Don't post links to a site that's down. continue-on-error keeps the job
+      # green — the Site Uptime workflow owns alerting for outages.
+      - name: Check live site
+        id: site
+        continue-on-error: true
+        run: npx tsx scripts/check-site-up.ts
 
-      # No continue-on-error: a Bluesky failure should fail the job and open
-      # an issue via "Notify on failure". The tracker commit still runs.
+      # A Bluesky failure fails the job and opens an issue via "Notify on failure".
       - name: Post to Bluesky
-        if: always()
+        if: steps.site.outcome == 'success'
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
@@ -54,7 +52,7 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          for f in .posted-to-x .posted-to-bluesky; do [ -f "$f" ] && git add "$f"; done
+          if [ -f .posted-to-bluesky ]; then git add .posted-to-bluesky; fi
           git diff --cached --quiet || (git commit -m "chore: update social posted tracker" && git pull --rebase origin main && git push)
 
       - name: Notify on failure
@@ -62,7 +60,7 @@ jobs:
         uses: actions/github-script@v9
         with:
           script: |
-            const title = '[Auto] post-to-x failed';
+            const title = '[Auto] post-to-bluesky failed';
             const label = 'automation-failure';
             const { data: issues } = await github.rest.issues.listForRepo({
               ...context.repo,
@@ -80,7 +78,7 @@ jobs:
               await github.rest.issues.create({
                 ...context.repo,
                 title,
-                body: `The \`post-to-x\` workflow failed.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                body: `The \`post-to-bluesky\` workflow failed.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 labels: [label],
               });
             }
