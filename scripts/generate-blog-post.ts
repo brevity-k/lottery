@@ -8,6 +8,8 @@
  * Skips gracefully if:
  *   - ANTHROPIC_API_KEY is not set
  *   - A post for today already exists
+ *   - Every attempt produced a near-duplicate of an existing post
+ *     (no post is better than a duplicate for SEO/AdSense)
  */
 
 import Anthropic from '@anthropic-ai/sdk';
@@ -24,6 +26,8 @@ import {
   getExistingSlugs,
   getExistingTitles,
   ensureKeywordInSlug,
+  findNearDuplicate,
+  generateFreshTopic,
   BlogPost,
 } from './lib/blog-generator';
 
@@ -58,17 +62,29 @@ async function main() {
 
   const existingSlugs = getExistingSlugs();
   const existingTitles = getExistingTitles();
-  const { category, topic, targetKeyword } = selectTopic(existingSlugs);
-
-  console.log(`Generating: category="${category.name}", topic="${topic.slice(0, 60)}..."`);
+  const selection = selectTopic(existingSlugs);
+  const { category } = selection;
 
   const client = new Anthropic();
   let post: BlogPost | null = null;
+  let targetKeyword = '';
   let retries = 0;
   const maxRetries = 2;
+  // Titles to steer away from; rejected near-duplicates are appended so a
+  // retry doesn't regenerate the same topic.
+  const avoidTitles = [...existingTitles];
 
   while (retries <= maxRetries) {
     try {
+      let topic: string;
+      if (selection.source === 'queue') {
+        ({ topic, targetKeyword } = selection);
+      } else {
+        console.log('Pass 0: Choosing a fresh topic...');
+        ({ topic, targetKeyword } = await generateFreshTopic(client, category, avoidTitles));
+      }
+      console.log(`Generating: category="${category.name}", topic="${topic.slice(0, 60)}..."`);
+
       // Pass 1: Outline
       console.log('Pass 1: Research & Angle...');
       const outline = await generateOutline(
@@ -80,6 +96,13 @@ async function main() {
         existingTitles,
       );
       console.log(`  Title: "${outline.title}"`);
+
+      // Reject rewrites of an existing post before spending tokens on a draft
+      const outlineDup = findNearDuplicate(outline.title, existingTitles);
+      if (outlineDup) {
+        avoidTitles.push(outline.title);
+        throw new Error(`Near-duplicate of existing post "${outlineDup}"`);
+      }
 
       // Pass 2: Draft
       console.log('Pass 2: Drafting...');
@@ -95,6 +118,13 @@ async function main() {
 
       // Validate before fact-check
       validatePost(draft, category);
+
+      // The draft may retitle the outline; re-check the final title
+      const draftDup = findNearDuplicate(draft.title, existingTitles);
+      if (draftDup) {
+        avoidTitles.push(draft.title);
+        throw new Error(`Near-duplicate of existing post "${draftDup}"`);
+      }
 
       // Pass 3: Fact-check
       console.log('Pass 3: Fact-checking...');
